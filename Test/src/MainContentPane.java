@@ -102,7 +102,9 @@ public class MainContentPane extends JLayeredPane {
 	
 	private void movePane(int dx, int dy){
 		Component[] components = this.getComponents();
+		
 		this.scaleSource.translate(dx, dy);
+		
 		for (Component c: components){
 			((Moveable) c).translateComponent(dx,dy);
 		}
@@ -114,6 +116,7 @@ public class MainContentPane extends JLayeredPane {
 		this.xold=x;
 		this.yold=y;
 	}
+	
 	public float getScalefactor(){
 		return this.scalefactor;
 	}
