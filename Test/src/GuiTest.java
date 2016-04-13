@@ -1,3 +1,6 @@
+import gui.InteractiveGuiComponent;
+import gui.InteractiveGuiPane;
+
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 
@@ -10,7 +13,7 @@ public class GuiTest {
 		JFrame mainFrame = new JFrame("GuiTest");
 		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
-		JComponent contentPane = new MainContentPane();
+		JComponent contentPane = new InteractiveGuiPane();
 		mainFrame.setContentPane(contentPane);
 		mainFrame.pack();
 		mainFrame.setVisible(true);
