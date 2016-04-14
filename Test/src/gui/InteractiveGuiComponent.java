@@ -53,6 +53,7 @@ public class InteractiveGuiComponent extends JPanel {
 	
 	private void translateOriginLocation(Vector translationVector){
 		this.originLocation = this.originLocation.addVector(translationVector);
+		this.updateView();
 	}
 	
 	private void setOriginLocation(Vector originLocation){
