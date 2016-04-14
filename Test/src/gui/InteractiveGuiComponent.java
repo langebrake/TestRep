@@ -28,9 +28,8 @@ public class InteractiveGuiComponent extends JPanel {
 		this.originDimension = originDimension;
 		this.setSize(originDimension);
 		this.updateView();
-		//TODO: remove when implemented updateView
-		this.setLocation(originLocation.toPoint());
-		
+
+
 		
 		//TODO : delete the random color thing when implementing modules
 		Random rand = new Random();
