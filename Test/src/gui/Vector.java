@@ -23,7 +23,7 @@ public class Vector {
 	 * @return Differentiation vector from this to other
 	 */
 	public Vector diffVector(Vector other){
-		return new Vector(this.point.x-other.point.x, this.point.y-other.point.y);
+		return new Vector(other.point.x-this.point.x, other.point.y-this.point.y);
 	}
 	
 	/**
@@ -66,5 +66,9 @@ public class Vector {
 	 */
 	public Point toPoint(){
 		return this.point;
+	}
+	
+	public String toString(){
+		return this.point.toString();
 	}
 }

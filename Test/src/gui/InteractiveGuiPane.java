@@ -6,6 +6,7 @@ import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
+import java.util.concurrent.ThreadLocalRandom;
 
 import javax.swing.JLayeredPane;
 import javax.swing.SwingUtilities;
@@ -21,9 +22,12 @@ public class InteractiveGuiPane extends JLayeredPane {
 	private Vector scaleOrigin;
 	private float scaleFactor;
 	private float scaleIncrement;
+	private float scaleMin;
+	private float scaleMax;
 	// set Coordinate origin (0|0) to this position
 	private Vector viewportTranslation;
-	
+	// to guarantee smooth zooming (if calculated through grid view, rounding errors result in slight jumping)
+	private Vector zoomTranslation;
 	
 	/*
 	 * Objects needed for viewport interaction
@@ -44,7 +48,10 @@ public class InteractiveGuiPane extends JLayeredPane {
 		this.scaleOrigin = new Vector(0,0);
 		this.scaleFactor = 1;
 		this.scaleIncrement = (float) 0.1;
+		this.scaleMin = (float) 0.1;
+		this.scaleMax = 3;
 		this.viewportTranslation = new Vector(0,0);
+		this.zoomTranslation = new Vector(0,0);
 		
 		//add mouse listeners
 		this.addMouseListener(new MouseAdapter(){
@@ -63,7 +70,7 @@ public class InteractiveGuiPane extends JLayeredPane {
 				if(SwingUtilities.isLeftMouseButton(e)){
 					//translate on origin Grid coordinates
 					Vector currentMouseGridLocation = convertToGridLocation(new Vector(e.getPoint()));
-					translateViewport(currentMouseGridLocation.diffVector(lastMouseGridLocation));
+					translateViewport(lastMouseGridLocation.diffVector(currentMouseGridLocation));
 					//lastMousePaneLocation = currentMousePaneLocation;
 					
 				}
@@ -71,10 +78,16 @@ public class InteractiveGuiPane extends JLayeredPane {
 		});
 		this.addMouseWheelListener(new MouseAdapter(){
 			public void mouseWheelMoved(MouseWheelEvent e){
-				//translate to origin Grid coordinates
-				zoomViewport(convertToGridLocation((new Vector(e.getPoint()))),e.getWheelRotation());
+				zoomViewport((new Vector(e.getPoint())),e.getWheelRotation());
 			}
 		});
+		
+		//TODO: delete this debug add
+		int min = -10000;
+		int max = 10000;
+		for(int i = 1; i<1000; i++){
+			this.add(new InteractiveGuiComponent(this,new Vector(ThreadLocalRandom.current().nextInt(min, max),ThreadLocalRandom.current().nextInt(min, max))));
+		}
 	}
 	
 	
@@ -88,14 +101,34 @@ public class InteractiveGuiPane extends JLayeredPane {
 		this.updateView();
 	}
 	
-	private void zoomViewport(Vector zoomSourceGridLocation, int wheelRotation){
-		if(wheelRotation>0 && this.scaleFactor>0.1){
-			this.scaleFactor -=0.1 ;
+	private void zoomViewport(Vector zoomSourceScreenLocation, int wheelRotation){
+		
+		
+		
+		
+		Vector gridLocation = this.convertToGridLocation(zoomSourceScreenLocation);
+		if(wheelRotation>0){
+			this.scaleFactor -=this.scaleIncrement ;
 		}
 		else if (wheelRotation <0) {
-			this.scaleFactor +=0.1 ;
+			this.scaleFactor +=this.scaleIncrement ;
 		}
-		this.scaleOrigin = zoomSourceGridLocation;
+		
+		System.out.println(this.scaleFactor);
+		if(this.scaleFactor <this.scaleMin){
+			this.scaleFactor =  this.scaleMin;
+			this.updateView();
+			return;
+		}else if (this.scaleFactor > this.scaleMax){
+			this.scaleFactor = this.scaleMax;
+			this.updateView();
+			return;
+		}
+		
+		
+		
+		this.scaleOrigin = zoomSourceScreenLocation;
+		this.zoomTranslation = this.zoomTranslation.addVector(this.convertToScreenLocation(gridLocation).diffVector(zoomSourceScreenLocation));
 		this.updateView();
 	}
 	
@@ -103,20 +136,22 @@ public class InteractiveGuiPane extends JLayeredPane {
 		this.viewportTranslation = viewportOriginGridLocation;
 	}
 	
-	private Vector convertToGridLocation(Vector viewportVector){
-		//first untranslate with translationvector*scalefactor, than unscale
-		Vector untranslated = viewportVector.diffVector(this.viewportTranslation.scaleVector(this.scaleFactor));
+	public Vector convertToGridLocation(Vector viewportVector){
+		//first untranslate zoomTranslation, than untranslate translation with translationvector*scalefactor, than unscale
+		Vector unzoomtranslated = this.zoomTranslation.diffVector(viewportVector);
+		Vector untranslated = this.viewportTranslation.scaleVector(this.scaleFactor).diffVector(unzoomtranslated);
 		//P=(P'-S)/sf+S
-		Vector untranslatedUnscaled = ((untranslated.diffVector(this.scaleOrigin)).scaleVector(1/this.scaleFactor)).addVector(this.scaleOrigin);
+		Vector untranslatedUnscaled = ((this.scaleOrigin.diffVector(untranslated)).scaleVector(1/this.scaleFactor)).addVector(this.scaleOrigin);
 		return untranslatedUnscaled;
 	}
 	
 	public Vector convertToScreenLocation(Vector gridLocationVector){
-		//first scale, than translate with translatevector*scalefactor
+		//first scale, than translate with translatevector*scalefactor and zoomtranslate
 		
 		//P'=S+sf*(P-S)
-		Vector scaled  = this.scaleOrigin.addVector((gridLocationVector.diffVector(this.scaleOrigin)).scaleVector(this.scaleFactor));
-		Vector scaledTranslated = scaled.addVector(this.viewportTranslation.scaleVector(this.scaleFactor));
+		Vector scaled  = this.scaleOrigin.addVector((this.scaleOrigin.diffVector(gridLocationVector)).scaleVector(this.scaleFactor));
+		//translate + zoomtranslate in one step
+		Vector scaledTranslated = scaled.addVector(this.viewportTranslation.scaleVector(this.scaleFactor).addVector(this.getZoomTranslation()));
 		return scaledTranslated;
 	}
 	
@@ -156,6 +191,10 @@ public class InteractiveGuiPane extends JLayeredPane {
 	
 	public Vector getViewportTranslation(){
 		return this.viewportTranslation;
+	}
+	
+	public Vector getZoomTranslation(){
+		return this.zoomTranslation;
 	}
 	
 }

@@ -31,6 +31,7 @@ public class InteractiveGuiComponent extends JPanel {
 		//TODO: remove when implemented updateView
 		this.setLocation(originLocation.toPoint());
 		
+		
 		//TODO : delete the random color thing when implementing modules
 		Random rand = new Random();
 		this.setBackground(new Color(rand.nextFloat(),rand.nextFloat(),rand.nextFloat()));
@@ -63,12 +64,12 @@ public class InteractiveGuiComponent extends JPanel {
 	}
 	
 	public void updateView(){
-		/*
-		 * first scale, than translate with translatevector*scalefactor
-		 */
-		//scale
-		//translate
+		//set components screen location
+		
 		this.setLocation(parent.convertToScreenLocation(this.originLocation).toPoint());
+		//size component
+		double scaleFactor = this.parent.getScaleFactor();
+		this.setSize((int)(this.originDimension.width*scaleFactor), (int) (this.originDimension.height*scaleFactor));
 	}
 	
 	
