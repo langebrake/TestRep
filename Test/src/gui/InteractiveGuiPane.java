@@ -118,7 +118,7 @@ public class InteractiveGuiPane extends JLayeredPane {
 			this.scaleFactor +=this.scaleIncrement ;
 		}
 		
-		System.out.println(this.scaleFactor);
+		
 		if(this.scaleFactor <this.scaleMin){
 			this.scaleFactor =  this.scaleMin;
 			this.updateView();
