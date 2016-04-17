@@ -10,8 +10,8 @@ import pluginhost.exceptions.*;
 
 public class Module extends PluginHost {
 
-	public Module(Plugin p, MidiEngine e) {
-		super(p,e);
+	public Module(MidiEngine e) {
+		super(e);
 		// TODO Auto-generated constructor stub
 	}
 	

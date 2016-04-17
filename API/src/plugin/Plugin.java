@@ -25,7 +25,8 @@ public abstract class Plugin {
 	 * This method returns the plugins name
 	 * @return static String as name
 	 */
-	public abstract String getName();
+	public abstract String getPluginName();
+	public abstract String getDisplayName();
 	public PluginHost getPluginHost(){
 		return this.host;
 	}

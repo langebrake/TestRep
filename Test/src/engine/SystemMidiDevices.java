@@ -10,8 +10,9 @@ public class SystemMidiDevices {
 		MidiDevice.Info[] devices = MidiSystem.getMidiDeviceInfo();
 		LinkedList<MidiDevice> tmp = new LinkedList<MidiDevice>();
 		for(MidiDevice.Info i:devices){
+			
 			MidiDevice device = MidiSystem.getMidiDevice(i);
-			if(device.getMaxTransmitters()>0){
+			if(device.getMaxTransmitters()!=0){
 				tmp.add(device);
 			}
 		}
@@ -23,7 +24,7 @@ public class SystemMidiDevices {
 		LinkedList<MidiDevice> tmp = new LinkedList<MidiDevice>();
 		for(MidiDevice.Info i:devices){
 			MidiDevice device = MidiSystem.getMidiDevice(i);
-			if(device.getMaxReceivers()>0){
+			if(device.getMaxReceivers()!=0){
 				tmp.add(device);
 			}
 		}

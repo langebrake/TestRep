@@ -16,12 +16,10 @@ public abstract class PluginHost {
 	private Plugin plugin;
 	private MidiEngine engine;
 	
-	public PluginHost(Plugin p, MidiEngine e){
-		this.plugin = p;
+	public PluginHost(MidiEngine e){
 		this.inputs = new LinkedList<MidiIO>();
 		this.outputs = new LinkedList<MidiIO>();
 		this.engine = e;
-		p.load();
 	}
 	
 	
@@ -30,8 +28,34 @@ public abstract class PluginHost {
 	}
 	
 	public void setPlugin(Plugin p){
-		p.close();
+		if(this.plugin!= null){
+			this.plugin.close();
+		}
 		this.plugin = p;
+		
+		// fill minimum inputs
+		for(int i = this.getInputCount();i<this.plugin.getMinInputs();i++){
+			try {
+				this.newInput();
+			} catch (PluginMaxInputsExceededException e) {
+				// Cannot happen by default
+				//TODO: log unexpected error
+				e.printStackTrace();
+			}
+		}
+		//fill minimum outputs
+		for(int i = this.getOutputCount();i<this.plugin.getMinOutputs();i++){
+			try {
+				this.newOutput();
+			} catch (PluginMaxOutputsExceededException e) {
+				// Cannot happen by default
+				//TODO: log unexpected error
+				e.printStackTrace();
+			}
+		}
+		//delete maximum outputs
+		
+		//delete maximum inputs
 		p.load();
 	}
 	/**
@@ -201,12 +225,16 @@ public abstract class PluginHost {
 		}
 	}
 		
+	public void removeInput() throws PluginInputNotFoundException, PluginMinInputsExceededException{
+		this.removeInput(this.getInputCount()-1);
+	}
 	/**
 	 * disconnects, than removes the input
 	 * @param input
 	 * @throws PluginInputNotFoundException
+	 * @throws PluginMinInputsExceededException 
 	 */
-	public void removeInput(MidiIO input) throws PluginInputNotFoundException{
+	public void removeInput(MidiIO input) throws PluginInputNotFoundException, PluginMinInputsExceededException{
 		this.removeInput(this.inputs.indexOf(input));
 	}
 	
@@ -214,13 +242,17 @@ public abstract class PluginHost {
 	 * disconnects, than removes the input with give index id
 	 * @param inputID
 	 * @throws PluginInputNotFoundException
+	 * @throws PluginMinInputsExceededException 
 	 */
-	public void removeInput(int inputID) throws PluginInputNotFoundException{
-		if(inputID<0){
+	public void removeInput(int inputID) throws PluginInputNotFoundException, PluginMinInputsExceededException{
+		if (this.getInputCount() -1 < this.plugin.getMinInputs()){
+			throw new PluginMinInputsExceededException();
+		} else if(inputID<0){
 			throw new PluginInputNotFoundException();
 		}else if(inputID>=this.getInputCount()){
 			throw new IllegalArgumentException("Input index non-existent");
 		} else {
+		
 			this.inputs.get(inputID).disconnectInput();
 			//TODO: implement appropriate Event
 			this.plugin.notify(new HostEvent());
@@ -229,18 +261,22 @@ public abstract class PluginHost {
 	}
 	
 	public void removeInputs(LinkedList<MidiIO> inputs){
-		//TODO: implement
+		//TODO: implement, mind the minimal inputs
 	}
 	
 	public void removeInputs(int count, int startID){
-		//TODO: implement
+		//TODO: implement, mind the minimal inputs
 	}
 	/**
 	 * removes all inputs
 	 * @throws PluginInputNotFoundException 
+	 * @throws PluginMinInputsExceededException 
 	 */
 	
-	public void removeAllInputs() throws PluginInputNotFoundException{
+	public void removeAllInputs() throws PluginInputNotFoundException, PluginMinInputsExceededException{
+		if(this.plugin.getMinInputs()!=1){
+			throw new PluginMinInputsExceededException();
+		}
 		//TODO: implement good Host Event
 		this.plugin.notify(new HostEvent());
 		this.disconnectAllInputs();
@@ -440,8 +476,9 @@ public abstract class PluginHost {
 	 * disconnects, than removes the output
 	 * @param output
 	 * @throws PluginOutputNotFoundException
+	 * @throws PluginMinOutputsExceededException 
 	 */
-	public void removeOutput(MidiIO output) throws PluginOutputNotFoundException{
+	public void removeOutput(MidiIO output) throws PluginOutputNotFoundException, PluginMinOutputsExceededException{
 		this.removeOutput(this.outputs.indexOf(output));
 	}
 	
@@ -449,13 +486,17 @@ public abstract class PluginHost {
 	 * disconnects, than removes the output with give index id
 	 * @param outputID
 	 * @throws PluginOutputNotFoundException
+	 * @throws PluginMinOutputsExceededException 
 	 */
-	public void removeOutput(int outputID) throws PluginOutputNotFoundException{
+	public void removeOutput(int outputID) throws PluginOutputNotFoundException, PluginMinOutputsExceededException{
 		if(outputID<0){
 			throw new PluginOutputNotFoundException();
 		}else if(outputID>=this.getOutputCount()){
 			throw new IllegalArgumentException("Output index non-existent");
-		} else {
+		} else if(this.plugin.getMinOutputs() > this.getOutputCount() - 1){
+			throw new PluginMinOutputsExceededException();
+		}
+		else {
 			this.outputs.get(outputID).disconnectOutput();
 			//TODO: implement appropriate Event
 			this.plugin.notify(new HostEvent());
@@ -468,7 +509,7 @@ public abstract class PluginHost {
 	 * @param outputs
 	 */
 	public void removeOutputs(LinkedList<MidiIO> outputs){
-		//TODO: implement
+		//TODO: implement, mind the min outputs by plugin
 	}
 	/**
 	 * unimplemented
@@ -476,14 +517,18 @@ public abstract class PluginHost {
 	 * @param startID
 	 */
 	public void removeOutputs(int count, int startID){
-		//TODO: implement
+		//TODO: implement, mind the min outputs by plugin
 	}
 	/**
 	 * disconnects and removes all outputs
 	 * @throws PluginOutputNotFoundException 
+	 * @throws PluginMinOutputsExceededException 
 	 */
 	
-	public void removeAllOutputs() throws PluginOutputNotFoundException{
+	public void removeAllOutputs() throws PluginOutputNotFoundException, PluginMinOutputsExceededException{
+		if(this.plugin.getMinOutputs() != 0){
+			throw new PluginMinOutputsExceededException();
+		}
 		//TODO: implement good Host Event
 		this.plugin.notify(new HostEvent());
 		this.disconnectAllOutputs();
@@ -547,6 +592,9 @@ public abstract class PluginHost {
 		return this.engine;
 	}
 	
+	public void close(){
+		this.plugin.close();
+	}
 	public abstract void notify(PluginEvent e);
 	
 }

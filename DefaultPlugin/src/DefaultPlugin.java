@@ -38,7 +38,7 @@ public class DefaultPlugin extends Plugin{
 		return new DefaultView(NAME);
 	}
 	@Override
-	public String getName() {
+	public String getPluginName() {
 		// TODO Auto-generated method stub
 		return NAME;
 	}
@@ -77,6 +77,11 @@ public class DefaultPlugin extends Plugin{
 	public int getMinOutputs() {
 		// TODO Auto-generated method stub
 		return MINOUTPUTS;
+	}
+	@Override
+	public String getDisplayName() {
+		// TODO Auto-generated method stub
+		return NAME;
 	}
 
 
