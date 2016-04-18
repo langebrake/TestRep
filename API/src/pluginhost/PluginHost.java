@@ -58,6 +58,21 @@ public abstract class PluginHost {
 		//delete maximum inputs
 		p.load();
 	}
+	
+	/**
+	 * Connect an input source to this host. Connects the source to a not yet connected
+	 * input, creates a new host input if no free input is aviable
+	 * @param toConnect
+	 * @throws PluginMaxInputsExceededException 
+	 */
+	public void connectInput(MidiIO toConnect) throws PluginMaxInputsExceededException{
+		LinkedList<MidiIO> freeInputs = this.getFreeInputs();
+		if(freeInputs.size() == 0){
+			this.connectNewInput(toConnect);
+		} else {
+			freeInputs.get(0).setInput(toConnect);
+		}
+	}
 	/**
 	 * Creates a new input for this host and connects it to the given source.
 	 * Than notifies the plugin about this change
@@ -164,7 +179,7 @@ public abstract class PluginHost {
 	 * @throws PluginMaxInputsExceededException
 	 */
 	public MidiIO newInput(int id) throws PluginMaxInputsExceededException{
-		if(this.plugin.getMaxInputs() <= this.getInputCount()){
+		if(this.plugin.getMaxInputs() != -1 && this.plugin.getMaxInputs() <= this.getInputCount()){
 			throw new PluginMaxInputsExceededException();
 		} else{
 			MidiIO tmp = new MidiIO(this);
@@ -291,6 +306,20 @@ public abstract class PluginHost {
 		return this.inputs.size();
 	}
 	
+	/**
+	 * Connect an output destination to this host. Connects the destination to a not yet connected
+	 * output, creates a new host output if no free output is aviable
+	 * @param toConnect
+	 * @throws PluginMaxOutputsExceededException 
+	 */
+	public void connectOutput(MidiIO toConnect) throws PluginMaxOutputsExceededException {
+		LinkedList<MidiIO> freeOutputs = this.getFreeOutputs();
+		if(freeOutputs.size() == 0){
+			this.connectNewOutput(toConnect);
+		} else {
+			freeOutputs.get(0).setOutput(toConnect);
+		}
+	}
 	/**
 	 * Creates a new output for this host and connects it to the given destination.
 	 * Than notifies the plugin about this change
@@ -566,6 +595,30 @@ public abstract class PluginHost {
 	
 	public MidiIO getInput(int indexID){
 		return this.inputs.get(indexID);
+	}
+	
+	/**
+	 * Get a list of not connected outputs
+	 * @return
+	 */
+	public LinkedList<MidiIO> getFreeOutputs(){
+		LinkedList<MidiIO> tmp = new LinkedList<MidiIO>();
+		for(MidiIO m: this.outputs){
+			if(!m.hasOutput()){
+				tmp.add(m);
+			}
+		}
+		return tmp;
+	}
+	
+	public LinkedList<MidiIO> getFreeInputs(){
+		LinkedList<MidiIO> tmp = new LinkedList<MidiIO>();
+		for(MidiIO m: this.inputs){
+			if(!m.hasInput()){
+				tmp.add(m);
+			}
+		}
+		return tmp;
 	}
 	
 	public LinkedList<MidiIO> getConnectedOutputs(){
