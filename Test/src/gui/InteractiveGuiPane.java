@@ -105,31 +105,24 @@ public class InteractiveGuiPane extends JLayeredPane {
 		this.updateView();
 	}
 	
-	private void zoomViewport(Vector zoomSourceScreenLocation, int wheelRotation){
+	private synchronized void zoomViewport(Vector zoomSourceScreenLocation, int wheelRotation){
 		
 		
 		
 		
 		Vector gridLocation = this.convertToGridLocation(zoomSourceScreenLocation);
 		if(wheelRotation>0){
+			if(this.scaleFactor - this.scaleIncrement <this.scaleMin){
+				return;
+			}
 			this.scaleFactor -=this.scaleIncrement ;
 		}
 		else if (wheelRotation <0) {
+			if (this.scaleFactor +this.scaleIncrement > this.scaleMax){
+				return;
+			}
 			this.scaleFactor +=this.scaleIncrement ;
 		}
-		
-		
-		if(this.scaleFactor <this.scaleMin){
-			this.scaleFactor =  this.scaleMin;
-			this.updateView();
-			return;
-		}else if (this.scaleFactor > this.scaleMax){
-			this.scaleFactor = this.scaleMax;
-			this.updateView();
-			return;
-		}
-		
-		
 		
 		this.scaleOrigin = zoomSourceScreenLocation;
 		this.zoomTranslation = this.zoomTranslation.addVector(this.convertToScreenLocation(gridLocation).diffVector(zoomSourceScreenLocation));
@@ -175,6 +168,7 @@ public class InteractiveGuiPane extends JLayeredPane {
 		InteractiveGuiComponent newComponent = new InteractiveGuiComponent(this, positionOnGrid);
 		newComponent.updateView();
 		this.add(newComponent);
+		this.moveToFront(newComponent);
 	}
 	
 	
@@ -201,12 +195,10 @@ public class InteractiveGuiPane extends JLayeredPane {
 		return this.zoomTranslation;
 	}
 	
-	public void paint(Graphics g){
+
+	
+	protected void paintComponent(Graphics g){
 		
-		Graphics2D g2 = (Graphics2D)g;
-		g2.setStroke(new BasicStroke(3*this.scaleFactor));
-		g2.draw(new Line2D.Double(0, 0, this.lastMousePaneLocation.getX(), this.lastMousePaneLocation.getY()));
-		super.paint(g);
 	}
 	
 }
