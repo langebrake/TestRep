@@ -55,16 +55,16 @@ public class DefaultPlugin extends Plugin{
 	@Override
 	public void load() {
 		PluginHost host = this.getPluginHost();
-		MidiIO input = host.getInput(1);
-		MidiIO output = host.getOuput(1);
+		MidiIO input = host.getInput(0);
+		MidiIO output = host.getOuput(0);
 		input.setOutput(output);
 		
 	}
 	@Override
 	public void close() {
 		PluginHost host = this.getPluginHost();
-		MidiIO input = host.getInput(1);
-		MidiIO output = host.getOuput(1);
+		MidiIO input = host.getInput(0);
+		MidiIO output = host.getOuput(0);
 		input.disconnectOutput();
 		
 	}

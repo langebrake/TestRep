@@ -3,7 +3,7 @@ public class PrimReceive implements Receiver {
 
 	@Override
 	public void close() {
-		// TODO Auto-generated method stub
+		
 		
 	}
 

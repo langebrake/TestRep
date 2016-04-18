@@ -46,7 +46,7 @@ public class Test {
 			}
 
 		} catch (MidiUnavailableException e) {
-			// TODO Auto-generated catch block
+			
 			 e.printStackTrace();
 		}
 		
@@ -59,14 +59,14 @@ public class Test {
 			midimini = indevice.getTransmitter();
 			midimini.setReceiver(printreceiver);
 		} catch (MidiUnavailableException e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		}
 		ShortMessage message = null;
 		try {
 			message = new ShortMessage(ShortMessage.NOTE_ON,0,60,127);
 		} catch (InvalidMidiDataException e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		}
 		System.out.println("Message: " + message.getData1());
@@ -74,13 +74,13 @@ public class Test {
 		try {
 			message = new ShortMessage(ShortMessage.NOTE_OFF,0,60,127);
 		} catch (InvalidMidiDataException e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		}
 		try {
 			TimeUnit.SECONDS.sleep(8);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		}
 		ewql.send(message, -1);
