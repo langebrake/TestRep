@@ -124,11 +124,6 @@ public class InteractiveGuiPane extends JLayeredPane {
 			this.scaleFactor +=this.scaleIncrement ;
 		}
 		
-		System.out.println(this.scaleFactor);
-
-		
-		
-		
 		this.scaleOrigin = zoomSourceScreenLocation;
 		this.zoomTranslation = this.zoomTranslation.addVector(this.convertToScreenLocation(gridLocation).diffVector(zoomSourceScreenLocation));
 		this.updateView();
