@@ -6,9 +6,10 @@ import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.util.Random;
 
+import javax.swing.JComponent;
 import javax.swing.JPanel;
 
-public class InteractiveGuiComponent extends JPanel {
+public class InteractiveGuiComponent extends JComponent {
 
 	private Vector originLocation;
 	private Dimension originDimension;
@@ -28,7 +29,7 @@ public class InteractiveGuiComponent extends JPanel {
 		this.originDimension = originDimension;
 		this.setSize(originDimension);
 		this.updateView();
-
+		this.setOpaque(true);
 
 		
 		//TODO : delete the random color thing when implementing modules

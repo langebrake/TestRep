@@ -23,6 +23,10 @@ public class MidiInputPlugin extends Plugin{
 	private MidiDevice inputdevice;
 	private Transmitter inputtransmitter;
 	
+	public static MidiInputPlugin getInstance(PluginHost host){
+		return new MidiInputPlugin(host);
+	}
+	
 	public MidiInputPlugin(PluginHost host) {
 		super(host);
 		// TODO Auto-generated constructor stub
@@ -84,9 +88,10 @@ public class MidiInputPlugin extends Plugin{
 			System.out.println(i+": "+inputs.get(i).getDeviceInfo());
 		}
 		
-		try(Scanner s = new Scanner(System.in)){
+		try{
+			Scanner s = new Scanner(System.in);
 			System.out.println("Input Device Index: ");
-			int i = s.nextInt();
+			int i = Integer.parseInt(s.nextLine());
 			inputdevice = inputs.get(i);
 			inputdevice.open();
 			inputtransmitter = inputdevice.getTransmitter();
@@ -101,7 +106,7 @@ public class MidiInputPlugin extends Plugin{
 		} else{
 			this.getPluginHost().getOuput(0).setInput(inputtransmitter);
 		}
-		
+
 		
 	}
 
@@ -116,5 +121,6 @@ public class MidiInputPlugin extends Plugin{
 		// TODO Auto-generated method stub
 		return NAME;
 	}
+
 
 }

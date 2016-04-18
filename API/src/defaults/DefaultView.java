@@ -9,6 +9,6 @@ public class DefaultView extends JLabel {
 		this("noname");
 	}
 	public DefaultView(String name){
-		this.setName(name);
+		this.setText(name);
 	}
 }

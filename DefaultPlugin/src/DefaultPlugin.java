@@ -1,6 +1,11 @@
 import java.util.LinkedList;
 
+import javax.sound.midi.MidiMessage;
+import javax.sound.midi.Receiver;
+import javax.sound.midi.Transmitter;
 import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
 
 import plugin.Plugin;
 import pluginhost.events.*;
@@ -10,12 +15,15 @@ import defaults.MidiIO;
 
 
 
-public class DefaultPlugin extends Plugin{
+public class DefaultPlugin extends Plugin implements Receiver, Transmitter{
 	private static final int MAXINPUTS = 1;
 	private static final int MAXOUTPUTS = 1;
 	private static final int MININPUTS = 1;
 	private static final int MINOUTPUTS = 1;
 	private static final String NAME = "DummyPlugin";
+	private String msg = "DefaultMessage";
+	private Receiver rc;
+	private DefaultView view;
 	public static Plugin getInstance(PluginHost host){
 		return new DefaultPlugin(host);
 	}
@@ -30,12 +38,12 @@ public class DefaultPlugin extends Plugin{
 	@Override
 	public JComponent getMinimizedView() {
 		// TODO Auto-generated method stub
-		return new DefaultView(NAME);
+		return view;
 	}
 	@Override
 	public JComponent getFullView() {
 		// TODO Auto-generated method stub
-		return new DefaultView(NAME);
+		return view;
 	}
 	@Override
 	public String getPluginName() {
@@ -54,10 +62,16 @@ public class DefaultPlugin extends Plugin{
 	}
 	@Override
 	public void load() {
+		this.view = new DefaultView(msg);
 		PluginHost host = this.getPluginHost();
 		MidiIO input = host.getInput(0);
 		MidiIO output = host.getOuput(0);
-		input.setOutput(output);
+		input.setOutput(this);
+		this.setReceiver(output);
+		JFrame frame = new JFrame();
+		frame.add(this.getFullView());
+		frame.pack();
+		frame.setVisible(true);
 		
 	}
 	@Override
@@ -82,6 +96,24 @@ public class DefaultPlugin extends Plugin{
 	public String getDisplayName() {
 		// TODO Auto-generated method stub
 		return NAME;
+	}
+	
+	
+	@Override
+	public Receiver getReceiver() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public void setReceiver(Receiver arg0) {
+		this.rc = arg0;
+		
+	}
+	@Override
+	public void send(MidiMessage arg0, long arg1) {
+		this.msg = arg0.getMessage().toString();
+		this.view.setText(msg);
+		this.rc.send(arg0, arg1);
 	}
 
 

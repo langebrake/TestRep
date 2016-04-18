@@ -10,7 +10,7 @@ import pluginhost.exceptions.*;
 import pluginhost.events.*;
 
 
-public abstract class PluginHost {
+public abstract class PluginHost implements AutoCloseable{
 	
 	private LinkedList<MidiIO> inputs,outputs;
 	private Plugin plugin;

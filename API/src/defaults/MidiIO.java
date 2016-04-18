@@ -70,6 +70,8 @@ public class MidiIO implements Transmitter,Receiver{
 			if(((MidiIO) t).output != this){
 				((MidiIO) t).setReceiver(this);
 			}
+		} else {
+			t.setReceiver(this);
 		}
 	}
 	

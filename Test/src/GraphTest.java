@@ -1,3 +1,6 @@
+import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
+
 import javax.sound.midi.MidiUnavailableException;
 
 import plugin.Plugin;
@@ -7,29 +10,29 @@ import model.graph.Module;
 
 public class GraphTest {
 	public static void main(String[] args) {
-		try{
-			System.out.println("BEGIN");
-			Module inputModule = new Module(Engine.load());
+		System.out.println("WELCOME!");
+		try (	Module inputModule = new Module(Engine.load());
+				Module defaultModule= new Module(Engine.load());
+				Module outputModule= new Module(Engine.load())){
+			
 			Plugin inputPlugin = new MidiInputPlugin(inputModule);
 			inputModule.setPlugin(inputPlugin);
-			System.out.println("FINISHED");
 			
-			
-			Module defaultModule = new Module(Engine.load());
 			Plugin defaultPlugin = new DefaultPlugin(defaultModule);
 			defaultModule.setPlugin(defaultPlugin);
 			
-			
+			Plugin outputPlugin = new MidiOutputPlugin(outputModule);
+			outputModule.setPlugin(outputPlugin);
 			
 			defaultModule.connectInput(inputModule.getOuput(0));
+			outputModule.connectInput(defaultModule.getOuput(0));
 			
+			Scanner s = new Scanner(System.in);
+			s.nextLine();
 			
-			defaultModule.close();
-			inputModule.close();
 		}catch(Exception e){
 			e.printStackTrace();
 		}
-		
 		
 	}
 }

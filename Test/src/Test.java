@@ -1,10 +1,15 @@
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
+
 import javax.sound.midi.*;
+
+import model.graph.Module;
+import defaults.MidiIO;
+import engine.Engine;
 
 
 public class Test {
-	public static void main(String[] args){
+	public static void main(String[] args) throws MidiUnavailableException{
 		MidiDevice.Info[] myDeviceInfo = null;
 		myDeviceInfo = MidiSystem.getMidiDeviceInfo();
 		if (myDeviceInfo != null) {
@@ -54,9 +59,11 @@ public class Test {
 		Receiver ewql = null;
 		Transmitter midimini = null;
 		PrimReceive printreceiver = new PrimReceive();
+		MidiIO testio = new MidiIO(new Module(Engine.load()));
 		try {
 			ewql = outdevice.getReceiver();
 			midimini = indevice.getTransmitter();
+			
 			midimini.setReceiver(printreceiver);
 		} catch (MidiUnavailableException e) {
 			
