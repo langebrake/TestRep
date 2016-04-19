@@ -92,6 +92,7 @@ public class InteractiveGuiPane extends JLayeredPane {
 		for(int i = 1; i<1000; i++){
 			this.add(new InteractiveGuiComponent(this,new Vector(ThreadLocalRandom.current().nextInt(min, max),ThreadLocalRandom.current().nextInt(min, max))));
 		}
+		
 	}
 	
 	
