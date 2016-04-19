@@ -1,20 +1,29 @@
 package gui;
 
 import java.awt.Point;
+import java.awt.geom.Point2D;
 
 public class Vector {
-	private Point point;
+	private Point2D.Float point;
 
 	public Vector(){
-		this(new Point(0,0));
+		this(new Point2D.Float(0,0));
 	}
 	
 	public Vector(int x, int y){
-		this(new Point(x,y));
+		this(new Point2D.Float(x,y));
 	}
 	
-	public Vector(Point point){
+	public Vector(float x, float y){
+		this(new Point2D.Float(x, y));
+	}
+	
+	public Vector(Point2D.Float point){
 		this.point=point;
+	}
+	
+	public Vector(Point p){
+		this.point = new Point2D.Float(p.x,p.y);
 	}
 	
 	/**
@@ -41,7 +50,7 @@ public class Vector {
 	 * @return scaled vector
 	 */
 	public Vector scaleVector(float scaleFactor){
-		return new Vector((int)(this.point.x*scaleFactor),(int)(this.point.y*scaleFactor));
+		return new Vector((this.point.x*scaleFactor),(this.point.y*scaleFactor));
 	}
 	
 	/**
@@ -49,7 +58,7 @@ public class Vector {
 	 * @return
 	 */
 	public int getX(){
-		return this.point.x;
+		return Math.round(this.point.x);
 	}
 	
 	/**
@@ -57,7 +66,7 @@ public class Vector {
 	 * @return
 	 */
 	public int getY(){
-		return this.point.y;
+		return Math.round(this.point.y);
 	}
 	
 	/**
@@ -65,7 +74,7 @@ public class Vector {
 	 * @return point
 	 */
 	public Point toPoint(){
-		return this.point;
+		return new Point(Math.round(this.point.x),Math.round(this.point.y));
 	}
 	
 	public String toString(){

@@ -9,7 +9,7 @@ import java.util.Random;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
-public class InteractiveGuiComponent extends JComponent {
+public class InteractiveGuiComponent extends JPanel {
 
 	private Vector originLocation;
 	private Dimension originDimension;
