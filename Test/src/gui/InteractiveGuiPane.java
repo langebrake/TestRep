@@ -1,11 +1,13 @@
 package gui;
 
 import java.awt.BasicStroke;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
@@ -13,8 +15,10 @@ import java.awt.geom.Line2D;
 import java.util.LinkedList;
 import java.util.concurrent.ThreadLocalRandom;
 
+import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JLayeredPane;
+import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 public class InteractiveGuiPane extends JLayeredPane {
@@ -51,6 +55,7 @@ public class InteractiveGuiPane extends JLayeredPane {
 	 * Component interaction
 	 */
 	private LinkedList<InteractiveGuiComponent> selectedComponents;
+	private JPanel selectionArea;
 	
 	
 	/**
@@ -70,7 +75,8 @@ public class InteractiveGuiPane extends JLayeredPane {
 		this.cables = new LinkedList<Cable>();
 		this.selectedComponents = new LinkedList<InteractiveGuiComponent>();
 		this.selectedCables = new LinkedList<Cable>();
-
+		this.selectionArea = new JPanel();
+		this.selectionArea.setBorder(BorderFactory.createLineBorder(Color.black));
 		
 		//TODO: delete this debug add
 		int min = -10000;
@@ -225,6 +231,42 @@ public class InteractiveGuiPane extends JLayeredPane {
 		}
 		this.clearSelection();
 		this.updateView();
+	}
+	
+	/**
+	 * 
+	 * @param upperLeft
+	 * @param lowerRight
+	 * @param additive
+	 */
+	public void selectionArea(Vector upperLeft, Vector lowerRight, boolean additive){
+		if(this.selectionArea == null){
+			this.selectionArea = new JPanel();
+			this.selectionArea.setBorder(BorderFactory.createLineBorder(Color.black));
+			this.add(selectionArea);
+		}
+		this.selectionArea.setBounds(upperLeft.getX(),upperLeft.getY(),lowerRight.getX()-upperLeft.getX(),lowerRight.getY()-upperLeft.getY());
+		
+		for(Component c:this.getComponents()){
+			
+			if(c instanceof InteractiveGuiComponent){
+				if(c.getBounds().intersects(this.selectionArea.getBounds())){
+					if(!((InteractiveGuiComponent) c).isSelected()){
+						((InteractiveGuiComponent) c).setSelected(true);
+						this.selectedComponents.add((InteractiveGuiComponent) c);
+					}
+					
+				} else {
+					
+				}
+			}
+		}
+		
+	}
+	
+	public void resetSelectionArea(){
+		this.remove(selectionArea);
+		this.selectionArea = null;
 	}
 	
 	
