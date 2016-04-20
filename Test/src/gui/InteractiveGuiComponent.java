@@ -20,14 +20,14 @@ public class InteractiveGuiComponent extends JPanel implements InteractiveUpdate
 	private Dimension originDimension;
 	private InteractiveGuiPane parent;
 	private boolean selected;
-	private SizeableComponent contentPane;
+	private JComponent contentPane;
 	
 	/**
 	 * creates a new interactive gui component and places it to the origin vector
 	 * @param parent
 	 * @param origin
 	 */
-	public InteractiveGuiComponent(InteractiveGuiPane parent, Vector origin, SizeableComponent contentPane ){
+	public InteractiveGuiComponent(InteractiveGuiPane parent, Vector origin, JComponent contentPane ){
 		super(new BorderLayout());
 		this.contentPane = contentPane;
 		this.parent = parent;
@@ -69,7 +69,7 @@ public class InteractiveGuiComponent extends JPanel implements InteractiveUpdate
 		//size component
 		double scaleFactor = this.parent.getScaleFactor();
 		this.setSize((int)(this.originDimension.width*scaleFactor), (int) (this.originDimension.height*scaleFactor));
-		this.contentPane.updateView();
+		
 	}
 	
 	public void setHover(boolean set){

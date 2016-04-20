@@ -58,7 +58,7 @@ public class InteractiveGuiController extends MouseAdapter {
 			Random rand = new Random();
 			tmp.setBackground(new Color(rand.nextFloat(),rand.nextFloat(),rand.nextFloat()));
 			tmp.setSize(rand.nextInt(150)+50, rand.nextInt(150)+50);
-			InteractiveGuiComponent c = new InteractiveGuiComponent(this.interactivePane,new Vector(ThreadLocalRandom.current().nextInt(min, max),ThreadLocalRandom.current().nextInt(min, max)),(T) tmp);
+			InteractiveGuiComponent c = new InteractiveGuiComponent(this.interactivePane,new Vector(ThreadLocalRandom.current().nextInt(min, max),ThreadLocalRandom.current().nextInt(min, max)), tmp);
 			c.addMouseListener(this);
 			c.addMouseMotionListener(this);
 			this.interactivePane.addInteractiveGuiComponent(c);

@@ -21,8 +21,8 @@ public abstract class Plugin {
 	public static Plugin getInstance(PluginHost host){
 		return null;
 	}
-	public abstract SizeableComponent getMinimizedView();
-	public abstract SizeableComponent getFullView();
+	public abstract JComponent getMinimizedView();
+	public abstract JComponent getFullView();
 	/**
 	 * This method returns the plugins name
 	 * @return static String as name

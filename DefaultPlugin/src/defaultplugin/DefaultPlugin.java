@@ -39,12 +39,12 @@ public class DefaultPlugin extends Plugin implements Receiver, Transmitter{
 		
 	}
 	@Override
-	public SizeableComponent getMinimizedView() {
+	public JComponent getMinimizedView() {
 		// TODO Auto-generated method stub
 		return view;
 	}
 	@Override
-	public SizeableComponent getFullView() {
+	public JComponent getFullView() {
 		// TODO Auto-generated method stub
 		return view;
 	}
