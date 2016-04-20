@@ -29,7 +29,8 @@ public class InteractiveGuiController extends MouseAdapter {
 		this.interactivePane.addMouseListener(this);
 		this.interactivePane.addMouseMotionListener(this);
 		this.interactivePane.addMouseWheelListener(this);
-		// TODO: Shortcut handling to other class
+		
+		// TODO: Shortcut handling should be done by other class
 		KeyStroke deleteCode = KeyStroke.getKeyStroke(KeyEvent.VK_D, InputEvent.CTRL_DOWN_MASK);
 		this.interactivePane.getInputMap().put(deleteCode, "deletePerformed");
 		AbstractAction deleteAction = new DeleteAction();
@@ -116,7 +117,11 @@ public class InteractiveGuiController extends MouseAdapter {
 			
 			if(SwingUtilities.isLeftMouseButton(e)||SwingUtilities.isMiddleMouseButton(e)){
 				//translate on origin Grid coordinates
-				this.interactivePane.translateViewport(lastMouseGridLocation.diffVector(currentMouseGridLocation));
+				if((e.getModifiers() & InputEvent.SHIFT_MASK) == 0){
+					this.interactivePane.translateViewport(lastMouseGridLocation.diffVector(currentMouseGridLocation));
+				} else {
+					this.selectionAction(this.interactivePane.convertToScreenLocation(this.lastMouseGridLocation), new Vector(e.getPoint()));
+				}
 			}
 			
 		} else if (source instanceof InteractiveGuiComponent){
@@ -154,7 +159,12 @@ public class InteractiveGuiController extends MouseAdapter {
 		}
 	}
 
+	private void selectionAction(Vector upperLeft, Vector lowerRight){
+		this.interactivePane.selectionArea(upperLeft, lowerRight, true);
+	}
 
+	
+	
 	private class DeleteAction extends AbstractAction {
 
 		@Override
@@ -169,5 +179,4 @@ public class InteractiveGuiController extends MouseAdapter {
 		}
 		
 	}
-	
 }
