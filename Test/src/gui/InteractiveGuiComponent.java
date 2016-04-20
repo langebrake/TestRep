@@ -1,7 +1,9 @@
 package gui;
 
 import guiinterface.InteractiveUpdateable;
+import guiinterface.SizeableComponent;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Point;
@@ -18,35 +20,30 @@ public class InteractiveGuiComponent extends JPanel implements InteractiveUpdate
 	private Dimension originDimension;
 	private InteractiveGuiPane parent;
 	private boolean selected;
+	private SizeableComponent contentPane;
 	
-	public InteractiveGuiComponent(InteractiveGuiPane parent) {
-		this(parent,new Vector(0,0));
-	}
 	/**
 	 * creates a new interactive gui component and places it to the origin vector
 	 * @param parent
 	 * @param origin
 	 */
-	public InteractiveGuiComponent(InteractiveGuiPane parent, Vector origin){
-		this(parent,origin,new Dimension(100,50));
-	}
-	
-	public InteractiveGuiComponent(InteractiveGuiPane parent, Vector originLocation, Dimension originDimension){
+	public InteractiveGuiComponent(InteractiveGuiPane parent, Vector origin, SizeableComponent contentPane ){
+		super(new BorderLayout());
+		this.contentPane = contentPane;
 		this.parent = parent;
-		this.originLocation = originLocation;
-		this.originDimension = originDimension;
+		this.originLocation = origin;
+		
+		this.originDimension = contentPane.getSize();;
 		this.selected = false;
 		this.setSize(originDimension);
+		this.add(contentPane,BorderLayout.CENTER);
 		this.updateView();
-		this.setOpaque(true);
-
+		this.setOpaque(false);
 		
-		//TODO : delete the random color thing when implementing modules
-		Random rand = new Random();
-		this.setBackground(new Color(rand.nextFloat(),rand.nextFloat(),rand.nextFloat()));
 		
 		
 	}
+	
 	
 	
 	
@@ -72,6 +69,7 @@ public class InteractiveGuiComponent extends JPanel implements InteractiveUpdate
 		//size component
 		double scaleFactor = this.parent.getScaleFactor();
 		this.setSize((int)(this.originDimension.width*scaleFactor), (int) (this.originDimension.height*scaleFactor));
+		this.contentPane.updateView();
 	}
 	
 	public void setHover(boolean set){

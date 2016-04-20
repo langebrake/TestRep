@@ -1,5 +1,6 @@
 package controller;
 
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
@@ -7,13 +8,21 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
+import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
+import javax.sound.midi.MidiUnavailableException;
 import javax.swing.AbstractAction;
+import javax.swing.JComponent;
+import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
+import defaultplugin.DefaultPlugin;
+import plugin.Plugin;
+import engine.Engine;
 import model.MidiGraph;
+import model.graph.Module;
 import gui.InteractiveGuiComponent;
 import gui.InteractiveGuiPane;
 import gui.Vector;
@@ -24,6 +33,7 @@ public class InteractiveGuiController extends MouseAdapter {
 	private Vector lastMouseGridLocation;
 	private Vector lastMouseScreenLocation;
 	
+	
 	public InteractiveGuiController(InteractiveGuiPane interactivePane, MidiGraph midiGraph){
 		this.interactivePane = interactivePane;
 		this.midiGraph = midiGraph;
@@ -33,7 +43,7 @@ public class InteractiveGuiController extends MouseAdapter {
 		this.interactivePane.addMouseWheelListener(this);
 		
 		// TODO: Shortcut handling should be done by other class
-		KeyStroke deleteCode = KeyStroke.getKeyStroke(KeyEvent.VK_D, InputEvent.CTRL_DOWN_MASK);
+		KeyStroke deleteCode = KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0);
 		this.interactivePane.getInputMap().put(deleteCode, "deletePerformed");
 		AbstractAction deleteAction = new DeleteAction();
 		this.interactivePane.getActionMap().put("deletePerformed", deleteAction);
@@ -43,7 +53,12 @@ public class InteractiveGuiController extends MouseAdapter {
 		int min = -10000;
 		int max = 10000;
 		for(int i = 1; i<1000; i++){
-			InteractiveGuiComponent c = new InteractiveGuiComponent(this.interactivePane,new Vector(ThreadLocalRandom.current().nextInt(min, max),ThreadLocalRandom.current().nextInt(min, max)));
+			JPanel tmp = new JPanel();
+			//TODO : delete the random color thing when implementing modules
+			Random rand = new Random();
+			tmp.setBackground(new Color(rand.nextFloat(),rand.nextFloat(),rand.nextFloat()));
+			tmp.setSize(rand.nextInt(150)+50, rand.nextInt(150)+50);
+			InteractiveGuiComponent c = new InteractiveGuiComponent(this.interactivePane,new Vector(ThreadLocalRandom.current().nextInt(min, max),ThreadLocalRandom.current().nextInt(min, max)),(T) tmp);
 			c.addMouseListener(this);
 			c.addMouseMotionListener(this);
 			this.interactivePane.addInteractiveGuiComponent(c);
@@ -55,7 +70,7 @@ public class InteractiveGuiController extends MouseAdapter {
 	public void mousePressed(MouseEvent e){
 		Object source = e.getSource();
 		lastMouseScreenLocation = new Vector(e.getLocationOnScreen());
-		lastMouseGridLocation = this.interactivePane.convertToGridLocation(new Vector(e.getPoint()));
+		lastMouseGridLocation = this.currentMouseGridLocation(e);
 		
 		if(SwingUtilities.isLeftMouseButton(e) 
 				&& (e.getModifiersEx() & InputEvent.SHIFT_DOWN_MASK) == 0 
@@ -77,7 +92,17 @@ public class InteractiveGuiController extends MouseAdapter {
 		Object source = arg0.getSource();
 		if(source == this.interactivePane){
 			if(SwingUtilities.isRightMouseButton(arg0)){
-				InteractiveGuiComponent newComponent = new InteractiveGuiComponent(this.interactivePane, this.interactivePane.convertToGridLocation(new Vector(arg0.getPoint())));
+				
+				Module mod = null;
+				try {
+					mod = new Module(Engine.load());
+				} catch (MidiUnavailableException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				DefaultPlugin defaultPlugin = new DefaultPlugin(mod);
+				mod.setPlugin(defaultPlugin);
+				InteractiveGuiComponent newComponent = new InteractiveGuiComponent(this.interactivePane, this.interactivePane.convertToGridLocation(new Vector(arg0.getPoint())),defaultPlugin.getMinimizedView());
 				newComponent.addMouseListener(this);
 				newComponent.addMouseMotionListener(this);
 				this.interactivePane.addInteractiveGuiComponent(newComponent);
@@ -120,13 +145,14 @@ public class InteractiveGuiController extends MouseAdapter {
 	
 	public void mouseDragged(MouseEvent e){
 		Object source = e.getSource();
-		Vector currentMouseGridLocation = this.interactivePane.convertToGridLocation(new Vector(e.getPoint()));
+		Vector currentMouseGridLocation = this.currentMouseGridLocation(e);
 		
 		
 		if(source == this.interactivePane){
 			
 			if(SwingUtilities.isLeftMouseButton(e) && (e.getModifiersEx() & InputEvent.CTRL_DOWN_MASK) != 0  || SwingUtilities.isMiddleMouseButton(e)){
 				this.interactivePane.translateViewport(lastMouseGridLocation.diffVector(currentMouseGridLocation));
+				
 			} else if(SwingUtilities.isLeftMouseButton(e) && (e.getModifiers() & InputEvent.SHIFT_MASK) == 0){
 					this.selectionAction((new Vector(this.interactivePane.getLocationOnScreen())).diffVector(this.lastMouseScreenLocation), new Vector(e.getPoint()), true);
 			}else if(SwingUtilities.isLeftMouseButton(e) && (e.getModifiers() & InputEvent.SHIFT_MASK) != 0){
@@ -136,21 +162,27 @@ public class InteractiveGuiController extends MouseAdapter {
 		} else if (source instanceof InteractiveGuiComponent){
 			if(SwingUtilities.isMiddleMouseButton(e)){
 				//TODO : implement translate view while translate component functionality
+				this.interactivePane.translateViewport(lastMouseGridLocation.diffVector(currentMouseGridLocation));
 			}else{
 				if(!((InteractiveGuiComponent) source).isSelected()){
 						this.interactivePane.clearSelection();
 					this.interactivePane.setComponentSelection((InteractiveGuiComponent) source,true);
 				}
+				
 				Vector translation = lastMouseGridLocation.diffVector(currentMouseGridLocation);
+
 				for(InteractiveGuiComponent c:this.interactivePane.getComponentSelection()){
 					c.translateOriginLocation(translation);
 				}
+				lastMouseGridLocation = currentMouseGridLocation;
 			}
 		}
 	}
 	
 	public void mouseWheelMoved(MouseWheelEvent e){
 		this.interactivePane.zoomViewport((new Vector(e.getPoint())),e.getWheelRotation());
+		lastMouseScreenLocation = new Vector(e.getLocationOnScreen());
+		lastMouseGridLocation = this.interactivePane.convertToGridLocation(new Vector(e.getPoint()));
 	}
 	
 	public void mouseEntered(MouseEvent e){
@@ -172,6 +204,11 @@ public class InteractiveGuiController extends MouseAdapter {
 		this.interactivePane.selectionArea(upperLeft, lowerRight, additive);
 	}
 
+	private Vector currentMouseGridLocation(MouseEvent e){
+		return this.interactivePane.convertToGridLocation(
+				(new Vector(this.interactivePane.getLocationOnScreen())).diffVector(
+						new Vector(e.getLocationOnScreen())));
+	}
 	
 	
 	private class DeleteAction extends AbstractAction {
@@ -182,6 +219,7 @@ public class InteractiveGuiController extends MouseAdapter {
 			for(InteractiveGuiComponent c:interactivePane.getComponentSelection()){
 				interactivePane.remove(c);
 			}
+			
 			interactivePane.clearSelection();
 			
 			

@@ -108,6 +108,7 @@ public class InteractiveGuiPane extends JLayeredPane {
 			if(this.scaleFactor - this.scaleIncrement <this.scaleMin){
 				return;
 			}
+			
 			this.scaleFactor -=this.scaleIncrement ;
 		}
 		else if (wheelRotation <0) {
@@ -155,7 +156,7 @@ public class InteractiveGuiPane extends JLayeredPane {
 		for(Cable c: this.cables){
 			c.updateView();
 		}
-		this.repaint();
+		this.revalidate();
 	}
 	
 	
@@ -252,6 +253,8 @@ public class InteractiveGuiPane extends JLayeredPane {
 		this.selectionArea.setVisible(true);
 		this.selectionArea.setBounds(xpos, ypos, width, height);
 		
+		//TODO: better area selection algorithm!
+		
 		for(Component c:this.getComponents()){
 			
 			if(c instanceof InteractiveGuiComponent){
@@ -298,7 +301,11 @@ public class InteractiveGuiPane extends JLayeredPane {
 		return this.zoomTranslation;
 	}
 	
-
+	@Override
+	public void remove(Component c){
+		super.remove(c);
+		this.repaint();
+	}
 	
 	protected void paintComponent(Graphics g){
 		super.paintComponent(g);

@@ -1,5 +1,7 @@
 package plugin;
 
+import guiinterface.SizeableComponent;
+
 import javax.swing.JComponent;
 
 import plugin.events.*;
@@ -19,8 +21,8 @@ public abstract class Plugin {
 	public static Plugin getInstance(PluginHost host){
 		return null;
 	}
-	public abstract JComponent getMinimizedView();
-	public abstract JComponent getFullView();
+	public abstract SizeableComponent getMinimizedView();
+	public abstract SizeableComponent getFullView();
 	/**
 	 * This method returns the plugins name
 	 * @return static String as name

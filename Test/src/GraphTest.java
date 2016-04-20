@@ -1,4 +1,6 @@
 import java.util.Scanner;
+
+import defaultplugin.DefaultPlugin;
 import plugin.Plugin;
 import engine.Engine;
 import model.graph.Module;

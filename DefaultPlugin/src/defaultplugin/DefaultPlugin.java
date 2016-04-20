@@ -1,3 +1,6 @@
+package defaultplugin;
+import guiinterface.SizeableComponent;
+
 import java.util.LinkedList;
 
 import javax.sound.midi.MidiMessage;
@@ -36,12 +39,12 @@ public class DefaultPlugin extends Plugin implements Receiver, Transmitter{
 		
 	}
 	@Override
-	public JComponent getMinimizedView() {
+	public SizeableComponent getMinimizedView() {
 		// TODO Auto-generated method stub
 		return view;
 	}
 	@Override
-	public JComponent getFullView() {
+	public SizeableComponent getFullView() {
 		// TODO Auto-generated method stub
 		return view;
 	}
@@ -68,10 +71,6 @@ public class DefaultPlugin extends Plugin implements Receiver, Transmitter{
 		MidiIO output = host.getOuput(0);
 		input.setOutput(this);
 		this.setReceiver(output);
-		JFrame frame = new JFrame();
-		frame.add(this.getFullView());
-		frame.pack();
-		frame.setVisible(true);
 		
 	}
 	@Override
@@ -112,7 +111,7 @@ public class DefaultPlugin extends Plugin implements Receiver, Transmitter{
 	@Override
 	public void send(MidiMessage arg0, long arg1) {
 		this.msg = arg0.getMessage().toString();
-		this.view.setText(msg);
+		
 		this.rc.send(arg0, arg1);
 	}
 
