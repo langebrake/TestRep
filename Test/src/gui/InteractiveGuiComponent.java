@@ -1,24 +1,32 @@
 package gui;
 
+import guiinterface.InteractiveUpdateable;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.util.Random;
 
+import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
-public class InteractiveGuiComponent extends JPanel {
+public class InteractiveGuiComponent extends JPanel implements InteractiveUpdateable {
 
 	private Vector originLocation;
 	private Dimension originDimension;
 	private InteractiveGuiPane parent;
+	private boolean selected;
 	
 	public InteractiveGuiComponent(InteractiveGuiPane parent) {
 		this(parent,new Vector(0,0));
 	}
-	
+	/**
+	 * creates a new interactive gui component and places it to the origin vector
+	 * @param parent
+	 * @param origin
+	 */
 	public InteractiveGuiComponent(InteractiveGuiPane parent, Vector origin){
 		this(parent,origin,new Dimension(100,50));
 	}
@@ -27,6 +35,7 @@ public class InteractiveGuiComponent extends JPanel {
 		this.parent = parent;
 		this.originLocation = originLocation;
 		this.originDimension = originDimension;
+		this.selected = false;
 		this.setSize(originDimension);
 		this.updateView();
 		this.setOpaque(true);
@@ -37,21 +46,13 @@ public class InteractiveGuiComponent extends JPanel {
 		this.setBackground(new Color(rand.nextFloat(),rand.nextFloat(),rand.nextFloat()));
 		
 		
-		/*
-		 * add required Mouselisteners
-		 */
-		
-		this.addMouseListener(new MouseAdapter(){
-			
-		});
-		
 	}
 	
 	
 	
 	
 	
-	private void translateOriginLocation(Vector translationVector){
+	public void translateOriginLocation(Vector translationVector){
 		this.originLocation = this.originLocation.addVector(translationVector);
 		this.updateView();
 	}
@@ -71,6 +72,32 @@ public class InteractiveGuiComponent extends JPanel {
 		//size component
 		double scaleFactor = this.parent.getScaleFactor();
 		this.setSize((int)(this.originDimension.width*scaleFactor), (int) (this.originDimension.height*scaleFactor));
+	}
+	
+	public void setHover(boolean set){
+		if(set)
+			this.setBorder(BorderFactory.createLineBorder(Color.black));
+		else {
+			if(this.selected){
+				this.setBorder(BorderFactory.createLineBorder(Color.red));
+			} else {
+				this.setBorder(BorderFactory.createEmptyBorder());
+			}
+		}
+			
+	}
+	
+	public void setSelected(boolean set){
+		this.selected = set;
+		if(set)
+			this.setBorder(BorderFactory.createLineBorder(Color.red));
+		else
+			this.setBorder(BorderFactory.createEmptyBorder());
+	}
+
+	
+	public boolean isSelected(){
+		return this.selected;
 	}
 	
 	

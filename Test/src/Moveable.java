@@ -56,6 +56,7 @@ public class Moveable extends JPanel{
 			public void mousePressed(MouseEvent e){
 				Point unscaled = unscaledPoint(e.getXOnScreen(),e.getYOnScreen());
 				focus();
+				
 				setPressOrigin(unscaled.x, unscaled.y);
 			}
 			
@@ -110,9 +111,9 @@ public class Moveable extends JPanel{
 	}
 	private void setBorder(boolean set){
 		if(set)
-		this.setBorder(BorderFactory.createLineBorder(Color.black));
+			this.setBorder(BorderFactory.createLineBorder(Color.black));
 		else
-		this.setBorder(BorderFactory.createEmptyBorder());
+			this.setBorder(BorderFactory.createEmptyBorder());
 	}
 	
 	

@@ -1,8 +1,4 @@
 import java.util.Scanner;
-import java.util.concurrent.TimeUnit;
-
-import javax.sound.midi.MidiUnavailableException;
-
 import plugin.Plugin;
 import engine.Engine;
 import model.graph.Module;
@@ -29,6 +25,7 @@ public class GraphTest {
 			
 			Scanner s = new Scanner(System.in);
 			s.nextLine();
+			s.close();
 			
 		}catch(Exception e){
 			e.printStackTrace();

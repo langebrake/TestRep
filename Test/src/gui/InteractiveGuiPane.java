@@ -10,8 +10,10 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.geom.Line2D;
+import java.util.LinkedList;
 import java.util.concurrent.ThreadLocalRandom;
 
+import javax.swing.JComponent;
 import javax.swing.JLayeredPane;
 import javax.swing.SwingUtilities;
 
@@ -37,9 +39,18 @@ public class InteractiveGuiPane extends JLayeredPane {
 	 * Objects needed for viewport interaction
 	 */
 	//used for drag translation
-	private Vector lastMousePaneLocation;
 	private Vector lastMouseGridLocation;
 	
+	/*
+	 * Cables
+	 */
+	private LinkedList<Cable> cables;
+	private LinkedList<Cable> selectedCables;
+	
+	/*
+	 * Component interaction
+	 */
+	private LinkedList<InteractiveGuiComponent> selectedComponents;
 	
 	
 	/**
@@ -56,35 +67,10 @@ public class InteractiveGuiPane extends JLayeredPane {
 		this.scaleMax = 3;
 		this.viewportTranslation = new Vector(0,0);
 		this.zoomTranslation = new Vector(0,0);
-		
-		//add mouse listeners
-		this.addMouseListener(new MouseAdapter(){
-			public void mousePressed(MouseEvent e){
-				lastMousePaneLocation = new Vector(e.getPoint());
-				lastMouseGridLocation = convertToGridLocation(lastMousePaneLocation);
-			}
-			public void mouseClicked(MouseEvent arg0) {
-				if(SwingUtilities.isLeftMouseButton(arg0)){
-					addInteractiveGuiComponent(convertToGridLocation(new Vector(arg0.getPoint())));
-				}	
-			}
-		});
-		this.addMouseMotionListener(new MouseAdapter(){
-			public void mouseDragged(MouseEvent e){
-				if(SwingUtilities.isLeftMouseButton(e)){
-					//translate on origin Grid coordinates
-					Vector currentMouseGridLocation = convertToGridLocation(new Vector(e.getPoint()));
-					translateViewport(lastMouseGridLocation.diffVector(currentMouseGridLocation));
-					lastMousePaneLocation = new Vector(e.getPoint());
-					
-				}
-			}
-		});
-		this.addMouseWheelListener(new MouseAdapter(){
-			public void mouseWheelMoved(MouseWheelEvent e){
-				zoomViewport((new Vector(e.getPoint())),e.getWheelRotation());
-			}
-		});
+		this.cables = new LinkedList<Cable>();
+		this.selectedComponents = new LinkedList<InteractiveGuiComponent>();
+		this.selectedCables = new LinkedList<Cable>();
+
 		
 		//TODO: delete this debug add
 		int min = -10000;
@@ -99,16 +85,14 @@ public class InteractiveGuiPane extends JLayeredPane {
 	/*
 	 * Viewport transformation methods
 	 */
-	private void translateViewport(Vector translationVectorGrid){
+	public void translateViewport(Vector translationVectorGrid){
 		
 		this.viewportTranslation = this.viewportTranslation.addVector(translationVectorGrid);
 		
 		this.updateView();
 	}
 	
-	private synchronized void zoomViewport(Vector zoomSourceScreenLocation, int wheelRotation){
-		
-		
+	public synchronized void zoomViewport(Vector zoomSourceScreenLocation, int wheelRotation){
 		
 		
 		Vector gridLocation = this.convertToGridLocation(zoomSourceScreenLocation);
@@ -158,6 +142,10 @@ public class InteractiveGuiPane extends JLayeredPane {
 		for (Component c: components){
 			((InteractiveGuiComponent) c).updateView();
 		}
+		for(Cable c: this.cables){
+			c.updateView();
+		}
+		this.repaint();
 	}
 	
 	
@@ -165,17 +153,79 @@ public class InteractiveGuiPane extends JLayeredPane {
 	/*
 	 * GuiComponent interaction methods
 	 */
-	private void addInteractiveGuiComponent(Vector positionOnGrid){
-		InteractiveGuiComponent newComponent = new InteractiveGuiComponent(this, positionOnGrid);
-		newComponent.updateView();
-		this.add(newComponent);
-		this.moveToFront(newComponent);
+	public void addInteractiveGuiComponent(InteractiveGuiComponent component){
+		
+		component.updateView();
+		this.add(component);
+		this.moveToFront(component);
 	}
 	
+	public void addInteractiveCable(JComponent source, JComponent dest){
+		this.cables.add(new Cable(source,dest));
+	}
 	
+	public void remove(Cable c){
+		this.cables.remove(c);
+	}
 	
+	public void setComponentSelection(InteractiveGuiComponent component, boolean selected){
+		component.setSelected(selected);
+		if(selected){
+			this.selectedComponents.add(component);
+		} else {
+			this.selectedComponents.remove(component);
+		}
+		this.updateView();
+	}
 	
+	public LinkedList<InteractiveGuiComponent> getComponentSelection(){
+		return this.selectedComponents;
+	}
 	
+	public LinkedList<Cable> getCableSelection(){
+		return this.selectedCables;
+	}
+	
+	public void setCableSelection(Cable cable, boolean selected){
+		cable.setSelected(selected);
+		if(selected){
+			this.selectedCables.add(cable);
+		} else {
+			this.selectedCables.remove(cable);
+		}
+		this.updateView();
+	}
+	
+	public void clearSelection(){
+		for(InteractiveGuiComponent c:this.selectedComponents){
+			c.setSelected(false);
+		}
+		this.selectedComponents = new LinkedList<InteractiveGuiComponent>();
+		for(Cable c:this.selectedCables){
+			c.setSelected(false);
+		}
+		this.selectedCables = new LinkedList<Cable>();
+		this.updateView();
+	}
+	
+	public boolean hasSelected(){
+		return this.selectedCables.size()+this.selectedComponents.size()!=0;
+	}
+	
+	public boolean hasMultiSelection(){
+		return this.selectedCables.size()+this.selectedComponents.size()>1;
+	}
+	
+	public void removeSelection(){
+		for(InteractiveGuiComponent c: this.getComponentSelection()){
+			this.remove(c);
+		}
+		for(Cable c:this.getCableSelection()){
+			this.remove(c);
+		}
+		this.clearSelection();
+		this.updateView();
+	}
 	
 	
 	
@@ -199,7 +249,7 @@ public class InteractiveGuiPane extends JLayeredPane {
 
 	
 	protected void paintComponent(Graphics g){
-		
+		super.paintComponent(g);
 	}
 	
 }
