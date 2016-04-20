@@ -50,11 +50,14 @@ public class InteractiveGuiPane extends JLayeredPane {
 	 */
 	private LinkedList<Cable> cables;
 	private LinkedList<Cable> selectedCables;
+	private LinkedList<Cable> tmpSelectedCables;
+	
 	
 	/*
 	 * Component interaction
 	 */
 	private LinkedList<InteractiveGuiComponent> selectedComponents;
+	private LinkedList<InteractiveGuiComponent> tmpSelectedComponents;
 	private JPanel selectionArea;
 	
 	
@@ -68,22 +71,21 @@ public class InteractiveGuiPane extends JLayeredPane {
 		this.scaleOrigin = new Vector(0,0);
 		this.scaleFactor = 1;
 		this.scaleIncrement = (float) 0.1;
-		this.scaleMin = (float) 0.1;
+		this.scaleMin = (float) 0.01;
 		this.scaleMax = 3;
 		this.viewportTranslation = new Vector(0,0);
 		this.zoomTranslation = new Vector(0,0);
 		this.cables = new LinkedList<Cable>();
 		this.selectedComponents = new LinkedList<InteractiveGuiComponent>();
 		this.selectedCables = new LinkedList<Cable>();
+		this.tmpSelectedCables = new LinkedList<Cable>();
+		this.tmpSelectedComponents = new LinkedList<InteractiveGuiComponent>();
 		this.selectionArea = new JPanel();
 		this.selectionArea.setBorder(BorderFactory.createLineBorder(Color.black));
+		this.selectionArea.setOpaque(false);
+		this.add(selectionArea);
 		
-		//TODO: delete this debug add
-		int min = -10000;
-		int max = 10000;
-		for(int i = 1; i<1000; i++){
-			this.add(new InteractiveGuiComponent(this,new Vector(ThreadLocalRandom.current().nextInt(min, max),ThreadLocalRandom.current().nextInt(min, max))));
-		}
+
 		
 	}
 	
@@ -146,7 +148,9 @@ public class InteractiveGuiPane extends JLayeredPane {
 	private void updateView(){
 		Component[] components = this.getComponents();
 		for (Component c: components){
+			if(c instanceof InteractiveGuiComponent){
 			((InteractiveGuiComponent) c).updateView();
+			}
 		}
 		for(Cable c: this.cables){
 			c.updateView();
@@ -239,13 +243,14 @@ public class InteractiveGuiPane extends JLayeredPane {
 	 * @param lowerRight
 	 * @param additive
 	 */
-	public void selectionArea(Vector upperLeft, Vector lowerRight, boolean additive){
-		if(this.selectionArea == null){
-			this.selectionArea = new JPanel();
-			this.selectionArea.setBorder(BorderFactory.createLineBorder(Color.black));
-			this.add(selectionArea);
-		}
-		this.selectionArea.setBounds(upperLeft.getX(),upperLeft.getY(),lowerRight.getX()-upperLeft.getX(),lowerRight.getY()-upperLeft.getY());
+	public void selectionArea(Vector vec1, Vector vec2, boolean additive){
+		int xpos,ypos,height,width;
+		xpos = Math.min(vec1.getX(), vec2.getX());
+		ypos = Math.min(vec1.getY(), vec2.getY());
+		height = Math.max(vec1.getY(), vec2.getY()) - ypos;
+		width = Math.max(vec1.getX(), vec2.getX()) - xpos;
+		this.selectionArea.setVisible(true);
+		this.selectionArea.setBounds(xpos, ypos, width, height);
 		
 		for(Component c:this.getComponents()){
 			
@@ -253,20 +258,25 @@ public class InteractiveGuiPane extends JLayeredPane {
 				if(c.getBounds().intersects(this.selectionArea.getBounds())){
 					if(!((InteractiveGuiComponent) c).isSelected()){
 						((InteractiveGuiComponent) c).setSelected(true);
-						this.selectedComponents.add((InteractiveGuiComponent) c);
+						this.tmpSelectedComponents.add((InteractiveGuiComponent) c);
 					}
 					
 				} else {
-					
+					if(!this.selectedComponents.contains(((InteractiveGuiComponent) c))){
+						((InteractiveGuiComponent) c).setSelected(false);
+						this.tmpSelectedComponents.remove(c);
+					}
 				}
 			}
 		}
 		
+		
 	}
 	
 	public void resetSelectionArea(){
-		this.remove(selectionArea);
-		this.selectionArea = null;
+		this.selectedComponents.addAll(this.tmpSelectedComponents);
+		this.tmpSelectedComponents = new LinkedList<InteractiveGuiComponent>();
+		this.selectionArea.setVisible(false);
 	}
 	
 	
