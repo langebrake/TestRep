@@ -185,7 +185,7 @@ public class InteractiveGuiController extends MouseAdapter {
 			
 		} else if (source instanceof InteractiveGuiComponent){
 			if(SwingUtilities.isMiddleMouseButton(e)){
-				//TODO : implement translate view while translate component functionality
+				
 				this.interactivePane.translateViewport(lastMouseGridLocation.diffVector(currentMouseGridLocation));
 			}else{
 				if(!((InteractiveGuiComponent) source).isSelected()){
@@ -242,10 +242,7 @@ public class InteractiveGuiController extends MouseAdapter {
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			// TODO : move delete selection process to InteractiveGuiPane class!
-			for(InteractiveGuiComponent c:interactivePane.getComponentSelection()){
-				interactivePane.remove(c);
-			}
-			
+			interactivePane.removeSelection();
 			interactivePane.clearSelection();
 			
 			

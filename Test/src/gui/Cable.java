@@ -109,6 +109,16 @@ public class Cable implements Shape{
 	
 	public void setSelected(boolean set){
 		this.selected = set;
+		if(set){
+			this.color = Color.RED;
+		}else{
+			this.color = Color.BLACK;
+			
+		}
+	}
+	
+	public boolean isSelected(){
+		return this.selected;
 	}
 	
 	public void setHover(boolean set){
@@ -129,7 +139,7 @@ public class Cable implements Shape{
 		float x2pos =this.dest.getLocationOnScreen().x - this.parent.getLocationOnScreen().x;
 		float y2pos =this.dest.getLocationOnScreen().y - this.parent.getLocationOnScreen().y;
 		this.cable = new CubicCurve2D.Float(x1pos,y1pos,x1pos+(x2pos-x1pos)/3,y1pos,x2pos-(x2pos-x1pos)/3,y2pos,x2pos,y2pos);
-		System.out.println(this.source.getLocationOnScreen()+" "+this.dest.getLocationOnScreen());
+		
 		/**this.cable.moveTo(this.source.getX(), this.source.getX());
 		for(CablePoint c: this.cablePoints){
 			this.cable.lineTo(c.getX(), c.getX());

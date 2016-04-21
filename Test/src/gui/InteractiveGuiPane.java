@@ -13,6 +13,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.geom.Line2D;
+import java.awt.geom.Rectangle2D;
 import java.util.LinkedList;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -154,9 +155,6 @@ public class InteractiveGuiPane extends JLayeredPane {
 			((InteractiveGuiComponent) c).updateView();
 			}
 		}
-		for(Cable c: this.cables){
-			c.updateView();
-		}
 		this.revalidate();
 		this.repaint();
 	}
@@ -175,7 +173,7 @@ public class InteractiveGuiPane extends JLayeredPane {
 	
 	public void addInteractiveCable(CablePoint source, CablePoint dest){
 		this.cables.add(new Cable(source,dest,this));
-		this.updateView();
+		
 	}
 	
 	public void remove(Cable c){
@@ -189,7 +187,7 @@ public class InteractiveGuiPane extends JLayeredPane {
 		} else {
 			this.selectedComponents.remove(component);
 		}
-		this.updateView();
+		
 	}
 	
 	public LinkedList<InteractiveGuiComponent> getComponentSelection(){
@@ -207,7 +205,7 @@ public class InteractiveGuiPane extends JLayeredPane {
 		} else {
 			this.selectedCables.remove(cable);
 		}
-		this.updateView();
+		
 	}
 	
 	public void clearSelection(){
@@ -218,8 +216,9 @@ public class InteractiveGuiPane extends JLayeredPane {
 		for(Cable c:this.selectedCables){
 			c.setSelected(false);
 		}
+		this.repaint();
 		this.selectedCables = new LinkedList<Cable>();
-		this.updateView();
+		
 	}
 	
 	public boolean hasSelected(){
@@ -236,9 +235,12 @@ public class InteractiveGuiPane extends JLayeredPane {
 		}
 		for(Cable c:this.getCableSelection()){
 			this.remove(c);
+			
 		}
+		System.out.println("damn");
 		this.clearSelection();
-		this.updateView();
+		this.repaint();
+		
 	}
 	
 	/**
@@ -257,11 +259,11 @@ public class InteractiveGuiPane extends JLayeredPane {
 		this.selectionArea.setBounds(xpos, ypos, width, height);
 		
 		//TODO: better area selection algorithm!
-		
+		Rectangle2D selectionRect = this.selectionArea.getBounds();
 		for(Component c:this.getComponents()){
 			
 			if(c instanceof InteractiveGuiComponent){
-				if(c.getBounds().intersects(this.selectionArea.getBounds())){
+				if(c.getBounds().intersects(selectionRect)){
 					if(!((InteractiveGuiComponent) c).isSelected()){
 						((InteractiveGuiComponent) c).setSelected(true);
 						this.tmpSelectedComponents.add((InteractiveGuiComponent) c);
@@ -275,6 +277,23 @@ public class InteractiveGuiPane extends JLayeredPane {
 				}
 			}
 		}
+		for(Cable c: this.cables){
+			if(c.intersects(selectionRect)){
+				
+				if(!c.isSelected()){
+					c.setSelected(true);
+					this.tmpSelectedCables.add(c);
+					this.repaint();
+				}
+			} else {
+				// TODO: Field tmpselected will give better performance than calling contains!
+				if(!this.selectedCables.contains(c)){
+					c.setSelected(false);
+					this.tmpSelectedCables.remove(c);
+					this.repaint();
+				}
+			}
+			}
 		
 		
 	}
@@ -282,6 +301,8 @@ public class InteractiveGuiPane extends JLayeredPane {
 	public void resetSelectionArea(){
 		this.selectedComponents.addAll(this.tmpSelectedComponents);
 		this.tmpSelectedComponents = new LinkedList<InteractiveGuiComponent>();
+		this.selectedCables.addAll(this.tmpSelectedCables);
+		this.tmpSelectedCables = new LinkedList<Cable>();
 		this.selectionArea.setVisible(false);
 	}
 	
@@ -313,14 +334,12 @@ public class InteractiveGuiPane extends JLayeredPane {
 	public void paint(Graphics g){
 		super.paint(g);
 		if(g instanceof Graphics2D){
-			System.out.println("YEY");
 			RenderingHints rh = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 			Graphics2D g2d = (Graphics2D) g;
 			g2d.setRenderingHints(rh);
 			for(Cable c: this.cables){
 				g2d.setColor(c.getColor());
 				g2d.draw(c.calculateCable());
-				System.out.println(c.getBounds());
 			}
 		}
 	}
