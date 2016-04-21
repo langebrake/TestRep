@@ -8,6 +8,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.RenderingHints;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
@@ -157,6 +158,7 @@ public class InteractiveGuiPane extends JLayeredPane {
 			c.updateView();
 		}
 		this.revalidate();
+		this.repaint();
 	}
 	
 	
@@ -171,8 +173,9 @@ public class InteractiveGuiPane extends JLayeredPane {
 		this.moveToFront(component);
 	}
 	
-	public void addInteractiveCable(JComponent source, JComponent dest){
-		this.cables.add(new Cable(source,dest));
+	public void addInteractiveCable(CablePoint source, CablePoint dest){
+		this.cables.add(new Cable(source,dest,this));
+		this.updateView();
 	}
 	
 	public void remove(Cable c){
@@ -307,8 +310,19 @@ public class InteractiveGuiPane extends JLayeredPane {
 		this.repaint();
 	}
 	
-	protected void paintComponent(Graphics g){
-		super.paintComponent(g);
+	public void paint(Graphics g){
+		super.paint(g);
+		if(g instanceof Graphics2D){
+			System.out.println("YEY");
+			RenderingHints rh = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+			Graphics2D g2d = (Graphics2D) g;
+			g2d.setRenderingHints(rh);
+			for(Cable c: this.cables){
+				g2d.setColor(c.getColor());
+				g2d.draw(c.calculateCable());
+				System.out.println(c.getBounds());
+			}
+		}
 	}
 	
 }

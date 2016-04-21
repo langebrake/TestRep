@@ -1,6 +1,8 @@
 package controller;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
@@ -23,6 +25,7 @@ import plugin.Plugin;
 import engine.Engine;
 import model.MidiGraph;
 import model.graph.Module;
+import gui.CablePoint;
 import gui.InteractiveGuiComponent;
 import gui.InteractiveGuiPane;
 import gui.Vector;
@@ -63,6 +66,28 @@ public class InteractiveGuiController extends MouseAdapter {
 			c.addMouseMotionListener(this);
 			this.interactivePane.addInteractiveGuiComponent(c);
 		}
+		
+		CablePoint p1 = new CablePoint();
+		CablePoint p2 = new CablePoint();
+		JPanel panel1 = new JPanel(new GridBagLayout());
+		JPanel panel2 = new JPanel(new GridBagLayout());
+		
+		panel1.setSize(50, 50);
+		panel2.setSize(50, 50);
+		panel1.setBackground(Color.LIGHT_GRAY);
+		panel2.setBackground(Color.LIGHT_GRAY);
+		
+		panel1.add(p1);
+		panel2.add(p2);
+		InteractiveGuiComponent src = new InteractiveGuiComponent(this.interactivePane,new Vector(0,0), panel1);
+		InteractiveGuiComponent src2 = new InteractiveGuiComponent(this.interactivePane,new Vector(500,900), panel2);
+		src.addMouseListener(this);
+		src2.addMouseListener(this);
+		src.addMouseMotionListener(this);
+		src2.addMouseMotionListener(this);
+		this.interactivePane.addInteractiveGuiComponent(src);
+		this.interactivePane.addInteractiveGuiComponent(src2);
+		this.interactivePane.addInteractiveCable(p1, p2);
 	}
 	
 	
@@ -147,16 +172,15 @@ public class InteractiveGuiController extends MouseAdapter {
 		Object source = e.getSource();
 		Vector currentMouseGridLocation = this.currentMouseGridLocation(e);
 		
-		
+		// TODO: REPAINT ALWAYS!
 		if(source == this.interactivePane){
 			
 			if(SwingUtilities.isLeftMouseButton(e) && (e.getModifiersEx() & InputEvent.CTRL_DOWN_MASK) != 0  || SwingUtilities.isMiddleMouseButton(e)){
 				this.interactivePane.translateViewport(lastMouseGridLocation.diffVector(currentMouseGridLocation));
 				
-			} else if(SwingUtilities.isLeftMouseButton(e) && (e.getModifiers() & InputEvent.SHIFT_MASK) == 0){
+			} else if(SwingUtilities.isLeftMouseButton(e) ){
 					this.selectionAction((new Vector(this.interactivePane.getLocationOnScreen())).diffVector(this.lastMouseScreenLocation), new Vector(e.getPoint()), true);
-			}else if(SwingUtilities.isLeftMouseButton(e) && (e.getModifiers() & InputEvent.SHIFT_MASK) != 0){
-				this.selectionAction((new Vector(this.interactivePane.getLocationOnScreen())).diffVector(this.lastMouseScreenLocation), new Vector(e.getPoint()), true);
+					
 			}
 			
 		} else if (source instanceof InteractiveGuiComponent){
@@ -165,6 +189,7 @@ public class InteractiveGuiController extends MouseAdapter {
 				this.interactivePane.translateViewport(lastMouseGridLocation.diffVector(currentMouseGridLocation));
 			}else{
 				if(!((InteractiveGuiComponent) source).isSelected()){
+					if( (e.getModifiersEx() & InputEvent.SHIFT_DOWN_MASK )== 0)
 						this.interactivePane.clearSelection();
 					this.interactivePane.setComponentSelection((InteractiveGuiComponent) source,true);
 				}
@@ -174,6 +199,7 @@ public class InteractiveGuiController extends MouseAdapter {
 				for(InteractiveGuiComponent c:this.interactivePane.getComponentSelection()){
 					c.translateOriginLocation(translation);
 				}
+				this.interactivePane.repaint(this.interactivePane.getBounds());
 				lastMouseGridLocation = currentMouseGridLocation;
 			}
 		}
