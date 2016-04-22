@@ -53,9 +53,9 @@ public abstract class PluginHost implements AutoCloseable{
 				e.printStackTrace();
 			}
 		}
-		//delete maximum outputs
+		//TODO: delete maximum outputs
 		
-		//delete maximum inputs
+		//TODO: delete maximum inputs
 		p.load();
 	}
 	

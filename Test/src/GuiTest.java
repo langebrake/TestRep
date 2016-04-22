@@ -1,5 +1,5 @@
-import gui.InteractiveGuiComponent;
-import gui.InteractiveGuiPane;
+import gui.InteractiveModule;
+import gui.InteractivePane;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -16,7 +16,7 @@ public class GuiTest {
 		JFrame mainFrame = new JFrame("GuiTest");
 		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
-		InteractiveGuiPane contentPane = new InteractiveGuiPane();
+		InteractivePane contentPane = new InteractivePane();
 		InteractiveGuiController controller = new InteractiveGuiController(contentPane, new MidiGraph() );
 		mainFrame.setContentPane(contentPane);
 		mainFrame.pack();

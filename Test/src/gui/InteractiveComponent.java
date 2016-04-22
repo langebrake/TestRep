@@ -14,39 +14,31 @@ import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
-public class InteractiveGuiComponent extends JPanel implements InteractiveUpdateable {
+public abstract class InteractiveComponent extends JPanel implements InteractiveUpdateable {
 
 	private Vector originLocation;
 	private Dimension originDimension;
-	private InteractiveGuiPane parent;
+	private InteractivePane parent;
 	private boolean selected;
-	private JComponent contentPane;
+	private boolean hovered;
 	
 	/**
 	 * creates a new interactive gui component and places it to the origin vector
 	 * @param parent
 	 * @param origin
 	 */
-	public InteractiveGuiComponent(InteractiveGuiPane parent, Vector origin, JComponent contentPane ){
-		super(new BorderLayout());
-		this.contentPane = contentPane;
+	public InteractiveComponent(InteractivePane parent, Vector origin){
 		this.parent = parent;
 		this.originLocation = origin;
-		
-		this.originDimension = contentPane.getSize();;
 		this.selected = false;
-		this.setSize(originDimension);
-		this.add(contentPane,BorderLayout.CENTER);
-		this.updateView();
+		this.hovered=false;
+		this.originDimension = new Dimension();
 		this.setOpaque(false);
+	
 		
 		
 		
 	}
-	
-	
-	
-	
 	
 	
 	public void translateOriginLocation(Vector translationVector){
@@ -54,48 +46,33 @@ public class InteractiveGuiComponent extends JPanel implements InteractiveUpdate
 		this.updateView();
 	}
 	
-	private void setOriginLocation(Vector originLocation){
-		this.originLocation = originLocation;
-	}
-	
-	private void translateScreenLocation(int dx, int dy){
-		
+	protected void setOriginDimension(Dimension d){
+		this.originDimension = d;
 	}
 	
 	public void updateView(){
 		//set components screen location
-		
 		this.setLocation(parent.convertToScreenLocation(this.originLocation).toPoint());
 		//size component
 		double scaleFactor = this.parent.getScaleFactor();
 		this.setSize((int)(this.originDimension.width*scaleFactor), (int) (this.originDimension.height*scaleFactor));
-		
 	}
 	
 	public void setHover(boolean set){
-		if(set)
-			this.setBorder(BorderFactory.createLineBorder(Color.black));
-		else {
-			if(this.selected){
-				this.setBorder(BorderFactory.createLineBorder(Color.red));
-			} else {
-				this.setBorder(BorderFactory.createEmptyBorder());
-			}
-		}
-			
+		this.hovered = set;
 	}
 	
 	public void setSelected(boolean set){
 		this.selected = set;
-		if(set)
-			this.setBorder(BorderFactory.createLineBorder(Color.red));
-		else
-			this.setBorder(BorderFactory.createEmptyBorder());
 	}
 
-	
+
 	public boolean isSelected(){
 		return this.selected;
+	}
+	
+	public boolean isHovered(){
+		return this.hovered;
 	}
 	
 	

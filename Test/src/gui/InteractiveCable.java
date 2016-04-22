@@ -1,8 +1,12 @@
 package gui;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.Paint;
 import java.awt.Rectangle;
 import java.awt.Shape;
+import java.awt.Stroke;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.CubicCurve2D;
 import java.awt.geom.GeneralPath;
@@ -14,22 +18,21 @@ import java.util.LinkedList;
 
 import javax.swing.JComponent;
 
-public class Cable implements Shape{
+public class InteractiveCable implements InteractiveShape{
 	
-	private CubicCurve2D cable;
+	private GeneralPath cable;
 	private CablePoint source,dest;
 	private LinkedList<CablePoint> cablePoints;
 	private boolean selected;
 	private boolean hover;
-	private InteractiveGuiPane parent;
-	private Color color;
-	private float width;
+	private InteractivePane parent;
+	private Paint color;
 	
-	public Cable(InteractiveGuiPane parent){
+	public InteractiveCable(InteractivePane parent){
 		this(null,null,parent);
 	}
 	
-	public Cable(CablePoint source, CablePoint dest,InteractiveGuiPane parent){
+	public InteractiveCable(CablePoint source, CablePoint dest,InteractivePane parent){
 		this.source = source;
 		this.dest = dest;
 		this.cablePoints = new LinkedList<CablePoint>();
@@ -121,32 +124,42 @@ public class Cable implements Shape{
 		return this.selected;
 	}
 	
-	public void setHover(boolean set){
+	public boolean isHovered(){
+		return this.hover;
+	}
+	public void setHovered(boolean set){
 		this.hover = set;
 	}
 	
-	public void updateView(){
-		
-	}
 	
-	public Color getColor(){
-		return this.color;
-	}
-	
-	public Cable calculateCable(){
+	public void updateView(Graphics2D g2d){
 		float x1pos =this.source.getLocationOnScreen().x - this.parent.getLocationOnScreen().x ;
 		float y1pos =this.source.getLocationOnScreen().y - this.parent.getLocationOnScreen().y;
 		float x2pos =this.dest.getLocationOnScreen().x - this.parent.getLocationOnScreen().x;
 		float y2pos =this.dest.getLocationOnScreen().y - this.parent.getLocationOnScreen().y;
-		this.cable = new CubicCurve2D.Float(x1pos,y1pos,x1pos+(x2pos-x1pos)/3,y1pos,x2pos-(x2pos-x1pos)/3,y2pos,x2pos,y2pos);
 		
-		/**this.cable.moveTo(this.source.getX(), this.source.getX());
+		//this.cable = new CubicCurve2D.Float(x1pos,y1pos,x1pos+(x2pos-x1pos)/5,y1pos,x2pos-(x2pos-x1pos)/5,y2pos,x2pos,y2pos);
+		this.cable = new GeneralPath();
+		
+		this.cable.moveTo(x1pos, y1pos);
 		for(CablePoint c: this.cablePoints){
 			this.cable.lineTo(c.getX(), c.getX());
 		}
-		this.cable.lineTo(this.dest.getX(), this.dest.getX());**/
 		
-		return this;
+		this.cable.lineTo(x2pos, y2pos);
+
+		
+		g2d.setPaint(this.color);
+		g2d.setStroke(new BasicStroke(1*parent.getScaleFactor()));
+		
+		g2d.draw(this.cable);
+		
+	}
+
+	@Override
+	public void translateOriginLocation(Vector translationVectorGrid) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 	
