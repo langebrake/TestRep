@@ -1,7 +1,7 @@
 package controller;
 
+import model.pluginmanager.PluginManager;
 import controller.interactivepane.InteractiveController;
-import controller.pluginmanager.PluginManager;
 
 public class Controller {
 	

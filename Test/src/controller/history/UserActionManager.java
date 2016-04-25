@@ -8,7 +8,7 @@ import javax.swing.AbstractAction;
 
 import controller.interactivepane.InteractiveController;
 
-public class UserActionManager extends AbstractAction{
+public class UserActionManager {
 	private Stack<UserAction> undo;
 	private Stack<UserAction> redo;
 	private InteractiveController controller;
@@ -57,14 +57,5 @@ public class UserActionManager extends AbstractAction{
 		return true;
 	}
 
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		if(e.getActionCommand().equals("redoPerformed")){
-			this.redo();
-		} else {
-			System.out.println(e.getSource());
-			this.undo();
-		}
-		
-	}
+
 }

@@ -13,14 +13,14 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
-import controller.pluginmanager.PluginManager;
+import model.pluginmanager.PluginManager;
 import controller.shortcut.DeleteAction;
 
-public class PopupMenuListener extends MouseAdapter {
+public class PopupMenuListener extends ControllerListenerAdapter {
 	private static PopupMenuListener instance;
-	private InteractiveController controller;
+	
 	private PopupMenuListener(InteractiveController c) {
-		this.controller = c;
+		super(c);
 	}
 
 	public static PopupMenuListener getInstance(InteractiveController c) {
