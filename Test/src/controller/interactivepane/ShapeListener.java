@@ -1,6 +1,6 @@
-package controller;
+package controller.interactivepane;
 
-import gui.InteractiveShape;
+import gui.interactivepane.InteractiveShape;
 
 import java.awt.event.MouseEvent;
 import java.util.LinkedList;

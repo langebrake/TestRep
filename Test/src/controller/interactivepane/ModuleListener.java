@@ -1,8 +1,8 @@
-package controller;
+package controller.interactivepane;
 
-import gui.InteractiveComponent;
-import gui.InteractiveModule;
-import gui.Vector;
+import gui.interactivepane.InteractiveComponent;
+import gui.interactivepane.InteractiveModule;
+import gui.interactivepane.Vector;
 
 import java.awt.event.InputEvent;
 import java.awt.event.MouseAdapter;

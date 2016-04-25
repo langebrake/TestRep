@@ -1,4 +1,4 @@
-package gui;
+package gui.interactivepane;
 
 
 public interface CablePoint  {

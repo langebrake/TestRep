@@ -1,4 +1,15 @@
-package controller;
+package controller.interactivepane;
+
+import gui.interactivepane.CablePoint;
+import gui.interactivepane.CablePointComponent;
+import gui.interactivepane.CablePointPanel;
+import gui.interactivepane.InteractiveCable;
+import gui.interactivepane.InteractiveComponent;
+import gui.interactivepane.InteractiveDisplay;
+import gui.interactivepane.InteractiveModule;
+import gui.interactivepane.InteractivePane;
+import gui.interactivepane.InteractiveShape;
+import gui.interactivepane.Vector;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -26,16 +37,6 @@ import plugin.Plugin;
 import engine.Engine;
 import model.MidiGraph;
 import model.graph.Module;
-import gui.CablePoint;
-import gui.CablePointComponent;
-import gui.CablePointPanel;
-import gui.InteractiveCable;
-import gui.InteractiveComponent;
-import gui.InteractiveDisplay;
-import gui.InteractiveModule;
-import gui.InteractivePane;
-import gui.InteractiveShape;
-import gui.Vector;
 
 public class InteractiveGuiController extends MouseAdapter {
 	private InteractivePane interactivePane;

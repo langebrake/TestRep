@@ -6,7 +6,7 @@ import java.util.Stack;
 
 import javax.swing.AbstractAction;
 
-import controller.InteractiveController;
+import controller.interactivepane.InteractiveController;
 
 public class UserActionManager extends AbstractAction{
 	private Stack<UserAction> undo;

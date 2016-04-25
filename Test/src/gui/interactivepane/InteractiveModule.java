@@ -1,34 +1,30 @@
-package gui;
-
-import guiinterface.InteractiveUpdateable;
-import guiinterface.SizeableComponent;
+package gui.interactivepane;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Point;
-import java.awt.event.MouseAdapter;
-import java.util.Random;
 
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
-import javax.swing.JPanel;
+import javax.swing.JFrame;
 
-public class InteractiveDisplay extends InteractiveComponent  {
+import model.graph.Module;
 
+public class InteractiveModule extends InteractiveComponent {
+	private Module module;
+	private JFrame fullView;
 	private JComponent contentPane;
-	
-	/**
-	 * creates a new interactive gui component and places it to the origin vector
-	 * @param parent
-	 * @param origin
-	 */
-	public InteractiveDisplay(InteractivePane parent, Vector origin, JComponent contentPane ){
-		super(parent,origin);
+	public InteractiveModule(InteractivePane parent, Vector origin, Module module) {
+		super(parent, origin);
 		super.setLayout(new BorderLayout());
-		this.contentPane = contentPane;
+		this.contentPane = module.getPlugin().getMinimizedView();
 		this.setOriginDimension(contentPane.getSize());
 		this.add(contentPane,BorderLayout.CENTER);
+		this.module = module;
+		
+	}
+	
+	public Module getModule(){
+		return this.module;
 	}
 	
 	@Override
@@ -63,9 +59,11 @@ public class InteractiveDisplay extends InteractiveComponent  {
 	}
 	
 	public void openFullView(){
-		
+		if(this.fullView == null){
+			this.fullView = this.module.getPlugin().getFullView();
+		}
+		this.fullView.setVisible(true);
 	}
 
-	
-	
+
 }

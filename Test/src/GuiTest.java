@@ -1,13 +1,13 @@
-import gui.InteractiveModule;
-import gui.InteractivePane;
+import gui.interactivepane.InteractiveModule;
+import gui.interactivepane.InteractivePane;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 
 import model.MidiGraph;
-import controller.InteractiveController;
-import controller.InteractiveGuiController;
 import controller.history.UserActionManager;
+import controller.interactivepane.InteractiveController;
+import controller.interactivepane.InteractiveGuiController;
 
 
 public class GuiTest {
@@ -18,9 +18,9 @@ public class GuiTest {
 		JFrame mainFrame = new JFrame("GuiTest");
 		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
-		InteractivePane contentPane = new InteractivePane();
-		InteractiveController controller = new InteractiveController(contentPane, new MidiGraph(), new UserActionManager());
-		mainFrame.setContentPane(contentPane);
+
+		InteractiveController controller = new InteractiveController();
+		mainFrame.setContentPane(controller.getPane());
 		mainFrame.pack();
 		mainFrame.setVisible(true);
 		

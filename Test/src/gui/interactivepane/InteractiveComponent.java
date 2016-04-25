@@ -1,4 +1,4 @@
-package gui;
+package gui.interactivepane;
 
 import guiinterface.InteractiveUpdateable;
 import guiinterface.SizeableComponent;

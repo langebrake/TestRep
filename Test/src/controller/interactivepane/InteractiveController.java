@@ -1,4 +1,12 @@
-package controller;
+package controller.interactivepane;
+
+import gui.interactivepane.CablePointPanel;
+import gui.interactivepane.InteractiveCable;
+import gui.interactivepane.InteractiveComponent;
+import gui.interactivepane.InteractiveDisplay;
+import gui.interactivepane.InteractivePane;
+import gui.interactivepane.InteractiveShape;
+import gui.interactivepane.Vector;
 
 import java.awt.Color;
 import java.awt.event.ActionEvent;
@@ -22,13 +30,6 @@ import controller.shortcut.DeleteAction;
 import controller.shortcut.RedoAction;
 import controller.shortcut.UndoAction;
 import model.MidiGraph;
-import gui.CablePointPanel;
-import gui.InteractiveCable;
-import gui.InteractiveComponent;
-import gui.InteractiveDisplay;
-import gui.InteractivePane;
-import gui.InteractiveShape;
-import gui.Vector;
 
 public class InteractiveController implements MouseInputListener {
 	private InteractivePane pane;
@@ -37,6 +38,9 @@ public class InteractiveController implements MouseInputListener {
 	private Vector lastMousePaneLocation,
 					lastMouseGridLocation;
 	
+	public InteractiveController(){
+		this(new InteractivePane(), new MidiGraph(), new UserActionManager());
+	}
 	public InteractiveController(InteractivePane pane, MidiGraph graph, UserActionManager actionManager){
 		this.pane = pane;
 		this.graph = graph;

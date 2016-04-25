@@ -1,8 +1,5 @@
 package controller.shortcut;
 
-import gui.interactivepane.InteractiveComponent;
-import gui.interactivepane.InteractiveShape;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
@@ -12,12 +9,13 @@ import controller.history.UserAction;
 import controller.history.actions.UserDeleteAction;
 import controller.interactivepane.InteractiveController;
 
-public class DeleteAction extends AbstractAction {
+public class AddModuleAction extends AbstractAction {
+
 	private InteractiveController controller;
-	public DeleteAction(InteractiveController controller){
-		super("delete");
-		super.putValue(SHORT_DESCRIPTION,"delete selected components");
-		super.putValue(MNEMONIC_KEY,KeyEvent.VK_D);
+	
+	public AddModuleAction(InteractiveController controller, String moduleName){
+		super(moduleName);
+		super.putValue(SHORT_DESCRIPTION,"add the module " + moduleName);
 		this.controller = controller;
 	}
 	@Override
@@ -27,5 +25,5 @@ public class DeleteAction extends AbstractAction {
 		controller.getPane().clearSelection();
 		
 	}
-	
+
 }

@@ -1,13 +1,13 @@
 package controller.history.actions;
 
-import gui.InteractiveComponent;
-import gui.InteractiveShape;
+import gui.interactivepane.InteractiveComponent;
+import gui.interactivepane.InteractiveShape;
 
 import java.util.LinkedList;
 
-import controller.InteractiveController;
 import controller.history.UserAction;
 import controller.history.UserActionManager;
+import controller.interactivepane.InteractiveController;
 
 public class UserDeleteAction implements UserAction {
 	final LinkedList<InteractiveComponent> components;

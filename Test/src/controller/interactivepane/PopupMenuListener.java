@@ -1,7 +1,7 @@
-package controller;
+package controller.interactivepane;
 
-import gui.InteractiveComponent;
-import gui.InteractiveShape;
+import gui.interactivepane.InteractiveComponent;
+import gui.interactivepane.InteractiveShape;
 
 import java.awt.Point;
 import java.awt.event.KeyEvent;
@@ -13,6 +13,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
+import controller.pluginmanager.PluginManager;
 import controller.shortcut.DeleteAction;
 
 public class PopupMenuListener extends MouseAdapter {
@@ -66,7 +67,7 @@ public class PopupMenuListener extends MouseAdapter {
 		p.add(item);
 		
 		JMenu t = new JMenu("Add");
-		t.add(new JMenuItem("test"));
+		//PluginManager.addPluginMenuList(t);
 		p.add(t);
 	}
 }
