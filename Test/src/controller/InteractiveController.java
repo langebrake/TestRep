@@ -11,9 +11,16 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 
 import javax.swing.AbstractAction;
+import javax.swing.ActionMap;
+import javax.swing.InputMap;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
+import controller.history.UserAction;
+import controller.history.UserActionManager;
+import controller.shortcut.DeleteAction;
+import controller.shortcut.RedoAction;
+import controller.shortcut.UndoAction;
 import model.MidiGraph;
 import gui.CablePointPanel;
 import gui.InteractiveCable;
@@ -23,24 +30,41 @@ import gui.InteractivePane;
 import gui.InteractiveShape;
 import gui.Vector;
 
-public class InteractiveController implements MouseListener,MouseMotionListener,MouseWheelListener {
+public class InteractiveController implements MouseInputListener {
 	private InteractivePane pane;
 	private MidiGraph graph;
+	private UserActionManager actionManager;
 	private Vector lastMousePaneLocation,
 					lastMouseGridLocation;
 	
-	public InteractiveController(InteractivePane pane, MidiGraph graph){
+	public InteractiveController(InteractivePane pane, MidiGraph graph, UserActionManager actionManager){
 		this.pane = pane;
 		this.graph = graph;
+		this.actionManager = actionManager;
+		this.actionManager.setController(this);
 		this.pane.addMouseListener(this);
 		this.pane.addMouseMotionListener(this);
 		this.pane.addMouseWheelListener(this);
-		
 		// TODO: Shortcut handling should be done by other class
+				InputMap inputMap = this.pane.getInputMap();
+				ActionMap actionMap = this.pane.getActionMap();
+				//undo/redo shortcuts
+				KeyStroke undoCode = KeyStroke.getKeyStroke(KeyEvent.VK_Z,InputEvent.CTRL_DOWN_MASK);
+				inputMap.put(undoCode, "undoPerformed");
+				actionMap.put("undoPerformed", new UndoAction(this));
+				KeyStroke redoCode = KeyStroke.getKeyStroke(KeyEvent.VK_Y,InputEvent.CTRL_DOWN_MASK);
+				inputMap.put(redoCode, "redoPerformed");
+				actionMap.put("redoPerformed", new RedoAction(this));
+				
+				
+				//delete shortcut
 				KeyStroke deleteCode = KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0);
-				this.pane.getInputMap().put(deleteCode, "deletePerformed");
-				AbstractAction deleteAction = new DeleteAction();
-				this.pane.getActionMap().put("deletePerformed", deleteAction);
+				inputMap.put(deleteCode, "deletePerformed");
+				AbstractAction deleteAction = new DeleteAction(this);
+				actionMap.put("deletePerformed", deleteAction);
+				
+				
+				
 				
 				//TODO: remove this cable debug thing
 				CablePointPanel p1 = new CablePointPanel(this.pane);
@@ -64,7 +88,31 @@ public class InteractiveController implements MouseListener,MouseMotionListener,
 				this.pane.add(src);
 				this.pane.add(src2);
 				this.pane.add(p1.getCable());
+				this.pane.addMouseListener(PopupMenuListener.getInstance(this));
+				src.addMouseListener(PopupMenuListener.getInstance(this));
+				src2.addMouseListener(PopupMenuListener.getInstance(this));
+				ShapeListener sl = new ShapeListener(this);
+				this.pane.addMouseListener(sl);
+				this.pane.addMouseMotionListener(sl);
+				this.pane.addMouseWheelListener(sl);
 		
+	}
+	
+	public void executeAction(UserAction a){
+		this.actionManager.addEvent(a);
+		a.execute();
+	}
+	
+	public void undoAction(){
+		this.actionManager.undo();
+	}
+	
+	public void redoAction(){
+		this.actionManager.redo();
+	}
+	
+	public UserActionManager getActionManager(){
+		return this.actionManager;
 	}
 	
 	@Override
@@ -155,21 +203,5 @@ public class InteractiveController implements MouseListener,MouseMotionListener,
 		return this.pane;
 	}
 	
-	private class DeleteAction extends AbstractAction {
 
-		@Override
-		public void actionPerformed(ActionEvent arg0) {
-			for(InteractiveComponent c: pane.getComponentSelection()){
-				pane.remove(c);
-			}
-			for(InteractiveShape c:pane.getShapeSelection()){
-				pane.remove(c);
-				
-			}
-			pane.clearSelection();
-			
-			
-		}
-		
-	}
 }

@@ -1,11 +1,30 @@
 package controller.history;
 
+import java.awt.event.ActionEvent;
 import java.util.EmptyStackException;
 import java.util.Stack;
 
-public class UserActionManager {
+import javax.swing.AbstractAction;
+
+import controller.InteractiveController;
+
+public class UserActionManager extends AbstractAction{
 	private Stack<UserAction> undo;
 	private Stack<UserAction> redo;
+	private InteractiveController controller;
+	
+	public UserActionManager(){
+		this.undo = new Stack<UserAction>();
+		this.redo = new Stack<UserAction>();
+	}
+	
+	public void setController(InteractiveController controller){
+		this.controller = controller;
+	}
+	
+	public InteractiveController getController(){
+		return this.controller;
+	}
 	
 	public void addEvent(UserAction e){
 		this.redo.clear();
@@ -29,12 +48,23 @@ public class UserActionManager {
 	
 	public boolean redo(){
 		try{
-		UserAction e = this.redo.pop();
-		e.execute();
-		this.undo.push(e);
+			UserAction e = this.redo.pop();
+			e.execute();
+			this.undo.push(e);
 		} catch (EmptyStackException e){
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if(e.getActionCommand().equals("redoPerformed")){
+			this.redo();
+		} else {
+			System.out.println(e.getSource());
+			this.undo();
+		}
+		
 	}
 }

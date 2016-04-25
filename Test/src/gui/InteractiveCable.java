@@ -27,6 +27,7 @@ public class InteractiveCable implements InteractiveShape{
 	private boolean hover;
 	private InteractivePane parent;
 	private Paint color;
+	private float width;
 	
 	public InteractiveCable(InteractivePane parent){
 		this(null,null,parent);
@@ -39,6 +40,7 @@ public class InteractiveCable implements InteractiveShape{
 		this.selected = false;
 		this.parent = parent;
 		this.color = Color.black;
+		this.width = 1;
 		
 	}
 	
@@ -129,6 +131,11 @@ public class InteractiveCable implements InteractiveShape{
 	}
 	public void setHovered(boolean set){
 		this.hover = set;
+		if(set){
+			this.width = 2;
+		} else {
+			this.width = 1;
+		}
 	}
 	
 	
@@ -146,11 +153,11 @@ public class InteractiveCable implements InteractiveShape{
 			this.cable.lineTo(c.getXOnPane(), c.getYOnPane());
 		}
 		
-		this.cable.lineTo(x2pos, y2pos);
+		this.cable.curveTo(x1pos+(x2pos-x1pos)/5, y1pos, x2pos-(x2pos-x1pos)/5, y2pos, x2pos, y2pos);
 
 		
 		g2d.setPaint(this.color);
-		g2d.setStroke(new BasicStroke(1*parent.getScaleFactor()));
+		g2d.setStroke(new BasicStroke(this.width*parent.getScaleFactor()));
 		
 		g2d.draw(this.cable);
 		

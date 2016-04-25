@@ -6,8 +6,7 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 
-public class ControllerListenerAdapter implements MouseListener,
-		MouseMotionListener, MouseWheelListener {
+public class ControllerListenerAdapter implements MouseInputListener {
 	
 	protected InteractiveController controller;
 	

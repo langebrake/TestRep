@@ -153,18 +153,20 @@ public class InteractivePane extends JLayeredPane {
 	
 	public void remove(InteractiveShape c){
 		this.shapes.remove(c);
+		this.repaint();
 	}
 	
 	public void add(InteractiveComponent c){
 		c.updateView();
 		super.add(c);
 		this.moveToFront(c);
+		this.repaint();
 		
 	}
 	
 
 	
-	public void setComponentSelection(InteractiveComponent component, boolean selected){
+	public void setComponentSelected(InteractiveComponent component, boolean selected){
 		component.setSelected(selected);
 		if(selected){
 			this.selectedComponents.add(component);
@@ -182,16 +184,25 @@ public class InteractivePane extends JLayeredPane {
 		return this.selectedShapes;
 	}
 	
-	public void setShapeSelection(InteractiveShape shape, boolean selected){
+	public void setShapeSelected(InteractiveShape shape, boolean selected){
 		shape.setSelected(selected);
 		if(selected){
 			this.selectedShapes.add(shape);
 		} else {
 			this.selectedShapes.remove(shape);
 		}
+		this.repaint();
 		
 	}
 	
+	public void setComponentHovered(InteractiveComponent component, boolean hovered){
+		component.setHovered(hovered);
+	}
+	
+	public void setShapeHovered(InteractiveShape shape, boolean hovered){
+		shape.setHovered(hovered);
+		this.repaint();
+	}
 	public void clearSelection(){
 		for(InteractiveComponent c:this.selectedComponents){
 			c.setSelected(false);
@@ -299,6 +310,9 @@ public class InteractivePane extends JLayeredPane {
 		this.repaint();
 	}
 	
+	public LinkedList<InteractiveShape> getShapes(){
+		return this.shapes;
+	}
 	public void paint(Graphics g){
 		super.paint(g);
 		if(g instanceof Graphics2D){

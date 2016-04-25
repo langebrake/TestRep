@@ -142,9 +142,9 @@ public class InteractiveGuiController extends MouseAdapter {
 				
 				if(userMultiSelect){
 					if(componentWasSelected){
-						this.interactivePane.setComponentSelection((InteractiveComponent)source,false);
+						this.interactivePane.setComponentSelected((InteractiveComponent)source,false);
 					} else {
-						this.interactivePane.setComponentSelection((InteractiveComponent)source,true);
+						this.interactivePane.setComponentSelected((InteractiveComponent)source,true);
 					}
 				} else  {
 					if(paneHasSelection){
@@ -152,12 +152,12 @@ public class InteractiveGuiController extends MouseAdapter {
 					}
 					if(componentWasSelected){
 						if(paneHasMultiSelection){
-							this.interactivePane.setComponentSelection((InteractiveComponent)source,true);
+							this.interactivePane.setComponentSelected((InteractiveComponent)source,true);
 						}else{
-							this.interactivePane.setComponentSelection((InteractiveComponent)source,false);
+							this.interactivePane.setComponentSelected((InteractiveComponent)source,false);
 						}
 					} else {
-						this.interactivePane.setComponentSelection((InteractiveComponent)source,true);
+						this.interactivePane.setComponentSelected((InteractiveComponent)source,true);
 					}
 				}
 			}
@@ -182,7 +182,6 @@ public class InteractiveGuiController extends MouseAdapter {
 			
 		} else if (source instanceof InteractiveComponent){
 			if(SwingUtilities.isMiddleMouseButton(e)){
-				System.out.println("AHA");
 				this.interactivePane.translateViewport(lastMouseGridLocation.diffVector(currentMouseGridLocation));
 			}else if (SwingUtilities.isLeftMouseButton(e) && (e.getModifiersEx()&InputEvent.CTRL_DOWN_MASK)!=0){
 				if (((InteractiveComponent) source).getComponentAt(e.getPoint()) instanceof CablePointPanel){
@@ -193,7 +192,7 @@ public class InteractiveGuiController extends MouseAdapter {
 				if(!((InteractiveComponent) source).isSelected()){
 					if( (e.getModifiersEx() & InputEvent.SHIFT_DOWN_MASK )== 0)
 						this.interactivePane.clearSelection();
-					this.interactivePane.setComponentSelection((InteractiveComponent) source,true);
+					this.interactivePane.setComponentSelected((InteractiveComponent) source,true);
 				}
 				
 				Vector translation = lastMouseGridLocation.diffVector(currentMouseGridLocation);
@@ -213,7 +212,7 @@ public class InteractiveGuiController extends MouseAdapter {
 	public void mouseEntered(MouseEvent e){
 		Object source = e.getSource();
 		if(source instanceof InteractiveComponent){
-			((InteractiveComponent) source).setHover(true);
+			((InteractiveComponent) source).setHovered(true);
 		}
 		
 	}
@@ -221,7 +220,7 @@ public class InteractiveGuiController extends MouseAdapter {
 	public void mouseExited(MouseEvent e){
 		Object source = e.getSource();
 		if(source instanceof InteractiveComponent){
-			((InteractiveComponent) source).setHover(false);
+			((InteractiveComponent) source).setHovered(false);
 		}
 	}
 

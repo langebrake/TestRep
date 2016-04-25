@@ -58,7 +58,7 @@ public abstract class InteractiveComponent extends JPanel implements Interactive
 		this.setSize((int)(this.originDimension.width*scaleFactor), (int) (this.originDimension.height*scaleFactor));
 	}
 	
-	public void setHover(boolean set){
+	public void setHovered(boolean set){
 		this.hovered = set;
 	}
 	
@@ -78,5 +78,7 @@ public abstract class InteractiveComponent extends JPanel implements Interactive
 	protected InteractivePane getParentPane(){
 		return this.parent;
 	}
+
+
 	
 }

@@ -19,9 +19,23 @@ public class ModuleListener extends ControllerListenerAdapter {
 		super(c);
 	}
 
+	
+	@Override
+	public void mousePressed(MouseEvent arg0){
+		controller.updateLastMouseLocation(arg0);
+	}
+	
 	@Override
 	public void mouseDragged(MouseEvent arg0) {
 		if(SwingUtilities.isLeftMouseButton(arg0) && !SwingUtilities.isMiddleMouseButton(arg0)){
+			InteractiveComponent source = (InteractiveComponent) arg0.getSource();
+			if(!((InteractiveComponent) source).isSelected()){
+				if( !arg0.isShiftDown()){
+					controller.getPane().clearSelection();
+					
+				}
+				controller.getPane().setComponentSelected((InteractiveComponent) source,true);
+			}
 			Vector currentMouseGridLocation = controller.toGridCoordinate(controller.relativeToPane(arg0));
 			
 			Vector translation = controller.getLastMouseGridLocation().diffVector(currentMouseGridLocation);
@@ -30,40 +44,24 @@ public class ModuleListener extends ControllerListenerAdapter {
 			controller.updateLastMouseLocation(arg0);
 			
 		} else {
-		
+			
 			controller.mouseDragged(arg0);
-		}
+			}
+		
 		
 	}
 
 	@Override
 	public void mouseEntered(MouseEvent arg0) {
-		// TODO Auto-generated method stub
+		controller.getPane().setComponentHovered((InteractiveComponent) arg0.getSource(), true);
 		
 	}
 	@Override
 	public void mouseExited(MouseEvent arg0) {
-		// TODO Auto-generated method stub
+		controller.getPane().setComponentHovered((InteractiveComponent) arg0.getSource(), false);
 		
 	}
-	@Override
-	public void mousePressed(MouseEvent arg0) {
-		
-		if(SwingUtilities.isLeftMouseButton(arg0)){
-			controller.updateLastMouseLocation(arg0);
-			if(!((InteractiveComponent)arg0.getSource()).isSelected()){
-				if(!arg0.isShiftDown()){
-					controller.getPane().clearSelection();
-				}
-				controller.getPane().setComponentSelection((InteractiveComponent) arg0.getSource(),true);
-			}
-			
-		} else {
-			controller.mousePressed(arg0);
-		}
-		
-		
-	}
+
 	
 	@Override
 	public void mouseClicked(MouseEvent arg0){
@@ -76,9 +74,9 @@ public class ModuleListener extends ControllerListenerAdapter {
 			
 			if(userMultiSelect){
 				if(componentWasSelected){
-					controller.getPane().setComponentSelection((InteractiveComponent)source,false);
+					controller.getPane().setComponentSelected((InteractiveComponent)source,false);
 				} else {
-					controller.getPane().setComponentSelection((InteractiveComponent)source,true);
+					controller.getPane().setComponentSelected((InteractiveComponent)source,true);
 				}
 			} else  {
 				if(paneHasSelection){
@@ -86,12 +84,12 @@ public class ModuleListener extends ControllerListenerAdapter {
 				}
 				if(componentWasSelected){
 					if(paneHasMultiSelection){
-						controller.getPane().setComponentSelection((InteractiveComponent)source,true);
+						controller.getPane().setComponentSelected((InteractiveComponent)source,true);
 					}else{
-						controller.getPane().setComponentSelection((InteractiveComponent)source,false);
+						controller.getPane().setComponentSelected((InteractiveComponent)source,false);
 					}
 				} else {
-					controller.getPane().setComponentSelection((InteractiveComponent)source,true);
+					controller.getPane().setComponentSelected((InteractiveComponent)source,true);
 				}
 			}
 		} else {

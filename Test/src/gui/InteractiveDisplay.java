@@ -32,8 +32,8 @@ public class InteractiveDisplay extends InteractiveComponent  {
 	}
 	
 	@Override
-	public void setHover(boolean set){
-		super.setHover(set);
+	public void setHovered(boolean set){
+		super.setHovered(set);
 		if(set)
 			this.setBorder(BorderFactory.createLineBorder(Color.black));
 		else {

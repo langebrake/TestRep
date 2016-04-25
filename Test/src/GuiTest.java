@@ -7,6 +7,7 @@ import javax.swing.JFrame;
 import model.MidiGraph;
 import controller.InteractiveController;
 import controller.InteractiveGuiController;
+import controller.history.UserActionManager;
 
 
 public class GuiTest {
@@ -18,7 +19,7 @@ public class GuiTest {
 		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		InteractivePane contentPane = new InteractivePane();
-		InteractiveController controller = new InteractiveController(contentPane, new MidiGraph() );
+		InteractiveController controller = new InteractiveController(contentPane, new MidiGraph(), new UserActionManager());
 		mainFrame.setContentPane(contentPane);
 		mainFrame.pack();
 		mainFrame.setVisible(true);
