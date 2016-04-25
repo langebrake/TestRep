@@ -227,6 +227,7 @@ public class InteractivePane extends JLayeredPane {
 		width = Math.max(vec1.getX(), vec2.getX()) - xpos;
 		this.selectionArea.setVisible(true);
 		this.selectionArea.setBounds(xpos, ypos, width, height);
+		this.moveToFront(selectionArea);
 		
 		//TODO: better area selection algorithm!
 		Rectangle2D selectionRect = this.selectionArea.getBounds();

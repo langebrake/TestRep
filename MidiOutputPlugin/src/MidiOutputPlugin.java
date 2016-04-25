@@ -6,6 +6,7 @@ import javax.sound.midi.MidiUnavailableException;
 import javax.sound.midi.Receiver;
 import javax.sound.midi.Transmitter;
 import javax.swing.JComponent;
+import javax.swing.JFrame;
 
 import midiengine.MidiEngine;
 import defaults.DefaultView;
@@ -38,8 +39,12 @@ public class MidiOutputPlugin extends Plugin{
 	}
 
 	@Override
-	public JComponent getFullView() {
-		return new DefaultView("MIDIOUTPUT");
+	public JFrame getFullView() {
+		JFrame frame = new JFrame("MIDIOUTPUT");
+		
+		frame.add(new DefaultView("MIDIOUTPUT"));
+		frame.pack();
+		return frame;
 	}
 
 	@Override
@@ -112,6 +117,12 @@ public class MidiOutputPlugin extends Plugin{
 	@Override
 	public String getDisplayName() {
 		return NAME;
+	}
+
+	@Override
+	public void setDisplayName() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

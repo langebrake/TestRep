@@ -2,6 +2,7 @@ package controller;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Container;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
@@ -26,8 +27,11 @@ import engine.Engine;
 import model.MidiGraph;
 import model.graph.Module;
 import gui.CablePoint;
+import gui.CablePointComponent;
+import gui.CablePointPanel;
 import gui.InteractiveCable;
 import gui.InteractiveComponent;
+import gui.InteractiveDisplay;
 import gui.InteractiveModule;
 import gui.InteractivePane;
 import gui.InteractiveShape;
@@ -38,7 +42,7 @@ public class InteractiveGuiController extends MouseAdapter {
 	private MidiGraph midiGraph;
 	private Vector lastMouseGridLocation;
 	private Vector lastMouseScreenLocation;
-	
+	private CablePointComponent tmpCablePoint;
 	
 	public InteractiveGuiController(InteractivePane interactivePane, MidiGraph midiGraph){
 		this.interactivePane = interactivePane;
@@ -54,50 +58,32 @@ public class InteractiveGuiController extends MouseAdapter {
 		AbstractAction deleteAction = new DeleteAction();
 		this.interactivePane.getActionMap().put("deletePerformed", deleteAction);
 		
+		//TODO: remove this cable debug thing
+		CablePointPanel p1 = new CablePointPanel(this.interactivePane);
+		CablePointPanel p2 = new CablePointPanel(this.interactivePane);
+		p1.setSize(50, 50);
+		p2.setSize(50, 50);
+		p1.setBackground(Color.LIGHT_GRAY);
+		p2.setBackground(Color.LIGHT_GRAY);
 		
-		//TODO: delete this debug add
-		int min = -10000;
-		int max = 10000;
-		for(int i = 1; i<1000; i++){
-			JPanel tmp = new JPanel();
-			//TODO : delete the random color thing when implementing modules
-			Random rand = new Random();
-			tmp.setBackground(new Color(rand.nextFloat(),rand.nextFloat(),rand.nextFloat()));
-			tmp.setSize(rand.nextInt(150)+50, rand.nextInt(150)+50);
-			InteractiveComponent c = new InteractiveModule(this.interactivePane,new Vector(ThreadLocalRandom.current().nextInt(min, max),ThreadLocalRandom.current().nextInt(min, max)), tmp);
-			c.addMouseListener(this);
-			c.addMouseMotionListener(this);
-			this.interactivePane.add(c);
-		}
-		
-		CablePoint p1 = new CablePoint();
-		CablePoint p2 = new CablePoint();
-		JPanel panel1 = new JPanel(new GridBagLayout());
-		JPanel panel2 = new JPanel(new GridBagLayout());
-		
-		panel1.setSize(50, 50);
-		panel2.setSize(50, 50);
-		panel1.setBackground(Color.LIGHT_GRAY);
-		panel2.setBackground(Color.LIGHT_GRAY);
-		
-		panel1.add(p1);
-		panel2.add(p2);
-		InteractiveComponent src = new InteractiveModule(this.interactivePane,new Vector(0,0), panel1);
-		InteractiveComponent src2 = new InteractiveModule(this.interactivePane,new Vector(500,900), panel2);
+		InteractiveComponent src = new InteractiveDisplay(this.interactivePane,new Vector(0,0), p1);
+		InteractiveComponent src2 = new InteractiveDisplay(this.interactivePane,new Vector(500,900), p2);
 		src.addMouseListener(this);
 		src2.addMouseListener(this);
 		src.addMouseMotionListener(this);
 		src2.addMouseMotionListener(this);
+		p1.setCable(new InteractiveCable(p1,p2,this.interactivePane));
+		p2.setCable(p1.getCable());
 		this.interactivePane.add(src);
 		this.interactivePane.add(src2);
-		this.interactivePane.add(new InteractiveCable(p1,p2,this.interactivePane));
+		this.interactivePane.add(p1.getCable());
 	}
 	
 	
 	@Override
 	public void mousePressed(MouseEvent e){
 		Object source = e.getSource();
-		lastMouseScreenLocation = new Vector(e.getLocationOnScreen());
+		lastMouseScreenLocation = new Vector(this.interactivePane.getLocationOnScreen()).diffVector((new Vector(e.getLocationOnScreen())));
 		lastMouseGridLocation = this.currentMouseGridLocation(e);
 		
 		if(SwingUtilities.isLeftMouseButton(e) 
@@ -105,6 +91,12 @@ public class InteractiveGuiController extends MouseAdapter {
 				&& (e.getModifiersEx() & InputEvent.CTRL_DOWN_MASK) == 0){
 			if(source == this.interactivePane){
 				this.interactivePane.clearSelection();
+			}
+		}else if(e.getSource() instanceof InteractiveComponent 
+				&& SwingUtilities.isLeftMouseButton(e)
+				&& (e.getModifiersEx() & InputEvent.CTRL_DOWN_MASK)!=0){
+			if(((Container) e.getSource()).getComponentAt(e.getPoint()) instanceof CablePointPanel){
+				this.tmpCablePoint = new CablePointComponent(this.interactivePane);
 			}
 		}
 		
@@ -130,7 +122,7 @@ public class InteractiveGuiController extends MouseAdapter {
 				}
 				DefaultPlugin defaultPlugin = new DefaultPlugin(mod);
 				mod.setPlugin(defaultPlugin);
-				InteractiveComponent newComponent = new InteractiveModule(this.interactivePane, this.interactivePane.convertToGridLocation(new Vector(arg0.getPoint())),defaultPlugin.getMinimizedView());
+				InteractiveComponent newComponent = new InteractiveModule(this.interactivePane, this.interactivePane.convertToGridLocation(new Vector(arg0.getPoint())),mod);
 				newComponent.addMouseListener(this);
 				newComponent.addMouseMotionListener(this);
 				this.interactivePane.add(newComponent);
@@ -138,7 +130,9 @@ public class InteractiveGuiController extends MouseAdapter {
 		} else if (source instanceof InteractiveComponent){
 			if(SwingUtilities.isLeftMouseButton(arg0)){
 				if(arg0.getClickCount() == 2) {
-					
+					if(source instanceof InteractiveModule){
+						((InteractiveModule) source).openFullView();
+					}
 				}
 				
 				boolean componentWasSelected = ((InteractiveComponent) source).isSelected();
@@ -182,14 +176,19 @@ public class InteractiveGuiController extends MouseAdapter {
 				this.interactivePane.translateViewport(lastMouseGridLocation.diffVector(currentMouseGridLocation));
 				
 			} else if(SwingUtilities.isLeftMouseButton(e) ){
-					this.selectionAction((new Vector(this.interactivePane.getLocationOnScreen())).diffVector(this.lastMouseScreenLocation), new Vector(e.getPoint()), true);
+					this.selectionAction(this.lastMouseScreenLocation, new Vector(e.getPoint()), true);
 					
 			}
 			
 		} else if (source instanceof InteractiveComponent){
 			if(SwingUtilities.isMiddleMouseButton(e)){
-				
+				System.out.println("AHA");
 				this.interactivePane.translateViewport(lastMouseGridLocation.diffVector(currentMouseGridLocation));
+			}else if (SwingUtilities.isLeftMouseButton(e) && (e.getModifiersEx()&InputEvent.CTRL_DOWN_MASK)!=0){
+				if (((InteractiveComponent) source).getComponentAt(e.getPoint()) instanceof CablePointPanel){
+					
+				}
+				
 			}else{
 				if(!((InteractiveComponent) source).isSelected()){
 					if( (e.getModifiersEx() & InputEvent.SHIFT_DOWN_MASK )== 0)

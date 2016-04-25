@@ -75,5 +75,8 @@ public abstract class InteractiveComponent extends JPanel implements Interactive
 		return this.hovered;
 	}
 	
+	protected InteractivePane getParentPane(){
+		return this.parent;
+	}
 	
 }

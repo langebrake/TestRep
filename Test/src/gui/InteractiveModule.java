@@ -1,34 +1,30 @@
 package gui;
 
-import guiinterface.InteractiveUpdateable;
-import guiinterface.SizeableComponent;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Point;
-import java.awt.event.MouseAdapter;
-import java.util.Random;
 
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
-import javax.swing.JPanel;
+import javax.swing.JFrame;
 
-public class InteractiveModule extends InteractiveComponent  {
+import model.graph.Module;
 
+public class InteractiveModule extends InteractiveComponent {
+	private Module module;
+	private JFrame fullView;
 	private JComponent contentPane;
-	
-	/**
-	 * creates a new interactive gui component and places it to the origin vector
-	 * @param parent
-	 * @param origin
-	 */
-	public InteractiveModule(InteractivePane parent, Vector origin, JComponent contentPane ){
-		super(parent,origin);
+	public InteractiveModule(InteractivePane parent, Vector origin, Module module) {
+		super(parent, origin);
 		super.setLayout(new BorderLayout());
-		this.contentPane = contentPane;
+		this.contentPane = module.getPlugin().getMinimizedView();
 		this.setOriginDimension(contentPane.getSize());
 		this.add(contentPane,BorderLayout.CENTER);
+		this.module = module;
+		
+	}
+	
+	public Module getModule(){
+		return this.module;
 	}
 	
 	@Override
@@ -53,7 +49,21 @@ public class InteractiveModule extends InteractiveComponent  {
 		else
 			this.setBorder(BorderFactory.createEmptyBorder());
 	}
+	
+	public void inputPopout(boolean set){
+		this.getParentPane();
+	}
+	
+	public void outputPopout(boolean set){
+		
+	}
+	
+	public void openFullView(){
+		if(this.fullView == null){
+			this.fullView = this.module.getPlugin().getFullView();
+		}
+		this.fullView.setVisible(true);
+	}
 
-	
-	
+
 }

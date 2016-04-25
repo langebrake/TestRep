@@ -5,6 +5,7 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 
 import model.MidiGraph;
+import controller.InteractiveController;
 import controller.InteractiveGuiController;
 
 
@@ -17,7 +18,7 @@ public class GuiTest {
 		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		InteractivePane contentPane = new InteractivePane();
-		InteractiveGuiController controller = new InteractiveGuiController(contentPane, new MidiGraph() );
+		InteractiveController controller = new InteractiveController(contentPane, new MidiGraph() );
 		mainFrame.setContentPane(contentPane);
 		mainFrame.pack();
 		mainFrame.setVisible(true);

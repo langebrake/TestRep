@@ -3,6 +3,7 @@ package plugin;
 import guiinterface.SizeableComponent;
 
 import javax.swing.JComponent;
+import javax.swing.JFrame;
 
 import plugin.events.*;
 import plugin.exceptions.*;
@@ -22,13 +23,14 @@ public abstract class Plugin {
 		return null;
 	}
 	public abstract JComponent getMinimizedView();
-	public abstract JComponent getFullView();
+	public abstract JFrame getFullView();
 	/**
 	 * This method returns the plugins name
 	 * @return static String as name
 	 */
 	public abstract String getPluginName();
 	public abstract String getDisplayName();
+	public abstract void setDisplayName();
 	public PluginHost getPluginHost(){
 		return this.host;
 	}

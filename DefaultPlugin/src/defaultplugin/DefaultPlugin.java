@@ -24,7 +24,7 @@ public class DefaultPlugin extends Plugin implements Receiver, Transmitter{
 	private static final int MININPUTS = 1;
 	private static final int MINOUTPUTS = 1;
 	private static final String NAME = "DummyPlugin";
-	private String msg = "DefaultMessage";
+	private String msg = "DummyPlugin";
 	private Receiver rc;
 	private DefaultView view;
 	public static Plugin getInstance(PluginHost host){
@@ -44,9 +44,13 @@ public class DefaultPlugin extends Plugin implements Receiver, Transmitter{
 		return view;
 	}
 	@Override
-	public JComponent getFullView() {
+	public JFrame getFullView() {
 		// TODO Auto-generated method stub
-		return view;
+		JFrame frame = new JFrame(this.NAME);
+		
+		frame.add(new DefaultView("DEFAULT PLUGIN INTERFACE"));
+		frame.pack();
+		return frame;
 	}
 	@Override
 	public String getPluginName() {
@@ -113,6 +117,11 @@ public class DefaultPlugin extends Plugin implements Receiver, Transmitter{
 		this.msg = arg0.getMessage().toString();
 		
 		this.rc.send(arg0, arg1);
+	}
+	@Override
+	public void setDisplayName() {
+		// TODO Auto-generated method stub
+		
 	}
 
 
