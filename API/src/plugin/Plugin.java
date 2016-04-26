@@ -22,13 +22,14 @@ public abstract class Plugin {
 	public static Plugin getInstance(PluginHost host){
 		return null;
 	}
-	public abstract JComponent getMinimizedView();
-	public abstract JFrame getFullView();
 	/**
 	 * This method returns the plugins name
 	 * @return static String as name
 	 */
 	public abstract String getPluginName();
+	public abstract JComponent getMinimizedView();
+	public abstract JFrame getFullView();
+
 	public abstract String getDisplayName();
 	public abstract void setDisplayName();
 	public PluginHost getPluginHost(){

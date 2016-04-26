@@ -5,6 +5,5 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/API"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/MidiInputPlugin"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/MidiOutputPlugin"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/DefaultPlugin"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

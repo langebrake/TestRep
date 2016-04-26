@@ -1,3 +1,5 @@
+import java.io.IOException;
+
 import gui.interactivepane.InteractiveModule;
 import gui.interactivepane.InteractivePane;
 
@@ -9,27 +11,32 @@ import model.pluginmanager.PluginManager;
 import controller.Controller;
 import controller.history.UserActionManager;
 import controller.interactivepane.InteractiveController;
-import controller.interactivepane.InteractiveGuiController;
 
 
 public class GuiTest {
 	
 	
 	
-	private static void createAndShowGui() {
+	private static void createAndShowGui() throws Exception {
 		JFrame mainFrame = new JFrame("GuiTest");
 		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		InteractiveController controller = new InteractiveController();
 		mainFrame.setContentPane(controller.getPane());
 		mainFrame.pack();
 		mainFrame.setVisible(true);
+		PluginManager.loadPlugins();
 		
 	}
 	
 	public static void main(String[] args) {
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                createAndShowGui();
+                try {
+					createAndShowGui();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
             }
         });
 	}

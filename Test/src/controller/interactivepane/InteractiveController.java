@@ -52,6 +52,7 @@ public class InteractiveController implements MouseInputListener {
 		// TODO: Shortcut handling should be done by other class
 				InputMap inputMap = this.pane.getInputMap();
 				ActionMap actionMap = this.pane.getActionMap();
+				
 				//undo/redo shortcuts
 				KeyStroke undoCode = KeyStroke.getKeyStroke(KeyEvent.VK_Z,InputEvent.CTRL_DOWN_MASK);
 				inputMap.put(undoCode, "undoPerformed");

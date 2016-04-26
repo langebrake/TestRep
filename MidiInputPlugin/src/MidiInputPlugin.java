@@ -50,8 +50,8 @@ public class MidiInputPlugin extends Plugin{
 		return frame;
 	}
 
-	@Override
-	public String getPluginName() {
+	
+	public  String getPluginName() {
 		// TODO Auto-generated method stub
 		return NAME;
 	}

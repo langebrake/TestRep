@@ -52,11 +52,11 @@ public class DefaultPlugin extends Plugin implements Receiver, Transmitter{
 		frame.pack();
 		return frame;
 	}
-	@Override
-	public String getPluginName() {
-		// TODO Auto-generated method stub
+	
+	public  String getPluginName() {
 		return NAME;
 	}
+	
 	@Override
 	public int getMaxInputs() {
 		// TODO Auto-generated method stub
@@ -75,6 +75,7 @@ public class DefaultPlugin extends Plugin implements Receiver, Transmitter{
 		MidiIO output = host.getOuput(0);
 		input.setOutput(this);
 		this.setReceiver(output);
+		Utilities.print();
 		
 	}
 	@Override

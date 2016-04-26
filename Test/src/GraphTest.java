@@ -1,6 +1,6 @@
 import java.util.Scanner;
 
-import defaultplugin.DefaultPlugin;
+//import defaultplugin.DefaultPlugin;
 import plugin.Plugin;
 import engine.Engine;
 import model.graph.Module;
@@ -16,8 +16,8 @@ public class GraphTest {
 			Plugin inputPlugin = new MidiInputPlugin(inputModule);
 			inputModule.setPlugin(inputPlugin);
 			
-			Plugin defaultPlugin = new DefaultPlugin(defaultModule);
-			defaultModule.setPlugin(defaultPlugin);
+//			Plugin defaultPlugin = new DefaultPlugin(defaultModule);
+//			defaultModule.setPlugin(defaultPlugin);
 			
 			Plugin outputPlugin = new MidiOutputPlugin(outputModule);
 			outputModule.setPlugin(outputPlugin);

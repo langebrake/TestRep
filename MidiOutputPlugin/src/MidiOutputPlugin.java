@@ -47,8 +47,8 @@ public class MidiOutputPlugin extends Plugin{
 		return frame;
 	}
 
-	@Override
-	public String getPluginName() {
+	
+	public  String getPluginName() {
 		return NAME;
 	}
 
