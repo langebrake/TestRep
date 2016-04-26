@@ -1,7 +1,9 @@
 package model.pluginmanager;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -10,7 +12,9 @@ import java.util.LinkedList;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
+import javax.sound.midi.MidiUnavailableException;
 import javax.swing.JMenu;
+import javax.swing.filechooser.FileFilter;
 
 import midiengine.MidiEngine;
 import model.graph.Module;
@@ -23,46 +27,106 @@ import engine.Engine;
 public class PluginManager {
 	
 	private Controller controller;
-	private static LinkedList<Plugin> plugins;
+	private static LinkedList<Method> plugins;
 	
 	/**
 	 * adds 
 	 * @param menu
 	 */
-	public static LinkedList<Plugin> getPluginList(){
+	public static LinkedList<Method> getPluginList(){
 		return plugins;
 	}
 	
-	public static void loadPlugins() throws Exception{
-		plugins = new LinkedList<Plugin>();
-		File f = new File("./plugin");
+	private static void loadPlugins(File dir) throws IOException, ClassNotFoundException, NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException{
+		for(File file: dir.listFiles()){
+			if(file.isDirectory()) {
+				loadPlugins(file);
+			}else if(file.getName().toLowerCase().endsWith(".jar")){
+				System.out.println(file.getAbsolutePath());
+				String path = file.getPath();
+				JarFile jar = new JarFile(path);
+				Enumeration<JarEntry> en = jar.entries();
+				
+				URL[] urls = { new URL("jar:file:" + path +"!/") };
+				URLClassLoader cl = URLClassLoader.newInstance(urls);
+				
+				while (en.hasMoreElements()) {
+				    JarEntry je = en.nextElement();
+				    if(je.isDirectory() || !je.getName().endsWith(".class")){
+				        continue;
+				    }
+				    
+				    String className = je.getName().substring(0,je.getName().length()-6);
+				    className = className.replace('/', '.');
+				    //System.out.println(className);
+				    Class<?> c = cl.loadClass(className);
+				    if(c.getSuperclass() == Plugin.class){
+				    	System.out.println(jar.getManifest().getMainAttributes().getValue("PluginVersion"));
+				    	Method m = c.getMethod("getInstance",PluginHost.class);
+				    	plugins.add(m);
+//				    	PluginHost module = new Module(Engine.load());
+//				    	Plugin p = (Plugin) m.invoke(null, module);
+//				    	module.setPlugin(p);
+//				    	p.getFullView().setVisible(true);
+//				    	System.out.println(p.getPluginName());
+//				    	System.out.println(module.getOutputCount());
+				    	
+				    }else{
+				    	
+				    }
+				}
+				
+			}
+			
+			
+			
 		
-		JarFile jar = new JarFile(f.listFiles()[0].getPath());
-		Enumeration<JarEntry> en = jar.entries();
 		
-		URL[] urls = { new URL("jar:file:" + f.listFiles()[0].getPath() +"!/") };
-		URLClassLoader cl = URLClassLoader.newInstance(urls);
-
-		while (en.hasMoreElements()) {
-		    JarEntry je = en.nextElement();
-		    if(je.isDirectory() || !je.getName().endsWith(".class")){
-		        continue;
-		    }
-		    // -6 because of .class
-		    String className = je.getName().substring(0,je.getName().length()-6);
-		    className = className.replace('/', '.');
-		    //System.out.println(className);
-		    Class c = cl.loadClass(className);
-		    if(c.getSuperclass() == Plugin.class){
-		    	Method m = c.getMethod("getInstance",PluginHost.class);
-		    	PluginHost module = new Module(Engine.load());
-		    	Plugin p = (Plugin) m.invoke(null, module);
-		    	module.setPlugin(p);
-		    	p.getFullView().setVisible(true);
-		    	System.out.println(p.getPluginName());
-		    	System.out.println(module.getOutputCount());
-		    	
-		    }
 		}
+	}
+	public static void loadPlugins() throws Exception{
+		plugins = new LinkedList<Method>();
+		File f = new File("./plugin");
+		loadPlugins(f);
+		for(Method m:plugins){
+			PluginHost module = new Module(Engine.load());
+			Plugin p = (Plugin) m.invoke(null, module);
+			System.out.println(p.getPluginName());
+		}
+		
+		
+		
+		
+		
+		
+//		File f = new File("./plugin");
+//		
+//		JarFile jar = new JarFile(f.listFiles()[0].getPath());
+//		Enumeration<JarEntry> en = jar.entries();
+//		
+//		URL[] urls = { new URL("jar:file:" + f.listFiles()[0].getPath() +"!/") };
+//		URLClassLoader cl = URLClassLoader.newInstance(urls);
+//
+//		while (en.hasMoreElements()) {
+//		    JarEntry je = en.nextElement();
+//		    if(je.isDirectory() || !je.getName().endsWith(".class")){
+//		        continue;
+//		    }
+//		    // -6 because of .class
+//		    String className = je.getName().substring(0,je.getName().length()-6);
+//		    className = className.replace('/', '.');
+//		    //System.out.println(className);
+//		    Class c = cl.loadClass(className);
+//		    if(c.getSuperclass() == Plugin.class){
+//		    	Method m = c.getMethod("getInstance",PluginHost.class);
+//		    	PluginHost module = new Module(Engine.load());
+//		    	Plugin p = (Plugin) m.invoke(null, module);
+//		    	module.setPlugin(p);
+//		    	p.getFullView().setVisible(true);
+//		    	System.out.println(p.getPluginName());
+//		    	System.out.println(module.getOutputCount());
+//		    	
+//		    }
+//		}
 	}
 }

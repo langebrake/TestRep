@@ -13,14 +13,14 @@ public class GraphTest {
 				Module defaultModule= new Module(Engine.load());
 				Module outputModule= new Module(Engine.load())){
 			
-			Plugin inputPlugin = new MidiInputPlugin(inputModule);
-			inputModule.setPlugin(inputPlugin);
+//			Plugin inputPlugin = new MidiInputPlugin(inputModule);
+//			inputModule.setPlugin(inputPlugin);
 			
 //			Plugin defaultPlugin = new DefaultPlugin(defaultModule);
 //			defaultModule.setPlugin(defaultPlugin);
 			
-			Plugin outputPlugin = new MidiOutputPlugin(outputModule);
-			outputModule.setPlugin(outputPlugin);
+//			Plugin outputPlugin = new MidiOutputPlugin(outputModule);
+//			outputModule.setPlugin(outputPlugin);
 			
 			defaultModule.connectInput(inputModule.getOuput(0));
 			outputModule.connectInput(defaultModule.getOuput(0));

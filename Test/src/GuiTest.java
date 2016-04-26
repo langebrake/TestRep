@@ -24,11 +24,11 @@ public class GuiTest {
 		mainFrame.setContentPane(controller.getPane());
 		mainFrame.pack();
 		mainFrame.setVisible(true);
-		PluginManager.loadPlugins();
+		
 		
 	}
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 try {
@@ -39,5 +39,6 @@ public class GuiTest {
 				}
             }
         });
+		PluginManager.loadPlugins();
 	}
 }
