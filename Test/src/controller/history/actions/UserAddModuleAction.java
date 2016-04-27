@@ -51,6 +51,7 @@ public class UserAddModuleAction extends UserAction {
 	@Override
 	public void undo() {
 		//TODO: Opening and closing Plugins necessary for System Ressources!
+		// disconnecting Connections not necessary, cause a newly added module has none!
 		controller.getPane().remove(interactiveModule);
 
 	}

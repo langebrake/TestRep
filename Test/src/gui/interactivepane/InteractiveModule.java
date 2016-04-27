@@ -15,11 +15,13 @@ public class InteractiveModule extends InteractiveComponent {
 	private JComponent contentPane;
 	public InteractiveModule(InteractivePane parent, Vector origin, Module module) {
 		super(parent, origin);
+		this.setBorder(BorderFactory.createEmptyBorder(1,1,1,1));
 		super.setLayout(new BorderLayout());
 		this.contentPane = module.getPlugin().getMinimizedView();
 		this.setOriginDimension(contentPane.getSize());
 		this.add(contentPane,BorderLayout.CENTER);
 		this.module = module;
+		
 	}
 	
 	public Module getModule(){
@@ -35,7 +37,7 @@ public class InteractiveModule extends InteractiveComponent {
 			if(this.isSelected()){
 				this.setBorder(BorderFactory.createLineBorder(Color.red));
 			} else {
-				this.setBorder(BorderFactory.createEmptyBorder());
+				this.setBorder(BorderFactory.createEmptyBorder(1,1,1,1));
 			}
 		}	
 	}
@@ -46,7 +48,7 @@ public class InteractiveModule extends InteractiveComponent {
 		if(set)
 			this.setBorder(BorderFactory.createLineBorder(Color.red));
 		else
-			this.setBorder(BorderFactory.createEmptyBorder());
+			this.setBorder(BorderFactory.createEmptyBorder(1,1,1,1));
 	}
 	
 	public void inputPopout(boolean set){

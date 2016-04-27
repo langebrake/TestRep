@@ -23,7 +23,7 @@ public class ModuleListener extends ControllerListenerAdapter {
 	
 	@Override
 	public void mousePressed(MouseEvent arg0){
-		if(!SwingUtilities.isMiddleMouseButton(arg0)){
+		if(validInteraction(arg0)){
 		controller.setDragged(true);
 		}
 		
@@ -31,15 +31,19 @@ public class ModuleListener extends ControllerListenerAdapter {
 	}
 	
 	public void mouseReleased(MouseEvent arg0){
-		if(!SwingUtilities.isMiddleMouseButton(arg0)){
+		if(validInteraction(arg0)){
 		controller.setDragged(false);
 		}
 	}
 	
 	@Override
 	public void mouseDragged(MouseEvent arg0) {
-		if(SwingUtilities.isLeftMouseButton(arg0) && !SwingUtilities.isMiddleMouseButton(arg0)){
+		if(validInteraction(arg0)){
+			Vector currentMouseGridLocation = controller.toGridCoordinate(controller.relativeToPane(arg0));
+			Vector translation = controller.getLastMouseGridLocation().diffVector(currentMouseGridLocation);
+			
 			InteractiveComponent source = (InteractiveComponent) arg0.getSource();
+			
 			if(!((InteractiveComponent) source).isSelected()){
 				if( !arg0.isShiftDown()){
 					controller.getPane().clearSelection();
@@ -47,16 +51,14 @@ public class ModuleListener extends ControllerListenerAdapter {
 				}
 				controller.getPane().setComponentSelected((InteractiveComponent) source,true);
 			}
-			Vector currentMouseGridLocation = controller.toGridCoordinate(controller.relativeToPane(arg0));
 			
-			Vector translation = controller.getLastMouseGridLocation().diffVector(currentMouseGridLocation);
 
 			controller.getPane().translateSelection(translation);
 			controller.updateLastMouseLocation(arg0);
 			
 		} else {
-			
 			controller.mouseDragged(arg0);
+			
 			}
 		
 		
@@ -77,7 +79,7 @@ public class ModuleListener extends ControllerListenerAdapter {
 	@Override
 	public void mouseClicked(MouseEvent arg0){
 		Object source = arg0.getSource();
-		if(source instanceof InteractiveComponent){
+		if(source instanceof InteractiveComponent && validInteraction(arg0)){
 			if(arg0.getClickCount() == 2){
 				if (source instanceof InteractiveModule){
 					//TODO: Save all active Frames into one Hashmap to be able to hide all
@@ -112,6 +114,13 @@ public class ModuleListener extends ControllerListenerAdapter {
 		} else {
 			controller.mouseClicked(arg0);
 		}
+	}
+	
+	private boolean validInteraction(MouseEvent e){
+		return SwingUtilities.isLeftMouseButton(e)
+				&& !(e.isControlDown() && e.isShiftDown())
+				&& !(e.isControlDown())
+				&& !SwingUtilities.isMiddleMouseButton(e);
 	}
 	
 }

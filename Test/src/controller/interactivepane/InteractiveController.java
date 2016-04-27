@@ -42,6 +42,7 @@ public class InteractiveController implements MouseInputListener {
 	private ModuleListener moduleListener;
 	private PopupMenuListener popupMenuListener;
 	private ShapeListener shapeListener;
+	private CableCreationListener cableCreationListener;
 	private boolean componentAndViewDrag;
 	
 	public InteractiveController(){
@@ -55,9 +56,13 @@ public class InteractiveController implements MouseInputListener {
 		this.pane.addMouseListener(this);
 		this.pane.addMouseMotionListener(this);
 		this.pane.addMouseWheelListener(this);
+		
 		this.moduleListener = new ModuleListener(this);
 		this.popupMenuListener = new PopupMenuListener(this);
 		this.shapeListener = new ShapeListener(this);
+		this.cableCreationListener = new CableCreationListener(this);
+		this.pane.addMouseListener(this.cableCreationListener);
+		this.pane.addMouseMotionListener(this.cableCreationListener);
 		// TODO: Shortcut handling should be done by other class
 				InputMap inputMap = this.pane.getInputMap();
 				ActionMap actionMap = this.pane.getActionMap();
@@ -90,20 +95,17 @@ public class InteractiveController implements MouseInputListener {
 				
 				InteractiveComponent src = new InteractiveDisplay(this.pane,new Vector(0,0), p1);
 				InteractiveComponent src2 = new InteractiveDisplay(this.pane,new Vector(500,900), p2);
-				p1.setCable(new InteractiveCable(p1,p2,this.pane));
-				p2.setCable(p1.getCable());
-				src.addMouseListener(this.moduleListener);
-				src.addMouseMotionListener(this.moduleListener);
-				src.addMouseWheelListener(this.moduleListener);
-				src2.addMouseListener(this.moduleListener);
-				src2.addMouseMotionListener(this.moduleListener);
-				src2.addMouseWheelListener(this.moduleListener);
+
+				
+
+				
+				src.addListeners(this.moduleListener,this.popupMenuListener,this.cableCreationListener);
+				src2.addListeners(this.moduleListener,this.popupMenuListener,this.cableCreationListener);
+
 				this.pane.add(src);
 				this.pane.add(src2);
-				this.pane.add(p1.getCable());
 				this.pane.addMouseListener(this.popupMenuListener);
-				src.addMouseListener(this.popupMenuListener);
-				src2.addMouseListener(this.popupMenuListener);
+				
 				ShapeListener sl = new ShapeListener(this);
 				this.pane.addMouseListener(sl);
 				this.pane.addMouseMotionListener(sl);
@@ -147,11 +149,14 @@ public class InteractiveController implements MouseInputListener {
 	@Override
 	public void mousePressed(MouseEvent arg0) {
 		this.updateLastMouseLocation(arg0);
-		if(!arg0.isShiftDown()
-				&& !SwingUtilities.isMiddleMouseButton(arg0)
-				&& !SwingUtilities.isRightMouseButton(arg0)){
-			this.pane.clearSelection();
-		} 
+		if(validInteraction(arg0)){
+			if(!arg0.isShiftDown()
+					&& !SwingUtilities.isMiddleMouseButton(arg0)
+					&& !SwingUtilities.isRightMouseButton(arg0)){
+				this.pane.clearSelection();
+				this.pane.repaint();
+			}	 
+		}
 
 		
 	}
@@ -165,28 +170,30 @@ public class InteractiveController implements MouseInputListener {
 
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent arg0) {
-		//this procedure is necessary due to a bug in AWT:
-		//MouseWheelEvent.getLocationOnScreen() always returns (0,0)
+		//prevents buggy zooming actions while moving components
 		if(!this.getDragged()){
+			//this procedure is necessary due to a bug in AWT:
+			//MouseWheelEvent.getLocationOnScreen() always returns (0,0)
 			Vector tmp = new Vector(arg0.getComponent().getLocationOnScreen());
 			tmp = tmp.addVector(new Vector(arg0.getPoint()));
 			this.lastMousePaneLocation = new Vector(this.pane.getLocationOnScreen()).diffVector(tmp);
 			this.lastMouseGridLocation = this.toGridCoordinate(this.lastMousePaneLocation);
 		}
-		this.pane.zoomViewport(this.lastMousePaneLocation, arg0.getWheelRotation());
+		this.pane.zoomViewport(this.lastMousePaneLocation, arg0.getPreciseWheelRotation());
 	}
 
 	@Override
 	public void mouseDragged(MouseEvent arg0) {
-		Vector currentMouseGridLocation = this.toGridCoordinate(this.relativeToPane(arg0));
-		
-		if(SwingUtilities.isLeftMouseButton(arg0) && (arg0.isControlDown())  || SwingUtilities.isMiddleMouseButton(arg0)){
-			this.pane.translateViewport(lastMouseGridLocation.diffVector(currentMouseGridLocation));
-			
-			
-		} else if(SwingUtilities.isLeftMouseButton(arg0) ){
-			this.pane.selectionArea(this.lastMousePaneLocation, this.relativeToPane(arg0), true);	
+		if(validInteraction(arg0)){
+			Vector currentMouseGridLocation = this.toGridCoordinate(this.relativeToPane(arg0));
+			if(SwingUtilities.isLeftMouseButton(arg0) && (arg0.isControlDown())  || SwingUtilities.isMiddleMouseButton(arg0)){
+				this.pane.translateViewport(lastMouseGridLocation.diffVector(currentMouseGridLocation));
 				
+				
+			} else if(SwingUtilities.isLeftMouseButton(arg0) ){
+				this.pane.selectionArea(this.lastMousePaneLocation, this.relativeToPane(arg0), true);	
+					
+			}
 		}
 		
 		
@@ -238,6 +245,13 @@ public class InteractiveController implements MouseInputListener {
 	
 	public InteractivePane getPane(){
 		return this.pane;
+	}
+	
+	private boolean validInteraction(MouseEvent e){
+		return SwingUtilities.isLeftMouseButton(e)
+				&& !(e.isControlDown() && e.isShiftDown())
+				&& !SwingUtilities.isRightMouseButton(e)
+				|| SwingUtilities.isMiddleMouseButton(e);
 	}
 	
 

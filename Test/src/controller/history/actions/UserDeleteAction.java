@@ -1,5 +1,6 @@
 package controller.history.actions;
 
+import gui.interactivepane.InteractiveCable;
 import gui.interactivepane.InteractiveComponent;
 import gui.interactivepane.InteractiveShape;
 
@@ -25,6 +26,11 @@ public class UserDeleteAction extends UserAction {
 			controller.getPane().add(c);
 		}
 		for(InteractiveShape c:shapes){
+			//TODO: Cable Connections restored on both View and Model!!
+			if(c instanceof InteractiveCable){
+				((InteractiveCable) c).getSource().setCable((InteractiveCable) c);
+				((InteractiveCable) c).getDestination().setCable((InteractiveCable) c);
+			}
 			controller.getPane().add(c);
 			
 		}
@@ -32,11 +38,16 @@ public class UserDeleteAction extends UserAction {
 
 	@Override
 	public void execute() {
-		//TODO: implement Disconnecting etc.
+		
 		for(InteractiveComponent c: components){
 			controller.getPane().remove(c);
 		}
 		for(InteractiveShape c:shapes){
+			//TODO: implement Disconnecting etc. on View and Model!
+			if(c instanceof InteractiveCable){
+				((InteractiveCable) c).getSource().setCable(null);
+				((InteractiveCable) c).getDestination().setCable(null);
+			}
 			controller.getPane().remove(c);
 			
 		}

@@ -85,18 +85,17 @@ public class InteractivePane extends JLayeredPane {
 		this.updateView();
 	}
 	
-	public synchronized void zoomViewport(Vector zoomSourceScreenLocation, int wheelRotation){
-		
+	public synchronized void zoomViewport(Vector zoomSourceScreenLocation, double d){
 		
 		Vector gridLocation = this.convertToGridLocation(zoomSourceScreenLocation);
-		if(wheelRotation>0){
+		if(d>0){
 			if(this.scaleFactor - this.scaleIncrement <this.scaleMin){
 				return;
 			}
 			
 			this.scaleFactor -=this.scaleIncrement ;
 		}
-		else if (wheelRotation <0) {
+		else if (d <0) {
 			if (this.scaleFactor +this.scaleIncrement > this.scaleMax){
 				return;
 			}

@@ -29,6 +29,7 @@ public class InteractiveDisplay extends InteractiveComponent  {
 		this.contentPane = contentPane;
 		this.setOriginDimension(contentPane.getSize());
 		this.add(contentPane,BorderLayout.CENTER);
+		this.setBorder(BorderFactory.createEmptyBorder(1,1,1,1));
 	}
 	
 	@Override
@@ -40,7 +41,7 @@ public class InteractiveDisplay extends InteractiveComponent  {
 			if(this.isSelected()){
 				this.setBorder(BorderFactory.createLineBorder(Color.red));
 			} else {
-				this.setBorder(BorderFactory.createEmptyBorder());
+				this.setBorder(BorderFactory.createEmptyBorder(1,1,1,1));
 			}
 		}	
 	}
@@ -51,7 +52,7 @@ public class InteractiveDisplay extends InteractiveComponent  {
 		if(set)
 			this.setBorder(BorderFactory.createLineBorder(Color.red));
 		else
-			this.setBorder(BorderFactory.createEmptyBorder());
+			this.setBorder(BorderFactory.createEmptyBorder(1,1,1,1));
 	}
 	
 	public void inputPopout(boolean set){
