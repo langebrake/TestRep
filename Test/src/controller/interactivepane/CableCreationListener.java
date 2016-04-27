@@ -75,8 +75,9 @@ public class CableCreationListener extends MouseAdapter{
 					
 					this.controller.executeAction(new UserAddConnectionsAction(controller.getActionManager(),newConnections));
 				} else {
-					if(!(destPoint == this.oldSourceConnection.getDestination() 
-							|| destPoint == this.oldSourceConnection.getSource())){
+					if(! (this.oldSourceConnection != null 
+							&&((destPoint == this.oldSourceConnection.getDestination() 
+								|| destPoint == this.oldSourceConnection.getSource())))){
 						
 					
 						tmpCable.setDestination(destPoint);
