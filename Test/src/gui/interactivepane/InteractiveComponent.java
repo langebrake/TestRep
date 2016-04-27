@@ -8,6 +8,10 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.MouseAdapter;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import java.awt.event.MouseWheelListener;
+import java.util.EventListener;
 import java.util.Random;
 
 import javax.swing.BorderFactory;
@@ -77,6 +81,20 @@ public abstract class InteractiveComponent extends JPanel implements Interactive
 	
 	protected InteractivePane getParentPane(){
 		return this.parent;
+	}
+	
+	public void addListeners(EventListener... listener){
+		for(EventListener l: listener){
+			if(l instanceof MouseListener){
+				this.addMouseListener((MouseListener) l);
+			} 
+			if (l instanceof MouseMotionListener){
+				this.addMouseMotionListener((MouseMotionListener) l);
+			} 
+			if (l instanceof MouseWheelListener){
+				this.addMouseWheelListener((MouseWheelListener) l);
+			}
+		}
 	}
 
 

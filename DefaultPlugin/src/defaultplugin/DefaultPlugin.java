@@ -39,12 +39,10 @@ public class DefaultPlugin extends Plugin implements Receiver, Transmitter{
 	}
 	@Override
 	public JComponent getMinimizedView() {
-		// TODO Auto-generated method stub
 		return view;
 	}
 	@Override
 	public JFrame getFullView() {
-		// TODO Auto-generated method stub
 		JFrame frame = new JFrame(this.NAME);
 		
 		frame.add(new DefaultView("DEFAULT PLUGIN INTERFACE"));
@@ -58,12 +56,10 @@ public class DefaultPlugin extends Plugin implements Receiver, Transmitter{
 	
 	@Override
 	public int getMaxInputs() {
-		// TODO Auto-generated method stub
 		return MAXINPUTS;
 	}
 	@Override
 	public int getMaxOutputs() {
-		// TODO Auto-generated method stub
 		return MAXOUTPUTS;
 	}
 	@Override
@@ -88,24 +84,20 @@ public class DefaultPlugin extends Plugin implements Receiver, Transmitter{
 	}
 	@Override
 	public int getMinInputs() {
-		// TODO Auto-generated method stub
 		return MININPUTS;
 	}
 	@Override
 	public int getMinOutputs() {
-		// TODO Auto-generated method stub
 		return MINOUTPUTS;
 	}
 	@Override
 	public String getDisplayName() {
-		// TODO Auto-generated method stub
 		return NAME;
 	}
 	
 	
 	@Override
 	public Receiver getReceiver() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 	@Override
@@ -121,7 +113,7 @@ public class DefaultPlugin extends Plugin implements Receiver, Transmitter{
 	}
 	@Override
 	public void setDisplayName() {
-		// TODO Auto-generated method stub
+	
 		
 	}
 

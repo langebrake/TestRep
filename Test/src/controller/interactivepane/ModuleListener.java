@@ -15,6 +15,7 @@ import java.awt.event.MouseWheelListener;
 import javax.swing.SwingUtilities;
 
 public class ModuleListener extends ControllerListenerAdapter {
+	
 	public ModuleListener(InteractiveController c){
 		super(c);
 	}

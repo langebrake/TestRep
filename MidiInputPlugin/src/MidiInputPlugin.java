@@ -30,19 +30,15 @@ public class MidiInputPlugin extends Plugin{
 	
 	public MidiInputPlugin(PluginHost host) {
 		super(host);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
 	public JComponent getMinimizedView() {
-		// TODO Auto-generated method stub
 		return new DefaultView("MIDIPINPUT");
 	}
 
 	@Override
 	public JFrame getFullView() {
-		// TODO Auto-generated method stub
-		// TODO Auto-generated method stub
 		JFrame frame = new JFrame("MIDIINPUT");
 		
 		frame.add(new DefaultView("MIDIINPUT"));
@@ -52,37 +48,31 @@ public class MidiInputPlugin extends Plugin{
 
 	
 	public  String getPluginName() {
-		// TODO Auto-generated method stub
 		return NAME;
 	}
 
 	@Override
 	public int getMaxInputs() {
-		// TODO Auto-generated method stub
 		return MAXINPUTS;
 	}
 
 	@Override
 	public int getMaxOutputs() {
-		// TODO Auto-generated method stub
 		return MAXOUTPUTS;
 	}
 
 	@Override
 	public int getMinInputs() {
-		// TODO Auto-generated method stub
 		return MININPUTS;
 	}
 
 	@Override
 	public int getMinOutputs() {
-		// TODO Auto-generated method stub
 		return MINOUTPUTS;
 	}
 
 	@Override
 	public void notify(HostEvent e) {
-		// TODO Auto-generated method stub
 		
 	}
 
@@ -124,13 +114,11 @@ public class MidiInputPlugin extends Plugin{
 
 	@Override
 	public String getDisplayName() {
-		// TODO Auto-generated method stub
 		return NAME;
 	}
 
 	@Override
 	public void setDisplayName() {
-		// TODO Auto-generated method stub
 		
 	}
 

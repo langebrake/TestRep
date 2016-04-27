@@ -6,4 +6,5 @@ public interface CablePoint  {
 	public int getYOnPane();
 	public InteractiveCable getCable();
 	public void setCable(InteractiveCable cable);
+	public boolean isConnected();
 }

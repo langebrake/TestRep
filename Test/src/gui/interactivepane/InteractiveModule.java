@@ -20,7 +20,6 @@ public class InteractiveModule extends InteractiveComponent {
 		this.setOriginDimension(contentPane.getSize());
 		this.add(contentPane,BorderLayout.CENTER);
 		this.module = module;
-		
 	}
 	
 	public Module getModule(){
