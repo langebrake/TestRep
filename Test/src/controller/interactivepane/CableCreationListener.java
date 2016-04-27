@@ -120,10 +120,12 @@ public class CableCreationListener extends MouseAdapter{
 	
 	private Component searchSourceRecursive(MouseEvent e, Component c, Class<?> searchFor){
 		if(c.isShowing()){
-			Component tmp = c.getComponentAt((new Vector(c.getLocationOnScreen())).diffVector((new Vector(e.getLocationOnScreen()))).toPoint());
 			if( searchFor.isInstance(c)){
 				return c;
-			} else if(tmp == null || c == tmp) {
+			} 
+			
+			Component tmp = c.getComponentAt((new Vector(c.getLocationOnScreen())).diffVector((new Vector(e.getLocationOnScreen()))).toPoint());
+			if(tmp == null || c == tmp) {
 				return null;
 			} else {
 				return searchSourceRecursive(e,tmp, searchFor);
