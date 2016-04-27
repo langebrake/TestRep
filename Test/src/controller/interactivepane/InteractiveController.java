@@ -24,6 +24,8 @@ import javax.swing.InputMap;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
+import plugin.Plugin;
+import pluginhost.PluginHost;
 import controller.history.UserAction;
 import controller.history.UserActionManager;
 import controller.shortcut.DeleteAction;
@@ -37,6 +39,9 @@ public class InteractiveController implements MouseInputListener {
 	private UserActionManager actionManager;
 	private Vector lastMousePaneLocation,
 					lastMouseGridLocation;
+	private ModuleListener moduleListener;
+	private PopupMenuListener popupMenuListener;
+	private ShapeListener shapeListener;
 	
 	public InteractiveController(){
 		this(new InteractivePane(), new MidiGraph(), new UserActionManager());
@@ -49,6 +54,9 @@ public class InteractiveController implements MouseInputListener {
 		this.pane.addMouseListener(this);
 		this.pane.addMouseMotionListener(this);
 		this.pane.addMouseWheelListener(this);
+		this.moduleListener = new ModuleListener(this);
+		this.popupMenuListener = new PopupMenuListener(this);
+		this.shapeListener = new ShapeListener(this);
 		// TODO: Shortcut handling should be done by other class
 				InputMap inputMap = this.pane.getInputMap();
 				ActionMap actionMap = this.pane.getActionMap();
@@ -83,19 +91,18 @@ public class InteractiveController implements MouseInputListener {
 				InteractiveComponent src2 = new InteractiveDisplay(this.pane,new Vector(500,900), p2);
 				p1.setCable(new InteractiveCable(p1,p2,this.pane));
 				p2.setCable(p1.getCable());
-				ModuleListener testListener = new ModuleListener(this);
-				src.addMouseListener(testListener);
-				src.addMouseMotionListener(testListener);
-				src.addMouseWheelListener(testListener);
-				src2.addMouseListener(testListener);
-				src2.addMouseMotionListener(testListener);
-				src2.addMouseWheelListener(testListener);
+				src.addMouseListener(this.moduleListener);
+				src.addMouseMotionListener(this.moduleListener);
+				src.addMouseWheelListener(this.moduleListener);
+				src2.addMouseListener(this.moduleListener);
+				src2.addMouseMotionListener(this.moduleListener);
+				src2.addMouseWheelListener(this.moduleListener);
 				this.pane.add(src);
 				this.pane.add(src2);
 				this.pane.add(p1.getCable());
-				this.pane.addMouseListener(PopupMenuListener.getInstance(this));
-				src.addMouseListener(PopupMenuListener.getInstance(this));
-				src2.addMouseListener(PopupMenuListener.getInstance(this));
+				this.pane.addMouseListener(this.popupMenuListener);
+				src.addMouseListener(this.popupMenuListener);
+				src2.addMouseListener(this.popupMenuListener);
 				ShapeListener sl = new ShapeListener(this);
 				this.pane.addMouseListener(sl);
 				this.pane.addMouseMotionListener(sl);
@@ -115,6 +122,8 @@ public class InteractiveController implements MouseInputListener {
 	public void redoAction(){
 		this.actionManager.redo();
 	}
+	
+
 	
 	public UserActionManager getActionManager(){
 		return this.actionManager;
@@ -202,6 +211,14 @@ public class InteractiveController implements MouseInputListener {
 	
 	public Vector getLastMouseGridLocation(){
 		return this.lastMouseGridLocation;
+	}
+	
+	public PopupMenuListener getPopupMenuListener(){
+		return this.popupMenuListener;
+	}
+	
+	public ModuleListener getModuleListener(){
+		return this.moduleListener;
 	}
 	
 	public InteractivePane getPane(){

@@ -1,3 +1,8 @@
 Manifest-Version: 1.0
-Name: DefaultPlugin
-PluginVersion: 1.0
+Name: Default Plugin
+Description: A default plugin with one input and output that does nothing more than linking the in to the output 
+Version: 1.0
+Vendor: Hendrik Langebrake
+Web: hl-soundtracks.de
+Type: MidiThruPlugin
+PluginInterfaceVersion: 0.1a

@@ -25,6 +25,7 @@ public class DeleteAction extends AbstractAction {
 		UserAction delete = new UserDeleteAction(controller.getActionManager(), controller.getPane().getComponentSelection(), controller.getPane().getShapeSelection());
 		controller.executeAction(delete);
 		controller.getPane().clearSelection();
+		//TODO: Cables need to get disconnected upon module or cable deletion! (both in Pane and Graph)
 		
 	}
 	

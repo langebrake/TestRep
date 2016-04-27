@@ -9,20 +9,18 @@ import controller.history.UserAction;
 import controller.history.UserActionManager;
 import controller.interactivepane.InteractiveController;
 
-public class UserDeleteAction implements UserAction {
+public class UserDeleteAction extends UserAction {
 	final LinkedList<InteractiveComponent> components;
 	final LinkedList<InteractiveShape> shapes;
-	private UserActionManager manager;
-	private InteractiveController controller;
 	public UserDeleteAction(UserActionManager manager, LinkedList<InteractiveComponent> components, LinkedList<InteractiveShape> shapes){
+		super(manager);
 		this.components = components;
 		this.shapes = shapes;
-		this.manager = manager;
-		this.controller = manager.getController();
 	}
 	
 	@Override
 	public void undo() {
+		//Implement Connecting etc. of modules
 		for(InteractiveComponent c: components){
 			controller.getPane().add(c);
 		}
@@ -34,6 +32,7 @@ public class UserDeleteAction implements UserAction {
 
 	@Override
 	public void execute() {
+		//TODO: implement Disconnecting etc.
 		for(InteractiveComponent c: components){
 			controller.getPane().remove(c);
 		}

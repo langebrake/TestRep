@@ -27,22 +27,23 @@ import engine.Engine;
 public class PluginManager {
 	
 	private Controller controller;
-	private static LinkedList<Method> plugins;
+	private static LinkedList<PluginHierarchyElement> plugins;
 	
 	/**
 	 * adds 
 	 * @param menu
 	 */
-	public static LinkedList<Method> getPluginList(){
+	public static LinkedList<PluginHierarchyElement> getPluginList(){
 		return plugins;
 	}
 	
-	private static void loadPlugins(File dir) throws IOException, ClassNotFoundException, NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException{
+	private static void loadPlugins(File dir,LinkedList<PluginHierarchyElement> appendList) throws IOException, ClassNotFoundException, NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException{
 		for(File file: dir.listFiles()){
 			if(file.isDirectory()) {
-				loadPlugins(file);
+				Subgroup s = new Subgroup(file.getName());
+				appendList.add(s);
+				loadPlugins(file,s);
 			}else if(file.getName().toLowerCase().endsWith(".jar")){
-				System.out.println(file.getAbsolutePath());
 				String path = file.getPath();
 				JarFile jar = new JarFile(path);
 				Enumeration<JarEntry> en = jar.entries();
@@ -61,20 +62,14 @@ public class PluginManager {
 				    //System.out.println(className);
 				    Class<?> c = cl.loadClass(className);
 				    if(c.getSuperclass() == Plugin.class){
-				    	System.out.println(jar.getManifest().getMainAttributes().getValue("PluginVersion"));
 				    	Method m = c.getMethod("getInstance",PluginHost.class);
-				    	plugins.add(m);
-//				    	PluginHost module = new Module(Engine.load());
-//				    	Plugin p = (Plugin) m.invoke(null, module);
-//				    	module.setPlugin(p);
-//				    	p.getFullView().setVisible(true);
-//				    	System.out.println(p.getPluginName());
-//				    	System.out.println(module.getOutputCount());
+				    	appendList.add(new Loadable(m,jar.getManifest().getMainAttributes()));
 				    	
 				    }else{
 				    	
 				    }
 				}
+				jar.close();
 				
 			}
 			
@@ -85,48 +80,16 @@ public class PluginManager {
 		}
 	}
 	public static void loadPlugins() throws Exception{
-		plugins = new LinkedList<Method>();
+		plugins = new LinkedList<PluginHierarchyElement>();
 		File f = new File("./plugin");
-		loadPlugins(f);
-		for(Method m:plugins){
-			PluginHost module = new Module(Engine.load());
-			Plugin p = (Plugin) m.invoke(null, module);
-			System.out.println(p.getPluginName());
+		loadPlugins(f,plugins);
+		for(PluginHierarchyElement m:plugins){
+			System.out.println(m.getName());
+			if(m.isLoadable()){
+				PluginHost module = new Module(Engine.load());
+				Plugin p = ((Loadable)m).getInstance(module);
+			}
+			
 		}
-		
-		
-		
-		
-		
-		
-//		File f = new File("./plugin");
-//		
-//		JarFile jar = new JarFile(f.listFiles()[0].getPath());
-//		Enumeration<JarEntry> en = jar.entries();
-//		
-//		URL[] urls = { new URL("jar:file:" + f.listFiles()[0].getPath() +"!/") };
-//		URLClassLoader cl = URLClassLoader.newInstance(urls);
-//
-//		while (en.hasMoreElements()) {
-//		    JarEntry je = en.nextElement();
-//		    if(je.isDirectory() || !je.getName().endsWith(".class")){
-//		        continue;
-//		    }
-//		    // -6 because of .class
-//		    String className = je.getName().substring(0,je.getName().length()-6);
-//		    className = className.replace('/', '.');
-//		    //System.out.println(className);
-//		    Class c = cl.loadClass(className);
-//		    if(c.getSuperclass() == Plugin.class){
-//		    	Method m = c.getMethod("getInstance",PluginHost.class);
-//		    	PluginHost module = new Module(Engine.load());
-//		    	Plugin p = (Plugin) m.invoke(null, module);
-//		    	module.setPlugin(p);
-//		    	p.getFullView().setVisible(true);
-//		    	System.out.println(p.getPluginName());
-//		    	System.out.println(module.getOutputCount());
-//		    	
-//		    }
-//		}
 	}
 }
