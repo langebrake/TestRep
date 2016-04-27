@@ -14,6 +14,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 
+
 public class InteractivePane extends JLayeredPane {
 
 	
@@ -79,7 +80,6 @@ public class InteractivePane extends JLayeredPane {
 	 * Viewport transformation methods
 	 */
 	public void translateViewport(Vector translationVectorGrid){
-		
 		this.viewportTranslation = this.viewportTranslation.addVector(translationVectorGrid);
 		
 		this.updateView();

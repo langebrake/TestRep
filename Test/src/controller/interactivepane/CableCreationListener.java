@@ -2,6 +2,7 @@ package controller.interactivepane;
 
 import gui.interactivepane.CablePoint;
 import gui.interactivepane.CablePointComponent;
+import gui.interactivepane.CablePointHost;
 import gui.interactivepane.CablePointPanel;
 import gui.interactivepane.CablePointType;
 import gui.interactivepane.InteractiveCable;
@@ -33,13 +34,10 @@ public class CableCreationListener extends MouseAdapter{
 	}
 	
 	public void mousePressed(MouseEvent e){
-		Object source = searchSourceRecursive(e,controller.getPane(),CablePoint.class);
-		if( validInteraction(e) && source instanceof CablePoint){
-			sourcePoint = (CablePoint) source;
+		Object source = searchSourceRecursive(e,controller.getPane(),CablePointHost.class);
+		if( validInteraction(e) && source instanceof CablePointHost){
+			sourcePoint = ((CablePointHost) source).getCablePoint();
 			if(sourcePoint.isConnected()){
-				//TODO: Reset old Connection and connect new cable, but keep the old connection saved in case an invalid release happens.
-				// the old connection should be restored int that case
-				//Mind the USER ACTION!!
 				this.oldSourceConnection = sourcePoint.getCable();
 				controller.getPane().remove(this.oldSourceConnection);
 			}
@@ -51,16 +49,17 @@ public class CableCreationListener extends MouseAdapter{
 			tmpCable.setDraggedEndpoint(true);
 			controller.getPane().add(tmpCable);
 			controller.getPane().add(tmpPoint);
-
+			controller.setCableAddProcess(true);
 		}
 	}
 	
 	public void mouseReleased(MouseEvent e){
+		
 		if(tmpPoint != null && SwingUtilities.isLeftMouseButton(e) && !SwingUtilities.isMiddleMouseButton(e)){
-			Component source = searchSourceRecursive(e,controller.getPane(),CablePoint.class);
-			if(source instanceof CablePoint && ((CablePoint) source).getType()!=sourcePoint.getType())
+			Component source = searchSourceRecursive(e,controller.getPane(),CablePointHost.class);
+			if(source instanceof CablePointHost && ((CablePointHost) source).getCablePoint().getType()!=sourcePoint.getType())
 			{
-				CablePoint destPoint = (CablePoint) source;
+				CablePoint destPoint = ((CablePointHost) source).getCablePoint();
 				tmpCable.setDraggedEndpoint(false);
 				if(!destPoint.isConnected()){
 					tmpCable.setDestination(destPoint);
@@ -86,22 +85,26 @@ public class CableCreationListener extends MouseAdapter{
 						overrides[0] = destPoint.getCable();
 					}
 					this.newConnections.put(tmpCable, overrides);
-					//TODO: disconnect old connection, create new, mind the UserAction
 				}
 				
 				this.controller.executeAction(new UserAddConnectionsAction(controller.getActionManager(),newConnections));
 			} else {
-				sourcePoint.disconnect();
+				sourcePoint.setCable(this.oldSourceConnection);
 				controller.getPane().remove(tmpCable);
+				if(this.oldSourceConnection != null){
+					controller.getPane().add(this.oldSourceConnection);
+				}
 			}
 			controller.getPane().remove(tmpPoint);
 			tmpPoint = null;
 			this.oldSourceConnection = null;
 			this.newConnections = new HashMap<InteractiveCable, InteractiveCable[]>();
+			controller.setCableAddProcess(false);
 		} 
 	}
 	
 	public void mouseDragged(MouseEvent e){
+
 		if(tmpPoint != null ){
 			tmpPoint.setLocation(controller.relativeToPane(e).toPoint());
 			controller.getPane().repaint();

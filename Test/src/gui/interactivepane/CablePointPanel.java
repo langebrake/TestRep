@@ -3,10 +3,11 @@ package gui.interactivepane;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.util.LinkedList;
 
 import javax.swing.JPanel;
 
-public class CablePointPanel extends JPanel implements CablePoint {
+public class CablePointPanel extends JPanel implements CablePoint,CablePointHost {
 	private InteractivePane pane;
 	private InteractiveCable cable;
 	private final CablePointType type;
@@ -63,13 +64,24 @@ public class CablePointPanel extends JPanel implements CablePoint {
 	}
 	@Override
 	public void setHost(CablePointHost host) {
-		this.host = host;
+		this.host = this;
 		
 	}
 	@Override
 	public void disconnect() {
 		this.cable = null;
 		
+	}
+	@Override
+	public LinkedList<CablePoint> getCablePoints() {
+		LinkedList<CablePoint> tmp = new LinkedList<CablePoint>();
+		
+		return tmp;
+	}
+	@Override
+	public CablePoint getCablePoint() {
+		
+		return this;
 	}
 
 }

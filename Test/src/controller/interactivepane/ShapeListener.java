@@ -29,11 +29,11 @@ public class ShapeListener extends ControllerListenerAdapter{
 			
 			LinkedList<InteractiveShape> shapes = controller.getPane().getShapes();
 			for (InteractiveShape s:shapes){
-				if(s.contains(e.getPoint())){
-					controller.getPane().setShapeHovered(s, true);
-				} else {
-					controller.getPane().setShapeHovered(s, false);
-				}
+					if(s.contains(e.getPoint())){
+						controller.getPane().setShapeHovered(s, true);
+					} else {
+						controller.getPane().setShapeHovered(s, false);
+					}
 			}
 		}
 		

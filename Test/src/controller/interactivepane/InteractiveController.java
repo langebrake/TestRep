@@ -45,6 +45,7 @@ public class InteractiveController implements MouseInputListener {
 	private ShapeListener shapeListener;
 	private CableCreationListener cableCreationListener;
 	private boolean componentAndViewDrag;
+	private boolean cableAddProcess;
 	
 	public InteractiveController(){
 		this(new InteractivePane(), new MidiGraph(), new UserActionManager());
@@ -194,15 +195,17 @@ public class InteractiveController implements MouseInputListener {
 
 	@Override
 	public void mouseDragged(MouseEvent arg0) {
-		if(validInteraction(arg0)){
-			Vector currentMouseGridLocation = this.toGridCoordinate(this.relativeToPane(arg0));
-			if(SwingUtilities.isLeftMouseButton(arg0) && (arg0.isControlDown())  || SwingUtilities.isMiddleMouseButton(arg0)){
-				this.pane.translateViewport(lastMouseGridLocation.diffVector(currentMouseGridLocation));
-				
-				
-			} else if(SwingUtilities.isLeftMouseButton(arg0) ){
-				this.pane.selectionArea(this.lastMousePaneLocation, this.relativeToPane(arg0), true);	
+		if(!this.getCableAddProcess() || SwingUtilities.isMiddleMouseButton(arg0)){
+			if(validInteraction(arg0)){
+				Vector currentMouseGridLocation = this.toGridCoordinate(this.relativeToPane(arg0));
+				if(SwingUtilities.isLeftMouseButton(arg0) && (arg0.isControlDown())  || SwingUtilities.isMiddleMouseButton(arg0)){
+					this.pane.translateViewport(lastMouseGridLocation.diffVector(currentMouseGridLocation));
 					
+					
+				} else if(SwingUtilities.isLeftMouseButton(arg0) ){
+					this.pane.selectionArea(this.lastMousePaneLocation, this.relativeToPane(arg0), true);	
+						
+				}
 			}
 		}
 		
@@ -213,6 +216,14 @@ public class InteractiveController implements MouseInputListener {
 	public void mouseMoved(MouseEvent arg0) {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	public void setCableAddProcess(boolean set){
+		this.cableAddProcess = set;
+	}
+	
+	public boolean getCableAddProcess(){
+		return this.cableAddProcess;
 	}
 	
 	public void setDragged(boolean set){

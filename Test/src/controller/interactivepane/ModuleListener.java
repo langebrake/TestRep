@@ -38,28 +38,30 @@ public class ModuleListener extends ControllerListenerAdapter {
 	
 	@Override
 	public void mouseDragged(MouseEvent arg0) {
-		if(validInteraction(arg0)){
-			Vector currentMouseGridLocation = controller.toGridCoordinate(controller.relativeToPane(arg0));
-			Vector translation = controller.getLastMouseGridLocation().diffVector(currentMouseGridLocation);
-			
-			InteractiveComponent source = (InteractiveComponent) arg0.getSource();
-			
-			if(!((InteractiveComponent) source).isSelected()){
-				if( !arg0.isShiftDown()){
-					controller.getPane().clearSelection();
-					
+		if(!controller.getCableAddProcess() || SwingUtilities.isMiddleMouseButton(arg0)){
+			if(validInteraction(arg0)){
+				Vector currentMouseGridLocation = controller.toGridCoordinate(controller.relativeToPane(arg0));
+				Vector translation = controller.getLastMouseGridLocation().diffVector(currentMouseGridLocation);
+				
+				InteractiveComponent source = (InteractiveComponent) arg0.getSource();
+				
+				if(!((InteractiveComponent) source).isSelected()){
+					if( !arg0.isShiftDown()){
+						controller.getPane().clearSelection();
+						
+					}
+					controller.getPane().setComponentSelected((InteractiveComponent) source,true);
 				}
-				controller.getPane().setComponentSelected((InteractiveComponent) source,true);
+				
+	
+				controller.getPane().translateSelection(translation);
+				controller.updateLastMouseLocation(arg0);
+				
+			} else {
+				controller.mouseDragged(arg0);
+				
 			}
-			
-
-			controller.getPane().translateSelection(translation);
-			controller.updateLastMouseLocation(arg0);
-			
-		} else {
-			controller.mouseDragged(arg0);
-			
-			}
+		}
 		
 		
 	}
