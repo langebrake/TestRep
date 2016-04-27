@@ -41,6 +41,7 @@ public class ShapeListener extends ControllerListenerAdapter{
 	
 	@Override
 	public void mouseClicked(MouseEvent e){
+		//TODO: seleactable with SHIFT+click!!
 		if(inPane){
 			LinkedList<InteractiveShape> shapes = controller.getPane().getShapes();
 			for (InteractiveShape s:shapes){

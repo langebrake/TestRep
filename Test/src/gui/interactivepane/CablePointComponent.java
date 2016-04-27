@@ -1,8 +1,10 @@
 package gui.interactivepane;
 
+import java.util.LinkedList;
+
 import javax.swing.JComponent;
 
-public class CablePointComponent extends JComponent implements CablePoint {
+public class CablePointComponent extends JComponent implements CablePoint, CablePointHost {
 	private InteractivePane pane;
 	private InteractiveCable cable;
 	private final CablePointType type;
@@ -42,12 +44,23 @@ public class CablePointComponent extends JComponent implements CablePoint {
 	}
 	@Override
 	public void setHost(CablePointHost host) {
-		this.host=host;
+		this.host=this;
 	}
 	@Override
 	public void disconnect() {
 		this.cable = null;
 		
+	}
+	@Override
+	public LinkedList<CablePoint> getCablePoints() {
+		LinkedList<CablePoint> tmp = new LinkedList<CablePoint>();
+		tmp.add(this);
+		return null;
+	}
+	@Override
+	public CablePoint getCablePoint() {
+		// TODO Auto-generated method stub
+		return this;
 	}
 	
 	
