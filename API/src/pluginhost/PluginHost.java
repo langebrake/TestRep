@@ -648,6 +648,7 @@ public abstract class PluginHost implements AutoCloseable{
 	public void close(){
 		this.plugin.close();
 	}
+	
 	public abstract void notify(PluginEvent e);
 	
 }

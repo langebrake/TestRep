@@ -42,6 +42,7 @@ public class InteractiveController implements MouseInputListener {
 	private ModuleListener moduleListener;
 	private PopupMenuListener popupMenuListener;
 	private ShapeListener shapeListener;
+	private boolean componentAndViewDrag;
 	
 	public InteractiveController(){
 		this(new InteractivePane(), new MidiGraph(), new UserActionManager());
@@ -154,6 +155,8 @@ public class InteractiveController implements MouseInputListener {
 
 		
 	}
+	
+
 	@Override
 	public void mouseReleased(MouseEvent arg0) {
 		this.pane.commitSelection();
@@ -164,10 +167,12 @@ public class InteractiveController implements MouseInputListener {
 	public void mouseWheelMoved(MouseWheelEvent arg0) {
 		//this procedure is necessary due to a bug in AWT:
 		//MouseWheelEvent.getLocationOnScreen() always returns (0,0)
-		Vector tmp = new Vector(arg0.getComponent().getLocationOnScreen());
-		tmp = tmp.addVector(new Vector(arg0.getPoint()));
-		this.lastMousePaneLocation = new Vector(this.pane.getLocationOnScreen()).diffVector(tmp);
-		this.lastMouseGridLocation = this.toGridCoordinate(this.lastMousePaneLocation);
+		if(!this.getDragged()){
+			Vector tmp = new Vector(arg0.getComponent().getLocationOnScreen());
+			tmp = tmp.addVector(new Vector(arg0.getPoint()));
+			this.lastMousePaneLocation = new Vector(this.pane.getLocationOnScreen()).diffVector(tmp);
+			this.lastMouseGridLocation = this.toGridCoordinate(this.lastMousePaneLocation);
+		}
 		this.pane.zoomViewport(this.lastMousePaneLocation, arg0.getWheelRotation());
 	}
 
@@ -177,6 +182,7 @@ public class InteractiveController implements MouseInputListener {
 		
 		if(SwingUtilities.isLeftMouseButton(arg0) && (arg0.isControlDown())  || SwingUtilities.isMiddleMouseButton(arg0)){
 			this.pane.translateViewport(lastMouseGridLocation.diffVector(currentMouseGridLocation));
+			
 			
 		} else if(SwingUtilities.isLeftMouseButton(arg0) ){
 			this.pane.selectionArea(this.lastMousePaneLocation, this.relativeToPane(arg0), true);	
@@ -191,6 +197,15 @@ public class InteractiveController implements MouseInputListener {
 		// TODO Auto-generated method stub
 		
 	}
+	
+	public void setDragged(boolean set){
+		this.componentAndViewDrag = set;
+	}
+	
+	public boolean getDragged(){
+		return this.componentAndViewDrag;
+	}
+	
 	
 	public void updateLastMouseLocation(MouseEvent e){
 		this.lastMousePaneLocation = this.relativeToPane(e);

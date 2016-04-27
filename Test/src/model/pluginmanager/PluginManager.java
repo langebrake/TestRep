@@ -83,13 +83,5 @@ public class PluginManager {
 		plugins = new LinkedList<PluginHierarchyElement>();
 		File f = new File("./plugin");
 		loadPlugins(f,plugins);
-		for(PluginHierarchyElement m:plugins){
-			System.out.println(m.getName());
-			if(m.isLoadable()){
-				PluginHost module = new Module(Engine.load());
-				Plugin p = ((Loadable)m).getInstance(module);
-			}
-			
-		}
 	}
 }

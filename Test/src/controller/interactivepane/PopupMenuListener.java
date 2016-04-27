@@ -21,10 +21,10 @@ import model.pluginmanager.Subgroup;
 import controller.pluginmanager.PluginAddAction;
 import controller.shortcut.DeleteAction;
 
-public class PopupMenuListener extends ControllerListenerAdapter {
-	
+public class PopupMenuListener extends MouseAdapter {
+	private InteractiveController controller;
 	public PopupMenuListener(InteractiveController c) {
-		super(c);
+		this.controller = c;
 	}
 
 

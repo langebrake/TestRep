@@ -22,7 +22,17 @@ public class ModuleListener extends ControllerListenerAdapter {
 	
 	@Override
 	public void mousePressed(MouseEvent arg0){
+		if(!SwingUtilities.isMiddleMouseButton(arg0)){
+		controller.setDragged(true);
+		}
+		
 		controller.updateLastMouseLocation(arg0);
+	}
+	
+	public void mouseReleased(MouseEvent arg0){
+		if(!SwingUtilities.isMiddleMouseButton(arg0)){
+		controller.setDragged(false);
+		}
 	}
 	
 	@Override
@@ -67,6 +77,12 @@ public class ModuleListener extends ControllerListenerAdapter {
 	public void mouseClicked(MouseEvent arg0){
 		Object source = arg0.getSource();
 		if(source instanceof InteractiveComponent){
+			if(arg0.getClickCount() == 2){
+				if (source instanceof InteractiveModule){
+					//TODO: Save all active Frames into one Hashmap to be able to hide all
+					((InteractiveModule) source).getModule().getPlugin().getFullView().setVisible(true);
+				}
+			}
 			boolean componentWasSelected = ((InteractiveComponent) source).isSelected();
 			boolean userMultiSelect = (arg0.getModifiers() & InputEvent.SHIFT_MASK) != 0;
 			boolean paneHasSelection = controller.getPane().hasSelected();
