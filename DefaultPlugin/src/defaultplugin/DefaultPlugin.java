@@ -35,7 +35,6 @@ public class DefaultPlugin extends Plugin implements Receiver, Transmitter{
 	}
 	@Override
 	public void notify(HostEvent e) {
-		// TODO Auto-generated method stub
 		
 	}
 	@Override
@@ -76,6 +75,7 @@ public class DefaultPlugin extends Plugin implements Receiver, Transmitter{
 		input.setOutput(this);
 		this.setReceiver(output);
 		Utilities.print();
+		
 		
 	}
 	@Override

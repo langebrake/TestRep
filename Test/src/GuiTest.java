@@ -39,6 +39,7 @@ public class GuiTest {
 				}
             }
         });
+		
 		PluginManager.loadPlugins();
 	}
 }
