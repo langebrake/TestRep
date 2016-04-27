@@ -28,6 +28,7 @@ public class InteractiveCable implements InteractiveShape{
 	private InteractivePane parent;
 	private Paint color;
 	private float width;
+	private boolean draggedEndpoint;
 	
 	public InteractiveCable(InteractivePane parent){
 		this(null,null,parent);
@@ -138,22 +139,42 @@ public class InteractiveCable implements InteractiveShape{
 		}
 	}
 	
+	public void setDraggedEndpoint(boolean set){
+		this.draggedEndpoint = set;
+	}
 	
+	public LinkedList<CablePoint> getCablePoints(){
+		LinkedList<CablePoint> points = new LinkedList<CablePoint>();
+		points.add(source);
+		points.addAll(cablePoints);
+		points.add(dest);
+		return points;
+	}
 	public void updateView(Graphics2D g2d){
 		float x1pos =this.source.getXOnPane();
 		float y1pos =this.source.getYOnPane();
 		float x2pos =this.dest.getXOnPane();
 		float y2pos =this.dest.getYOnPane();
-		
-		//this.cable = new CubicCurve2D.Float(x1pos,y1pos,x1pos+(x2pos-x1pos)/5,y1pos,x2pos-(x2pos-x1pos)/5,y2pos,x2pos,y2pos);
+		float lastx = x1pos;
+		float lasty = y1pos;
 		this.cable = new GeneralPath();
-		
 		this.cable.moveTo(x1pos, y1pos);
+		
 		for(CablePoint c: this.cablePoints){
 			this.cable.lineTo(c.getXOnPane(), c.getYOnPane());
+			lastx = c.getXOnPane();
+			lasty = c.getYOnPane();
 		}
 		
-		this.cable.curveTo(x1pos+(x2pos-x1pos)/5, y1pos, x2pos-(x2pos-x1pos)/5, y2pos, x2pos, y2pos);
+		float endpointCurvedX, endpointCurvedY;
+		if(draggedEndpoint){
+			endpointCurvedX = x2pos-(x2pos-lastx)/5;
+			endpointCurvedY = y2pos-(y2pos-lasty)/5;
+		} else {
+			endpointCurvedX = x2pos-(x2pos-lastx)/5;
+			endpointCurvedY = y2pos;
+		}
+		this.cable.curveTo(x1pos+(x2pos-x1pos)/5, y1pos, endpointCurvedX, endpointCurvedY, x2pos, y2pos);
 
 		
 		g2d.setPaint(this.color);

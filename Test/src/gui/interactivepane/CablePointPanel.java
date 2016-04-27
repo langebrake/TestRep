@@ -9,13 +9,15 @@ import javax.swing.JPanel;
 public class CablePointPanel extends JPanel implements CablePoint {
 	private InteractivePane pane;
 	private InteractiveCable cable;
-	
+	private final CablePointType type;
+	private CablePointHost host;
 	/**
 	 * Constructs a Cable Point Panel where the cable point itself lies in the middle of the specified panel
 	 * @param parent
 	 */
-	public CablePointPanel(InteractivePane parent){
+	public CablePointPanel(InteractivePane parent,CablePointType type){
 		this.pane = parent;
+		this.type = type;
 	}
 	@Override
 	public int getXOnPane() {
@@ -43,13 +45,31 @@ public class CablePointPanel extends JPanel implements CablePoint {
 		if(g instanceof Graphics2D){
 			Graphics2D g2d = (Graphics2D) g;
 			int radius = Math.min(this.getWidth(), this.getHeight())/7;
-			g2d.setColor(Color.GREEN);
+			if(this.type == CablePointType.INPUT){
+				g2d.setColor(Color.BLUE);
+			} else if(this.type == CablePointType.OUTPUT){
+				g2d.setColor(Color.MAGENTA);
+			}
 			g2d.fillOval(this.getHeight()/2-radius/2, this.getWidth()/2-radius/2, radius, radius);
 		}
 	}
 	@Override
 	public boolean isConnected() {
 		return this.cable != null;
+	}
+	@Override
+	public CablePointType getType() {
+		return this.type;
+	}
+	@Override
+	public void setHost(CablePointHost host) {
+		this.host = host;
+		
+	}
+	@Override
+	public void disconnect() {
+		this.cable = null;
+		
 	}
 
 }

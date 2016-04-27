@@ -45,8 +45,8 @@ public class UserDeleteAction extends UserAction {
 		for(InteractiveShape c:shapes){
 			//TODO: implement Disconnecting etc. on View and Model!
 			if(c instanceof InteractiveCable){
-				((InteractiveCable) c).getSource().setCable(null);
-				((InteractiveCable) c).getDestination().setCable(null);
+				((InteractiveCable) c).getSource().disconnect();
+				((InteractiveCable) c).getDestination().disconnect();
 			}
 			controller.getPane().remove(c);
 			

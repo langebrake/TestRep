@@ -1,6 +1,7 @@
 package controller.interactivepane;
 
 import gui.interactivepane.CablePointPanel;
+import gui.interactivepane.CablePointType;
 import gui.interactivepane.InteractiveCable;
 import gui.interactivepane.InteractiveComponent;
 import gui.interactivepane.InteractiveDisplay;
@@ -86,24 +87,33 @@ public class InteractiveController implements MouseInputListener {
 				
 				
 				//TODO: remove this cable debug thing
-				CablePointPanel p1 = new CablePointPanel(this.pane);
-				CablePointPanel p2 = new CablePointPanel(this.pane);
+				CablePointPanel p1 = new CablePointPanel(this.pane,CablePointType.INPUT);
+				CablePointPanel p2 = new CablePointPanel(this.pane,CablePointType.OUTPUT);
+				CablePointPanel p3 = new CablePointPanel(this.pane, CablePointType.INPUT);
+				CablePointPanel p4 = new CablePointPanel(this.pane, CablePointType.OUTPUT);
 				p1.setSize(50, 50);
 				p2.setSize(50, 50);
+				p3.setSize(50, 50);
+				p4.setSize(50, 50);
 				p1.setBackground(Color.LIGHT_GRAY);
 				p2.setBackground(Color.LIGHT_GRAY);
+				p3.setBackground(Color.LIGHT_GRAY);
+				p4.setBackground(Color.LIGHT_GRAY);
 				
 				InteractiveComponent src = new InteractiveDisplay(this.pane,new Vector(0,0), p1);
 				InteractiveComponent src2 = new InteractiveDisplay(this.pane,new Vector(500,900), p2);
-
-				
+				InteractiveComponent src3 = new InteractiveDisplay(this.pane,new Vector(24,789), p3);
+				InteractiveComponent src4 = new InteractiveDisplay(this.pane,new Vector(654,345), p4);
 
 				
 				src.addListeners(this.moduleListener,this.popupMenuListener,this.cableCreationListener);
 				src2.addListeners(this.moduleListener,this.popupMenuListener,this.cableCreationListener);
-
+				src3.addListeners(this.moduleListener,this.popupMenuListener,this.cableCreationListener);
+				src4.addListeners(this.moduleListener,this.popupMenuListener,this.cableCreationListener);
 				this.pane.add(src);
 				this.pane.add(src2);
+				this.pane.add(src3);
+				this.pane.add(src4);
 				this.pane.addMouseListener(this.popupMenuListener);
 				
 				ShapeListener sl = new ShapeListener(this);

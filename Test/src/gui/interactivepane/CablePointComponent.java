@@ -5,8 +5,12 @@ import javax.swing.JComponent;
 public class CablePointComponent extends JComponent implements CablePoint {
 	private InteractivePane pane;
 	private InteractiveCable cable;
-	public CablePointComponent(InteractivePane parent){
+	private final CablePointType type;
+	private CablePointHost host;
+	
+	public CablePointComponent(InteractivePane parent,CablePointType type){
 		this.pane = parent;
+		this.type = type;
 	}
 	@Override
 	public int getXOnPane() {
@@ -32,5 +36,20 @@ public class CablePointComponent extends JComponent implements CablePoint {
 		
 		return this.cable != null;
 	}
+	@Override
+	public CablePointType getType() {
+		return this.type;
+	}
+	@Override
+	public void setHost(CablePointHost host) {
+		this.host=host;
+	}
+	@Override
+	public void disconnect() {
+		this.cable = null;
+		
+	}
+	
+	
 
 }
