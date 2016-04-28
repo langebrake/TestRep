@@ -7,6 +7,7 @@ import gui.interactivepane.InteractiveComponent;
 import gui.interactivepane.InteractiveDisplay;
 import gui.interactivepane.InteractivePane;
 import gui.interactivepane.InteractiveShape;
+import gui.interactivepane.InteractiveShapeComponent;
 import gui.interactivepane.Vector;
 
 import java.awt.Color;
@@ -121,6 +122,11 @@ public class InteractiveController implements MouseInputListener {
 				this.pane.addMouseListener(sl);
 				this.pane.addMouseMotionListener(sl);
 				this.pane.addMouseWheelListener(sl);
+				
+				InteractiveShapeComponent s = new InteractiveShapeComponent(this.pane, new Vector(0,0));
+				s.addListeners(this.moduleListener,this.popupMenuListener);
+				this.pane.add(s);
+				
 		
 	}
 	

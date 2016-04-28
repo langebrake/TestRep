@@ -23,6 +23,7 @@ public class ModuleListener extends ControllerListenerAdapter {
 	
 	@Override
 	public void mousePressed(MouseEvent arg0){
+		
 		if(validInteraction(arg0)){
 		controller.setDragged(true);
 		}
@@ -38,7 +39,8 @@ public class ModuleListener extends ControllerListenerAdapter {
 	
 	@Override
 	public void mouseDragged(MouseEvent arg0) {
-		if(!controller.getCableAddProcess() || SwingUtilities.isMiddleMouseButton(arg0)){
+		if((!controller.getCableAddProcess() || SwingUtilities.isMiddleMouseButton(arg0)) && arg0.getSource() instanceof InteractiveComponent){
+
 			if(validInteraction(arg0)){
 				Vector currentMouseGridLocation = controller.toGridCoordinate(controller.relativeToPane(arg0));
 				Vector translation = controller.getLastMouseGridLocation().diffVector(currentMouseGridLocation);
@@ -68,11 +70,13 @@ public class ModuleListener extends ControllerListenerAdapter {
 
 	@Override
 	public void mouseEntered(MouseEvent arg0) {
+		if(arg0.getSource() instanceof InteractiveComponent)
 		controller.getPane().setComponentHovered((InteractiveComponent) arg0.getSource(), true);
 		
 	}
 	@Override
 	public void mouseExited(MouseEvent arg0) {
+		if(arg0.getSource() instanceof InteractiveComponent)
 		controller.getPane().setComponentHovered((InteractiveComponent) arg0.getSource(), false);
 		
 	}

@@ -244,7 +244,7 @@ public class InteractivePane extends JLayeredPane {
 		for(Component c:this.getComponents()){
 			
 			if(c instanceof InteractiveComponent){
-				if(c.getBounds().intersects(selectionRect)){
+				if(((InteractiveComponent)c).intersects(selectionRect)){
 					if(!((InteractiveComponent) c).isSelected()){
 						((InteractiveComponent) c).setSelected(true);
 						this.tmpSelectedComponents.add((InteractiveComponent) c);

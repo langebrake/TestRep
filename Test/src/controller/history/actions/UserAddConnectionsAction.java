@@ -20,6 +20,11 @@ public class UserAddConnectionsAction extends UserAction {
 		this.cables = cables;
 	}
 
+	
+	//TODO: Something isn't right yet! Seems like the cablepoint connection status is not always correct!
+	//it once was possible to draw 2 lines from 1 point!
+	 
+	
 	@Override
 	public void undo() {
 		for(InteractiveCable c:cables.keySet()){

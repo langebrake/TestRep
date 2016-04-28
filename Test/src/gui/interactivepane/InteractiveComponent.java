@@ -7,6 +7,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Point;
+import java.awt.Shape;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -81,6 +82,10 @@ public abstract class InteractiveComponent extends JPanel implements Interactive
 	
 	protected InteractivePane getParentPane(){
 		return this.parent;
+	}
+	
+	public boolean intersects(Shape s){
+		return s.intersects(this.getBounds());
 	}
 	
 	public void addListeners(EventListener... listener){

@@ -28,13 +28,15 @@ public class CableCreationListener extends MouseAdapter{
 	private InteractiveController controller;
 	private HashMap<InteractiveCable,InteractiveCable[]> newConnections;
 	private InteractiveCable oldSourceConnection;
+	private Object componentSource;
 	public CableCreationListener(InteractiveController c) {
 		this.controller = c;
 		this.newConnections = new HashMap<InteractiveCable,InteractiveCable[]>();
 	}
 	
 	public void mousePressed(MouseEvent e){
-		Object source = searchSourceRecursive(e,controller.getPane(),CablePointHost.class);
+		componentSource = e.getSource();
+		Object source = searchSourceRecursive(e,(Component) e.getSource(),CablePointHost.class);
 		if( validInteraction(e) && source instanceof CablePointHost){
 			sourcePoint = ((CablePointHost) source).getCablePoint();
 			if(sourcePoint.isConnected()){
@@ -56,7 +58,14 @@ public class CableCreationListener extends MouseAdapter{
 	public void mouseReleased(MouseEvent e){
 		
 		if(tmpPoint != null && SwingUtilities.isLeftMouseButton(e) && !SwingUtilities.isMiddleMouseButton(e)){
-			Component source = searchSourceRecursive(e,controller.getPane(),CablePointHost.class);
+			// TODO : Safe casting of getSource!
+			Component searchComponent;
+			if(e.getSource() == componentSource){
+				searchComponent = this.controller.getPane();
+			} else {
+				searchComponent = (Component) e.getSource();
+			}
+			Component source = searchSourceRecursive(e,searchComponent,CablePointHost.class);
 			if(source instanceof CablePointHost 
 					&& ((CablePointHost) source).getCablePoint().getType()!=sourcePoint.getType() 
 					&& source!=null)
@@ -119,7 +128,7 @@ public class CableCreationListener extends MouseAdapter{
 	}
 	
 	public void mouseDragged(MouseEvent e){
-
+		
 		if(tmpPoint != null ){
 			tmpPoint.setLocation(controller.relativeToPane(e).toPoint());
 			controller.getPane().repaint();
@@ -138,7 +147,8 @@ public class CableCreationListener extends MouseAdapter{
 			if( searchFor.isInstance(c)){
 				return c;
 			} 
-			
+			System.out.println(e.getSource());
+			System.out.println(c);
 			Component tmp = c.getComponentAt((new Vector(c.getLocationOnScreen())).diffVector((new Vector(e.getLocationOnScreen()))).toPoint());
 			if(tmp == null || c == tmp) {
 				return null;
