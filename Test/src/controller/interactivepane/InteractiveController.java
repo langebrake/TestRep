@@ -124,7 +124,7 @@ public class InteractiveController implements MouseInputListener {
 				this.pane.addMouseWheelListener(sl);
 				
 				InteractiveShapeComponent s = new InteractiveShapeComponent(this.pane, new Vector(0,0));
-				s.addListeners(this.moduleListener,this.popupMenuListener, this.shapeListener);
+				s.addListeners(this.moduleListener,this.popupMenuListener, this.shapeListener, this.cableCreationListener);
 				this.pane.add(s);
 				
 		
