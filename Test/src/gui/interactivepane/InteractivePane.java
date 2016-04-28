@@ -156,8 +156,8 @@ public class InteractivePane extends JLayeredPane {
 	}
 	
 	public void add(InteractiveComponent c){
-		c.updateView();
 		super.add(c);
+		c.updateView();
 		this.moveToFront(c);
 		this.repaint();
 		

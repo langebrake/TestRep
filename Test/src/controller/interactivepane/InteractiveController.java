@@ -170,8 +170,10 @@ public class InteractiveController implements MouseInputListener {
 			if(!arg0.isShiftDown()
 					&& !SwingUtilities.isMiddleMouseButton(arg0)
 					&& !SwingUtilities.isRightMouseButton(arg0)){
+
 				this.pane.clearSelection();
 				this.pane.repaint();
+				
 			}	 
 		}
 

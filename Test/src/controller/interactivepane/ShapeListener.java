@@ -3,13 +3,15 @@ package controller.interactivepane;
 import gui.interactivepane.InteractiveShape;
 import gui.interactivepane.Vector;
 
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.LinkedList;
 
-public class ShapeListener extends ControllerListenerAdapter{
+public class ShapeListener extends MouseAdapter{
 	private boolean inPane;
+	private InteractiveController controller;
 	public ShapeListener(InteractiveController controller) {
-		super(controller);
+		this.controller = controller;
 		inPane = false;
 	}
 	

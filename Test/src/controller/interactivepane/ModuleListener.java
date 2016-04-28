@@ -25,7 +25,7 @@ public class ModuleListener extends ControllerListenerAdapter {
 	public void mousePressed(MouseEvent arg0){
 		
 		if(validInteraction(arg0)){
-		controller.setDragged(true);
+			controller.setDragged(true);
 		}
 		
 		controller.updateLastMouseLocation(arg0);

@@ -76,7 +76,7 @@ public class CablePointPanel extends JPanel implements CablePoint,CablePointHost
 	@Override
 	public LinkedList<CablePoint> getCablePoints() {
 		LinkedList<CablePoint> tmp = new LinkedList<CablePoint>();
-		
+		tmp.add(this);
 		return tmp;
 	}
 	@Override
@@ -86,8 +86,8 @@ public class CablePointPanel extends JPanel implements CablePoint,CablePointHost
 	}
 	@Override
 	public CablePointHost getHost() {
-		// TODO Auto-generated method stub
-		return null;
+
+		return this;
 	}
 
 }

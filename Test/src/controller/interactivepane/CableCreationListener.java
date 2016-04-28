@@ -67,53 +67,59 @@ public class CableCreationListener extends MouseAdapter{
 				searchComponent = (Component) e.getSource();
 			}
 			Component source = searchSourceRecursive(e,searchComponent,CablePointHost.class);
-			if(source instanceof CablePointHost 
-					&& ((CablePointHost) source).getCablePoint().getType()!=sourcePoint.getType() 
-					&& source!=null)
-			{
+			if(source instanceof CablePointHost){
 				CablePoint destPoint = ((CablePointHost) source).getCablePoint();
-				tmpCable.setDraggedEndpoint(false);
-				if(!destPoint.isConnected()){
-					tmpCable.setDestination(destPoint);
-					controller.getPane().remove(tmpCable);
-					InteractiveCable[] overrides = null;
-					if(this.oldSourceConnection != null){
-						
-						overrides = new InteractiveCable[1];
-						overrides[0] = this.oldSourceConnection;
-					}
-					this.newConnections.put(tmpCable, overrides);
+				if(((CablePointHost) source).getCablePoint().getType()!=sourcePoint.getType() 
+						&& source!=null){
 					
-					this.controller.executeAction(new UserAddConnectionsAction(controller.getActionManager(),newConnections));
-				} else {
-					if(! (this.oldSourceConnection != null 
-							&&((destPoint == this.oldSourceConnection.getDestination() 
-								|| destPoint == this.oldSourceConnection.getSource())))){
-						
-					
+					tmpCable.setDraggedEndpoint(false);
+					if(!destPoint.isConnected()){
 						tmpCable.setDestination(destPoint);
 						controller.getPane().remove(tmpCable);
 						InteractiveCable[] overrides = null;
 						if(this.oldSourceConnection != null){
-							overrides = new InteractiveCable[2];
-							overrides[0] = this.oldSourceConnection;
-							overrides[1] = destPoint.getCable();
-						}else {
+							
 							overrides = new InteractiveCable[1];
-							overrides[0] = destPoint.getCable();
+							overrides[0] = this.oldSourceConnection;
 						}
 						this.newConnections.put(tmpCable, overrides);
+						
 						this.controller.executeAction(new UserAddConnectionsAction(controller.getActionManager(),newConnections));
 					} else {
-						sourcePoint.setCable(this.oldSourceConnection);
-						controller.getPane().remove(tmpCable);
-						if(this.oldSourceConnection != null){
-							controller.getPane().add(this.oldSourceConnection);
+						if(! (this.oldSourceConnection != null 
+								&&((destPoint == this.oldSourceConnection.getDestination() 
+									|| destPoint == this.oldSourceConnection.getSource())))){
+							
+						
+							tmpCable.setDestination(destPoint);
+							controller.getPane().remove(tmpCable);
+							InteractiveCable[] overrides = null;
+							if(this.oldSourceConnection != null){
+								overrides = new InteractiveCable[2];
+								overrides[0] = this.oldSourceConnection;
+								overrides[1] = destPoint.getCable();
+							}else {
+								overrides = new InteractiveCable[1];
+								overrides[0] = destPoint.getCable();
+							}
+							this.newConnections.put(tmpCable, overrides);
+							this.controller.executeAction(new UserAddConnectionsAction(controller.getActionManager(),newConnections));
+						} else {
+							sourcePoint.setCable(this.oldSourceConnection);
+							controller.getPane().remove(tmpCable);
+							if(this.oldSourceConnection != null){
+								controller.getPane().add(this.oldSourceConnection);
+							}
 						}
 					}
+				}else {
+					sourcePoint.setCable(this.oldSourceConnection);
+					controller.getPane().remove(tmpCable);
+					if(this.oldSourceConnection != null){
+						controller.getPane().add(this.oldSourceConnection);
+					}
 				}
-				
-				
+			
 			} else {
 				sourcePoint.setCable(this.oldSourceConnection);
 				controller.getPane().remove(tmpCable);

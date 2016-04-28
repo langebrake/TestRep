@@ -19,7 +19,6 @@ public class InteractiveShapeComponent extends InteractiveComponent implements C
 	public InteractiveShapeComponent(InteractivePane parent, Vector origin) {
 		super(parent, origin);
 		this.setLayout(new BorderLayout());
-		this.setBorder(BorderFactory.createLineBorder(Color.YELLOW));
 		this.cablePoints = new LinkedList<CablePointSimple>();
 		this.setOriginDimension(new Dimension(200, 200));
 		this.setOpaque(false);
@@ -33,12 +32,12 @@ public class InteractiveShapeComponent extends InteractiveComponent implements C
 	@Override
 	public void updateView(){
 		super.updateView();
-		this.s = new Ellipse2D.Float(this.getWidth()/10,this.getHeight()/10,this.getWidth() - this.getWidth()/7,this.getHeight() - this.getHeight()/7);
-		for(CablePointSimple c:this.cablePoints){
-			c.setXOnScreen((int) (this.getLocationOnScreen().getX() + this.getWidth() / 2));
-			c.setYOnScreen((int) (this.getLocationOnScreen().getY() + this.getHeight() / 2));
-		}
-		this.repaint();
+		this.s = new Ellipse2D.Float(0,0,this.getWidth() ,this.getHeight());
+			for(CablePointSimple c:this.cablePoints){
+				c.setXOnScreen((int) (this.getLocationOnScreen().getX() + this.getWidth() / 2));
+				c.setYOnScreen((int) (this.getLocationOnScreen().getY() + this.getHeight() / 2));
+			}
+			this.repaint();
 	}
 	
 	@Override

@@ -31,8 +31,9 @@ public class UserDeleteAction extends UserAction {
 		//Implement Connecting etc. of modules
 		for(InteractiveComponent c: components){
 			controller.getPane().add(c);
-			LinkedList<CablePoint> cablePoints = getRecursive(c,CablePoint.class);
-			for(CablePoint cablePoint: cablePoints){
+			LinkedList<CablePointHost> cablePointHosts = getRecursive(c,CablePointHost.class);
+			for(CablePointHost cablePointHost: cablePointHosts){
+				for(CablePoint cablePoint:cablePointHost.getCablePoints()){
 				if(cablePoint.isConnected()){
 					InteractiveCable tmpCable = cablePoint.getCable();
 					for(CablePoint cableResurrect: tmpCable.getCablePoints()){
@@ -46,7 +47,7 @@ public class UserDeleteAction extends UserAction {
 						controller.getPane().add(tmpCable);
 					}
 				}
-				
+			}
 			}
 		}
 		
@@ -67,10 +68,11 @@ public class UserDeleteAction extends UserAction {
 	public void execute() {
 		
 		for(InteractiveComponent c: components){
-			LinkedList<CablePoint> cablePoints = getRecursive(c,CablePoint.class);
-				for(CablePoint cablePoint: cablePoints){	
-					
-					if(cablePoint.isConnected()){
+			LinkedList<CablePointHost> cablePointHosts = getRecursive(c,CablePointHost.class);
+				for(CablePointHost cablePointHost: cablePointHosts){	
+					for(CablePoint cablePoint:cablePointHost.getCablePoints()){
+						if(cablePoint.isConnected()){
+						
 						InteractiveCable tmpCable = cablePoint.getCable();
 						controller.getPane().remove(tmpCable);
 						for(CablePoint cableErase: tmpCable.getCablePoints()){
@@ -83,6 +85,7 @@ public class UserDeleteAction extends UserAction {
 					}
 					
 				}
+			}
 			controller.getPane().remove(c);
 		}
 		for(InteractiveShape c:shapes){
@@ -99,12 +102,12 @@ public class UserDeleteAction extends UserAction {
 	
 	private<T> LinkedList<T> getRecursive(JComponent c, Class<?> contained){
 		LinkedList<T> tmp = new LinkedList();
-		
+		if(contained.isInstance(c)){
+			tmp.add( (T)c);
+		}
 		for(Component component:c.getComponents()){
 			if(component instanceof JComponent){
-				if(contained.isInstance(component)){
-					tmp.add( (T)component);
-				}
+				
 				tmp.addAll(getRecursive((JComponent) component,contained));
 			}
 		}
