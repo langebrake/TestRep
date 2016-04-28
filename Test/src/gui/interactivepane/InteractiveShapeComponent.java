@@ -68,7 +68,7 @@ public class InteractiveShapeComponent extends InteractiveComponent implements M
 			
 			this.repaint();
 		} else {
-			
+			arg0.setSource(lastDispatch);
 			this.dispatch(arg0);
 		}
 		
@@ -158,6 +158,7 @@ public class InteractiveShapeComponent extends InteractiveComponent implements M
 		lastEntered = null;
 		
 	}
+	
 	private boolean dragged = false;
 	private boolean outsidepressed = false;
 	@Override
@@ -281,18 +282,21 @@ public class InteractiveShapeComponent extends InteractiveComponent implements M
 	}
 	
 	private MouseEvent updateLastDispatched(MouseEvent e){
+		
 		e.translatePoint((int)this.getLocation().getX(), (int)this.getLocation().getY());
-		JComponent parent = (JComponent) this.getParent();
-		int zOrder = parent.getComponentZOrder(this);
-		parent.remove(this);
-		Component source = parent.getComponentAt(e.getPoint());
-		parent.add(this);
+			JComponent parent = (JComponent) this.getParent();
+			int zOrder = parent.getComponentZOrder(this);
+			parent.remove(this);
+			Component source = parent.getComponentAt(e.getPoint());
+			parent.add(this);
+			
+			parent.setComponentZOrder(this, zOrder);
+			e.translatePoint(-source.getX(), -source.getY());
+			e.setSource(source);
+			lastDispatch = source;
+			e.setSource(lastDispatch);
 		
-		parent.setComponentZOrder(this, zOrder);
-		e.translatePoint(-source.getX(), -source.getY());
 		
-		e.setSource(source);
-		lastDispatch = source;
 		return e;
 	}
 	
