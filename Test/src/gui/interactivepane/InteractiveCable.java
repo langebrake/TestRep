@@ -188,6 +188,16 @@ public class InteractiveCable implements InteractiveShape{
 	}
 
 	@Override
+	public boolean equals(Object o){
+		if(o==null || !(o.getClass() == this.getClass())){
+			return false;
+		}
+		InteractiveCable other = (InteractiveCable) o;
+		boolean result = true;
+		return this.source == other.source && this.dest == other.dest;
+	}
+	
+	@Override
 	public void translateOriginLocation(Vector translationVectorGrid) {
 		// TODO Auto-generated method stub
 		

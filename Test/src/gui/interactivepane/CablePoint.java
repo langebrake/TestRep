@@ -11,6 +11,8 @@ public interface CablePoint  {
 	public void setHost(CablePointHost host);
 	public CablePointHost getHost();
 	public void disconnect();
+	public void setIndex(int i);
+	public int getIndex();
 	
 
 }

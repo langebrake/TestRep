@@ -1,6 +1,7 @@
 package gui.interactivepane;
 
 import java.awt.Component;
+import java.util.Arrays;
 import java.util.LinkedList;
 
 import javax.swing.JComponent;
@@ -10,6 +11,7 @@ public class CablePointComponent extends JComponent implements CablePoint, Cable
 	private final CablePointType type;
 	private CablePointHost host;
 	private Component parent;
+	private int index;
 	public CablePointComponent(Component parent, CablePointType type){
 		this.type = type;
 		this.parent = parent;
@@ -61,12 +63,81 @@ public class CablePointComponent extends JComponent implements CablePoint, Cable
 	}
 	@Override
 	public CablePoint getCablePoint() {
-		// TODO Auto-generated method stub
 		return this;
 	}
 	@Override
 	public CablePointHost getHost() {
 		return this.host;
+	}
+
+	@Override
+	public LinkedList<? extends CablePoint> getCablePoints(CablePointType type) {
+		LinkedList<CablePointComponent> tmp = new LinkedList<CablePointComponent>();
+		if(this.getType() == type){
+			tmp.add(this);
+		}
+		return tmp;
+	}
+
+	@Override
+	public LinkedList<? extends CablePoint> getCablePoints(CablePointType type, int... indices) {
+	LinkedList<CablePointComponent> tmp = new LinkedList<CablePointComponent>();
+		if(indices.length == 1 && indices[0] == 0 && this.getType() == type){
+			tmp.add(this);
+		}
+		return tmp;
+	}
+
+	@Override
+	public CablePoint getCablePoint(CablePointType type, int index) {
+		if(this.getType() == type && index == 0){
+			return this;
+		} else {
+			return null;
+		}
+		
+	}
+
+	@Override
+	public CablePoint getCablePoint(CablePointType type) {
+		if(this.getType() == type){
+			return this;
+		} else {
+			return null;
+		}
+	}
+
+	@Override
+	public boolean forceExistence(CablePoint... forceThis) {
+		if(forceThis.length != 1 && !Arrays.asList(forceThis).contains(this)){
+			return false;
+		} else {
+			return true;
+		}
+		
+	}
+
+	@Override
+	public boolean contains(CablePoint point) {
+		return this == point;
+	}
+
+	@Override
+	public void setIndex(int i) {
+		this.index = i;
+		
+	}
+
+	@Override
+	public int getIndex() {
+		return this.index;
+		
+	}
+
+	@Override
+	public CablePoint getFreeCablePoint(CablePointType type) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 	

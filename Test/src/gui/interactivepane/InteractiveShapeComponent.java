@@ -94,17 +94,106 @@ public class InteractiveShapeComponent extends InteractiveComponent implements C
 
 	@Override
 	public LinkedList<? extends CablePoint> getCablePoints() {
-		// TODO Auto-generated method stub
 		return this.cablePoints;
 	}
 
 	@Override
 	public CablePoint getCablePoint() {
-		// TODO Auto-generated method stub
-		CablePointSimple c = new CablePointSimple(CablePointType.THROUGH);
+		CablePointSimple c = new CablePointSimple(CablePointType.UNKNOWN);
 		this.cablePoints.add(c);
 		this.updateView();
 		return (CablePoint) c;
+	}
+
+
+
+
+
+	@Override
+	public LinkedList<? extends CablePoint> getCablePoints(CablePointType type) {
+		LinkedList<CablePointSimple> tmp = new LinkedList<CablePointSimple>();
+		for(CablePointSimple cps:this.cablePoints){
+			if(cps.getType() == type){
+				tmp.add(cps);
+			}
+		}
+		return tmp;
+	}
+
+
+
+
+
+	@Override
+	public LinkedList<? extends CablePoint> getCablePoints(CablePointType type, int... indices) {
+		LinkedList<CablePointSimple> tmp = new LinkedList<CablePointSimple>();
+		for(int i:indices){
+			if(i >= this.cablePoints.size()){
+				continue;
+			}
+			CablePointSimple cps = this.cablePoints.get(i);
+			if(cps.getType() == type && !tmp.contains(cps)){
+				tmp.add(cps);
+			}
+		}
+		return tmp;
+	}
+
+
+	@Override
+	public CablePoint getCablePoint(CablePointType type, int index) {
+		if(index >= this.cablePoints.size() || this.cablePoints.get(index).getType() != type){
+			return null;
+		} else {
+			return this.cablePoints.get(index);
+		}
+	}
+
+
+
+
+
+	@Override
+	public CablePoint getCablePoint(CablePointType type) {
+		for(CablePointSimple cps:this.cablePoints){
+			if(cps.getType() == type){
+				return cps;
+			}
+		}
+		CablePointSimple cps = new CablePointSimple(type);
+		cps.setIndex(this.cablePoints.size());
+		this.cablePoints.add(cps);
+		return cps;
+	}
+
+
+
+
+
+	@Override
+	public boolean forceExistence(CablePoint... forceThis) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+
+
+
+
+	@Override
+	public boolean contains(CablePoint point) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+
+
+
+
+	@Override
+	public CablePoint getFreeCablePoint(CablePointType type) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 	
