@@ -5,25 +5,31 @@ import java.util.LinkedList;
 
 import javax.swing.JComponent;
 
-public class CablePointComponent extends JComponent implements CablePoint, CablePointHost {
+public class CablePointSimple implements CablePoint, CablePointHost {
 	private InteractiveCable cable;
 	private final CablePointType type;
 	private CablePointHost host;
 	private int xOnScreen,yOnScreen;
-	private Component parent;
-	public CablePointComponent(Component parent, CablePointType type){
+	public CablePointSimple(CablePointType type){
 		this.type = type;
-		this.parent = parent;
 	}
 	
+	public void setXOnScreen(int x){
+		this.xOnScreen = x;
+	}
+	
+	public void setYOnScreen(int y){
+		this.yOnScreen = y;
+				
+	}
 	@Override
 	public int getXOnScreen() {
-		return (int) this.parent.getLocationOnScreen().getX();
+		return xOnScreen;
 	}
 
 	@Override
 	public int getYOnScreen() {
-		return (int) this.parent.getLocationOnScreen().getY();
+		return yOnScreen;
 	}
 	
 

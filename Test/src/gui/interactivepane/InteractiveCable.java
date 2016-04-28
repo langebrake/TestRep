@@ -151,19 +151,22 @@ public class InteractiveCable implements InteractiveShape{
 		return points;
 	}
 	public void updateView(Graphics2D g2d){
-		float x1pos =this.source.getXOnPane();
-		float y1pos =this.source.getYOnPane();
-		float x2pos =this.dest.getXOnPane();
-		float y2pos =this.dest.getYOnPane();
+		int paneX =  (int) this.parent.getLocationOnScreen().getX();
+		int paneY =  (int) this.parent.getLocationOnScreen().getY();
+		float x1pos =(float) (this.source.getXOnScreen() - paneX);
+		float y1pos =(float) (this.source.getYOnScreen() - paneY);
+		float x2pos =(float) (this.dest.getXOnScreen() - paneX);
+		float y2pos =(float) (this.dest.getYOnScreen() - paneY);
+		
 		float lastx = x1pos;
 		float lasty = y1pos;
 		this.cable = new GeneralPath();
 		this.cable.moveTo(x1pos, y1pos);
 		
 		for(CablePoint c: this.cablePoints){
-			this.cable.lineTo(c.getXOnPane(), c.getYOnPane());
-			lastx = c.getXOnPane();
-			lasty = c.getYOnPane();
+			this.cable.lineTo(c.getXOnScreen() - paneX , c.getYOnScreen() - paneY);
+			lastx = c.getXOnScreen() - paneX;
+			lasty = c.getYOnScreen() - paneY;
 		}
 		
 		float endpointCurvedX, endpointCurvedY;

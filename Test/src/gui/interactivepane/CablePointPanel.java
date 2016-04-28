@@ -1,6 +1,7 @@
 package gui.interactivepane;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.util.LinkedList;
@@ -8,28 +9,29 @@ import java.util.LinkedList;
 import javax.swing.JPanel;
 
 public class CablePointPanel extends JPanel implements CablePoint,CablePointHost {
-	private InteractivePane pane;
+	private Component pane;
 	private InteractiveCable cable;
 	private final CablePointType type;
-	private CablePointHost host;
 	/**
 	 * Constructs a Cable Point Panel where the cable point itself lies in the middle of the specified panel
 	 * @param parent
 	 */
-	public CablePointPanel(InteractivePane parent,CablePointType type){
+	public CablePointPanel(Component parent,CablePointType type){
 		this.pane = parent;
 		this.type = type;
 	}
 	@Override
-	public int getXOnPane() {
+	public int getXOnScreen() {
 		
-		return (int) ((this.getLocationOnScreen().getX()+this.getWidth()/2) - pane.getLocationOnScreen().getX());
+		return (int) ((this.getLocationOnScreen().getX()+this.getWidth()/2) );
 	}
 
 	@Override
-	public int getYOnPane() {
-		return (int) ((this.getLocationOnScreen().getY()+this.getHeight()/2) - pane.getLocationOnScreen().getY());
+	public int getYOnScreen() {
+		return (int) ((this.getLocationOnScreen().getY()+this.getHeight()/2) );
 	}
+	
+	
 
 	@Override
 	public InteractiveCable getCable() {
@@ -64,7 +66,6 @@ public class CablePointPanel extends JPanel implements CablePoint,CablePointHost
 	}
 	@Override
 	public void setHost(CablePointHost host) {
-		this.host = this;
 		
 	}
 	@Override
@@ -82,6 +83,11 @@ public class CablePointPanel extends JPanel implements CablePoint,CablePointHost
 	public CablePoint getCablePoint() {
 		
 		return this;
+	}
+	@Override
+	public CablePointHost getHost() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

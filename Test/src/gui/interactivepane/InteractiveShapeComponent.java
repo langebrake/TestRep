@@ -1,6 +1,7 @@
 package gui.interactivepane;
 
 import java.awt.AWTEvent;
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -13,6 +14,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
 import java.util.EventListener;
 import java.util.LinkedList;
@@ -21,16 +23,21 @@ import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JLayeredPane;
 
-public class InteractiveShapeComponent extends InteractiveComponent implements MouseListener, MouseMotionListener, MouseWheelListener{
+import controller.interactivepane.MouseInputListener;
+
+public class InteractiveShapeComponent extends InteractiveComponent implements MouseInputListener, CablePointHost{
 	private LinkedList<MouseListener> mouseListeners;
 	private LinkedList<MouseMotionListener> mouseMotionListeners;
 	private LinkedList<MouseWheelListener> mouseWheelListeners;
 	private Shape s;
 	private boolean constructor;
+	private LinkedList<CablePointSimple> cablePoints;
 	public InteractiveShapeComponent(InteractivePane parent, Vector origin) {
 		super(parent, origin);
+		this.setLayout(new BorderLayout());
 		this.setBorder(BorderFactory.createLineBorder(Color.YELLOW));
 		this.lastEntered = parent;
+		this.cablePoints = new LinkedList<CablePointSimple>();
 		constructor = true;
 		this.addMouseListener(this);
 		this.addMouseMotionListener(this);
@@ -239,8 +246,11 @@ public class InteractiveShapeComponent extends InteractiveComponent implements M
 	@Override
 	public void updateView(){
 		super.updateView();
-		this.s = new Rectangle2D.Float(this.getWidth()/10,this.getHeight()/10,this.getWidth() - this.getWidth()/2,this.getHeight() - this.getHeight()/2);
-		
+		this.s = new Ellipse2D.Float(this.getWidth()/10,this.getHeight()/10,this.getWidth() - this.getWidth()/7,this.getHeight() - this.getHeight()/7);
+		for(CablePointSimple c:this.cablePoints){
+			c.setXOnScreen((int) (this.getLocationOnScreen().getX() + this.getWidth() / 2));
+			c.setYOnScreen((int) (this.getLocationOnScreen().getY() + this.getHeight() / 2));
+		}
 		this.repaint();
 	}
 	
@@ -298,6 +308,21 @@ public class InteractiveShapeComponent extends InteractiveComponent implements M
 		
 		
 		return e;
+	}
+
+	@Override
+	public LinkedList<? extends CablePoint> getCablePoints() {
+		// TODO Auto-generated method stub
+		return this.cablePoints;
+	}
+
+	@Override
+	public CablePoint getCablePoint() {
+		// TODO Auto-generated method stub
+		CablePointSimple c = new CablePointSimple(CablePointType.THROUGH);
+		this.cablePoints.add(c);
+		this.updateView();
+		return (CablePoint) c;
 	}
 	
 	
