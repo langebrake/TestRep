@@ -77,6 +77,7 @@ public class CableCreationListener extends MouseAdapter{
 					controller.getPane().remove(tmpCable);
 					InteractiveCable[] overrides = null;
 					if(this.oldSourceConnection != null){
+						
 						overrides = new InteractiveCable[1];
 						overrides[0] = this.oldSourceConnection;
 					}
@@ -147,8 +148,7 @@ public class CableCreationListener extends MouseAdapter{
 			if( searchFor.isInstance(c)){
 				return c;
 			} 
-			System.out.println(e.getSource());
-			System.out.println(c);
+
 			Component tmp = c.getComponentAt((new Vector(c.getLocationOnScreen())).diffVector((new Vector(e.getLocationOnScreen()))).toPoint());
 			if(tmp == null || c == tmp) {
 				return null;

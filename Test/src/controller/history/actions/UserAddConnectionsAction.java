@@ -1,6 +1,7 @@
 package controller.history.actions;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 
 import gui.interactivepane.CablePoint;
 import gui.interactivepane.InteractiveCable;
@@ -21,26 +22,27 @@ public class UserAddConnectionsAction extends UserAction {
 	}
 
 	
-	//TODO: Something isn't right yet! Seems like the cablepoint connection status is not always correct!
-	//it once was possible to draw 2 lines from 1 point!
+
 	 
 	
 	@Override
 	public void undo() {
 		for(InteractiveCable c:cables.keySet()){
+			LinkedList<CablePoint> toDisconnect = c.getCablePoints();
 			InteractiveCable[] overrides = cables.get(c);
 			if(overrides != null){
 				//TODO: reconnect old cable, mind the module connection!
 				for(InteractiveCable override:overrides){
 					for(CablePoint p:override.getCablePoints()){
 						p.setCable(override);
+						toDisconnect.remove(p);
 					}
 					controller.getPane().add(override);
 				}
 			}
 			//TODO: connect new cable and cableendpoints, mind the module connection!
 			controller.getPane().remove(c);
-			for(CablePoint p:c.getCablePoints()){
+			for(CablePoint p:toDisconnect){
 				p.disconnect();
 			}
 			
@@ -58,6 +60,7 @@ public class UserAddConnectionsAction extends UserAction {
 				for(InteractiveCable override:overrides){
 					controller.getPane().remove(override);
 					for(CablePoint p:override.getCablePoints()){
+						
 						p.disconnect();
 					}
 				}
