@@ -56,6 +56,7 @@ public abstract class InteractiveComponent extends JPanel implements Interactive
 	}
 	
 	public void updateView(){
+		
 		//set components screen location
 		this.setLocation(parent.convertToScreenLocation(this.originLocation).toPoint());
 		//size component

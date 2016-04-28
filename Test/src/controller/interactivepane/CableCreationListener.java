@@ -12,6 +12,7 @@ import java.awt.Component;
 import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
 import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -143,9 +144,11 @@ public class CableCreationListener extends MouseAdapter{
 		}
 	}
 	
-	public void mouseWheelMoved(MouseEvent e){
+	@Override
+	public void mouseWheelMoved(MouseWheelEvent e){
 		if(tmpPoint != null && validInteraction(e)){
 			tmpPoint.setLocation(controller.relativeToPane(e).toPoint());
+			
 			controller.getPane().repaint();
 		}
 	}

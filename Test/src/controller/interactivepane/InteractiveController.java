@@ -10,8 +10,11 @@ import gui.interactivepane.InteractiveShape;
 import gui.interactivepane.InteractiveShapeComponent;
 import gui.interactivepane.Vector;
 
+import java.awt.Window;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
@@ -19,12 +22,16 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowStateListener;
 
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
 import javax.swing.InputMap;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import plugin.Plugin;
 import pluginhost.PluginHost;
@@ -35,7 +42,7 @@ import controller.shortcut.RedoAction;
 import controller.shortcut.UndoAction;
 import model.MidiGraph;
 
-public class InteractiveController implements MouseInputListener {
+public class InteractiveController implements MouseInputListener,WindowStateListener {
 	private InteractivePane pane;
 	private MidiGraph graph;
 	private UserActionManager actionManager;
@@ -56,6 +63,7 @@ public class InteractiveController implements MouseInputListener {
 		this.graph = graph;
 		this.actionManager = actionManager;
 		this.actionManager.setController(this);
+
 		this.pane.addMouseListener(this);
 		this.pane.addMouseMotionListener(this);
 		this.pane.addMouseWheelListener(this);
@@ -198,6 +206,7 @@ public class InteractiveController implements MouseInputListener {
 			this.lastMousePaneLocation = new Vector(this.pane.getLocationOnScreen()).diffVector(tmp);
 			this.lastMouseGridLocation = this.toGridCoordinate(this.lastMousePaneLocation);
 		}
+		
 		this.pane.zoomViewport(this.lastMousePaneLocation, arg0.getPreciseWheelRotation());
 	}
 
@@ -282,6 +291,15 @@ public class InteractiveController implements MouseInputListener {
 				&& !SwingUtilities.isRightMouseButton(e)
 				|| SwingUtilities.isMiddleMouseButton(e);
 	}
+	@Override
+	public void windowStateChanged(WindowEvent arg0) {
+		this.pane.updateView();
+		this.pane.repaint();
+		System.out.println("WINDOW");
+		
+	}
+
+
 	
 
 }

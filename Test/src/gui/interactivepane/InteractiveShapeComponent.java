@@ -38,6 +38,7 @@ public class InteractiveShapeComponent extends InteractiveComponent implements C
 				c.setYOnScreen((int) (this.getLocationOnScreen().getY() + this.getHeight() / 2));
 			}
 			this.repaint();
+
 	}
 	
 	@Override
@@ -83,7 +84,13 @@ public class InteractiveShapeComponent extends InteractiveComponent implements C
 	}
 	
 	
-
+	@Override
+	public void validate(){
+		if(this.getParentPane() != null){
+			this.updateView();
+		}
+		super.validate();
+	}
 
 	@Override
 	public LinkedList<? extends CablePoint> getCablePoints() {

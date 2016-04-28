@@ -21,6 +21,7 @@ public class GuiTest {
 		JFrame mainFrame = new JFrame("GuiTest");
 		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		InteractiveController controller = new InteractiveController();
+		mainFrame.addWindowStateListener(controller);
 		mainFrame.setContentPane(controller.getPane());
 		mainFrame.pack();
 		mainFrame.setVisible(true);

@@ -134,7 +134,7 @@ public class InteractivePane extends JLayeredPane {
 		return scaledTranslated;
 	}
 	
-	private void updateView(){
+	public void updateView(){
 		Component[] components = this.getComponents();
 		for (Component c: components){
 			if(c instanceof InteractiveComponent){
@@ -312,6 +312,10 @@ public class InteractivePane extends JLayeredPane {
 	public LinkedList<InteractiveShape> getShapes(){
 		return this.shapes;
 	}
+	
+
+	
+	@Override
 	public void paint(Graphics g){
 		super.paint(g);
 		if(g instanceof Graphics2D){
