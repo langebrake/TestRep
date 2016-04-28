@@ -43,6 +43,7 @@ public class CableCreationListener extends MouseAdapter{
 				this.oldSourceConnection = sourcePoint.getCable();
 				controller.getPane().remove(this.oldSourceConnection);
 			}
+			
 			tmpPoint = new CablePointComponent(controller.getPane(),CablePointType.THROUGH);
 			tmpPoint.setLocation(controller.relativeToPane(e).toPoint());
 			tmpCable = new InteractiveCable(sourcePoint,tmpPoint,controller.getPane());

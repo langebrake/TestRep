@@ -7,6 +7,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.event.MouseEvent;
@@ -148,7 +149,7 @@ public class InteractiveShapeComponent extends InteractiveComponent implements M
 
 	@Override
 	public void mouseEntered(MouseEvent arg0) {
-		
+		System.out.println("ENTERED");
 	}
 
 	@Override
@@ -260,6 +261,21 @@ public class InteractiveShapeComponent extends InteractiveComponent implements M
 		r.translate(- this.getX(), -this.getY());
 		return this.s.intersects(r);
 	}
+	
+	@Override
+	public boolean contains(Point p){
+		return s.contains(p);
+	}
+	
+	@Override 
+	public boolean contains(int x, int y){
+		return s.contains(x, y);
+	}
+	
+	
+	
+	
+	
 	public void paint(Graphics g){
 		super.paint(g);
 		if(g instanceof Graphics2D){
