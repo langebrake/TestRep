@@ -9,7 +9,6 @@ public class CablePointComponent extends JComponent implements CablePoint, Cable
 	private InteractiveCable cable;
 	private final CablePointType type;
 	private CablePointHost host;
-	private int xOnScreen,yOnScreen;
 	private Component parent;
 	public CablePointComponent(Component parent, CablePointType type){
 		this.type = type;
@@ -18,12 +17,12 @@ public class CablePointComponent extends JComponent implements CablePoint, Cable
 	
 	@Override
 	public int getXOnScreen() {
-		return (int) this.parent.getLocationOnScreen().getX();
+		return (int) this.getLocationOnScreen().getX();
 	}
 
 	@Override
 	public int getYOnScreen() {
-		return (int) this.parent.getLocationOnScreen().getY();
+		return (int) this.getLocationOnScreen().getY();
 	}
 	
 
