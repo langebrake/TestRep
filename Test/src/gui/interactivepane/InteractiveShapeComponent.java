@@ -30,7 +30,7 @@ public class InteractiveShapeComponent extends InteractiveComponent implements M
 	public InteractiveShapeComponent(InteractivePane parent, Vector origin) {
 		super(parent, origin);
 		this.setBorder(BorderFactory.createLineBorder(Color.YELLOW));
-		
+		this.lastEntered = parent;
 		constructor = true;
 		this.addMouseListener(this);
 		this.addMouseMotionListener(this);
@@ -75,6 +75,7 @@ public class InteractiveShapeComponent extends InteractiveComponent implements M
 		
 	}
 	private boolean entered = false;
+	private Component lastEntered;
 	@Override
 	public void mouseMoved(MouseEvent arg0) {
 
@@ -83,22 +84,40 @@ public class InteractiveShapeComponent extends InteractiveComponent implements M
 			for(MouseListener l:mouseListeners){
 				l.mouseExited(arg0);
 			}
-			dispatch(arg0);
+			dispatch(updateLastDispatched(arg0));
 			entered = false;
 		} 
 		else if (!entered && s.contains(arg0.getPoint()) && !dragged){
 			for(MouseListener l:mouseListeners){
 				l.mouseEntered(arg0);
 			}
-			
+			if(lastDispatch == lastEntered){
+				MouseEvent tmp = new MouseEvent(lastEntered,MouseEvent.MOUSE_EXITED,arg0.getWhen(),arg0.getModifiersEx(),arg0.getX(),arg0.getY(),arg0.getXOnScreen(),arg0.getYOnScreen(),arg0.getClickCount(),arg0.isPopupTrigger(),arg0.getButton());
+				lastEntered.dispatchEvent(tmp);
+				lastEntered = this;
+			}
 			entered = true;
-		} else if(s.contains(arg0.getPoint())){
+		} else if(s.contains(arg0.getPoint()) && !dragged){
 			for(MouseMotionListener l:mouseMotionListeners){
 				l.mouseMoved(arg0);
 			}
 			
 		} else {
-			this.dispatch(arg0);
+			this.outsidepressed = true;
+			
+			this.dispatch(updateLastDispatched(arg0));
+			if(lastDispatch != lastEntered && lastEntered != null && lastDispatch != null){
+				MouseEvent tmp = new MouseEvent(lastEntered,MouseEvent.MOUSE_EXITED,arg0.getWhen(),arg0.getModifiersEx(),arg0.getX(),arg0.getY(),arg0.getXOnScreen(),arg0.getYOnScreen(),arg0.getClickCount(),arg0.isPopupTrigger(),arg0.getButton());
+				lastEntered.dispatchEvent(tmp);
+				tmp = new MouseEvent(lastDispatch,MouseEvent.MOUSE_ENTERED,arg0.getWhen(),arg0.getModifiersEx(),arg0.getX(),arg0.getY(),arg0.getXOnScreen(),arg0.getYOnScreen(),arg0.getClickCount(),arg0.isPopupTrigger(),arg0.getButton());
+				lastDispatch.dispatchEvent(tmp);
+				lastEntered = lastDispatch;
+			} else if(lastEntered == null){
+				lastEntered = lastDispatch;
+				MouseEvent tmp = new MouseEvent(lastDispatch,MouseEvent.MOUSE_ENTERED,arg0.getWhen(),arg0.getModifiersEx(),arg0.getX(),arg0.getY(),arg0.getXOnScreen(),arg0.getYOnScreen(),arg0.getClickCount(),arg0.isPopupTrigger(),arg0.getButton());
+				lastDispatch.dispatchEvent(tmp);
+			}
+			this.outsidepressed = false;
 		}
 		
 		this.repaint();
@@ -112,14 +131,16 @@ public class InteractiveShapeComponent extends InteractiveComponent implements M
 			}
 			this.repaint();
 		} else {
-			this.dispatch(arg0);
+			this.outsidepressed = true;
+			this.dispatch(updateLastDispatched(arg0));
+			this.outsidepressed = false;
+			
 		}
 		
 	}
 
 	@Override
 	public void mouseEntered(MouseEvent arg0) {
-
 		
 	}
 
@@ -134,6 +155,7 @@ public class InteractiveShapeComponent extends InteractiveComponent implements M
 		} else {
 			
 		}
+		lastEntered = null;
 		
 	}
 	private boolean dragged = false;
@@ -147,17 +169,10 @@ public class InteractiveShapeComponent extends InteractiveComponent implements M
 			dragged = true;
 			this.repaint();
 		} else {
-			arg0.translatePoint((int)this.getLocation().getX(), (int)this.getLocation().getY());
-			JComponent parent = (JComponent) this.getParent();
-			parent.remove(this);
-			Component source = parent.getComponentAt(arg0.getPoint());
-			parent.add(this);
-			((JLayeredPane) parent).moveToFront(this);
-			arg0.setSource(source);
-			lastDispatch = source;
 			outsidepressed = true;
-			this.dispatch(arg0);
+			this.dispatch(updateLastDispatched(arg0));
 		}
+		
 		
 	}
 
@@ -170,15 +185,7 @@ public class InteractiveShapeComponent extends InteractiveComponent implements M
 			dragged = false;
 			this.repaint();
 		} else {
-			arg0.translatePoint((int)this.getLocation().getX(), (int)this.getLocation().getY());
-			JComponent parent = (JComponent) this.getParent();
-			parent.remove(this);
-			Component source = parent.getComponentAt(arg0.getPoint());
-			parent.add(this);
-			((JLayeredPane) parent).moveToFront(this);
-			arg0.setSource(source);
-			lastDispatch = source;
-			this.dispatch(arg0);
+			this.dispatch(updateLastDispatched(arg0));
 		}
 		outsidepressed = false;
 	}
@@ -262,16 +269,31 @@ public class InteractiveShapeComponent extends InteractiveComponent implements M
 			g2d.draw(s);
 		}
 	}
+	
 	private Component lastDispatch;
 	private void dispatch(MouseEvent e){
 		if(this.outsidepressed && lastDispatch != null){
-			
-			e.setSource(lastDispatch);
 			lastDispatch.dispatchEvent(e);
 		} else {
 
 		}
 		
+	}
+	
+	private MouseEvent updateLastDispatched(MouseEvent e){
+		e.translatePoint((int)this.getLocation().getX(), (int)this.getLocation().getY());
+		JComponent parent = (JComponent) this.getParent();
+		int zOrder = parent.getComponentZOrder(this);
+		parent.remove(this);
+		Component source = parent.getComponentAt(e.getPoint());
+		parent.add(this);
+		
+		parent.setComponentZOrder(this, zOrder);
+		e.translatePoint(-source.getX(), -source.getY());
+		
+		e.setSource(source);
+		lastDispatch = source;
+		return e;
 	}
 	
 	

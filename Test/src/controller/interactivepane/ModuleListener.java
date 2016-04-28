@@ -96,7 +96,6 @@ public class ModuleListener extends ControllerListenerAdapter {
 			boolean userMultiSelect = (arg0.getModifiers() & InputEvent.SHIFT_MASK) != 0;
 			boolean paneHasSelection = controller.getPane().hasSelected();
 			boolean paneHasMultiSelection = controller.getPane().hasMultiSelected();
-			
 			if(userMultiSelect){
 				if(componentWasSelected){
 					controller.getPane().setComponentSelected((InteractiveComponent)source,false);

@@ -1,6 +1,7 @@
 package controller.interactivepane;
 
 import gui.interactivepane.InteractiveShape;
+import gui.interactivepane.Vector;
 
 import java.awt.event.MouseEvent;
 import java.util.LinkedList;
@@ -14,22 +15,23 @@ public class ShapeListener extends ControllerListenerAdapter{
 	
 	@Override
 	public void mouseEntered(MouseEvent e){
-		inPane = true;
+		
 	}
 	
 	@Override
 	public void mouseExited(MouseEvent e){
-		inPane = false;
+		
 	}
 	
 	@Override
 	public void mouseMoved(MouseEvent e){
-		
+		inPane = controller.getPane().contains(controller.relativeToPane(e).toPoint());
 		if(inPane){
-			
+			Vector paneVector  = controller.relativeToPane(e);
 			LinkedList<InteractiveShape> shapes = controller.getPane().getShapes();
+			
 			for (InteractiveShape s:shapes){
-					if(s.contains(e.getPoint())){
+					if(s.contains(paneVector.toPoint())){
 						controller.getPane().setShapeHovered(s, true);
 					} else {
 						controller.getPane().setShapeHovered(s, false);
