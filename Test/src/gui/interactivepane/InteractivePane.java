@@ -38,6 +38,7 @@ public class InteractivePane extends JLayeredPane {
 	private LinkedList<InteractiveShape> shapes;
 	private LinkedList<InteractiveShape> selectedShapes;
 	private LinkedList<InteractiveShape> tmpSelectedShapes;
+	private LinkedList<InteractiveCableComponent> cableComponents;
 	
 	
 	/*
@@ -55,6 +56,7 @@ public class InteractivePane extends JLayeredPane {
 		this.setPreferredSize(new Dimension(1000,1000));
 		
 		//set viewport default variables
+		this.cableComponents = new LinkedList<InteractiveCableComponent>();
 		this.scaleOrigin = new Vector(0,0);
 		this.scaleFactor = 1;
 		this.scaleIncrement = (float) 0.1;
@@ -113,6 +115,9 @@ public class InteractivePane extends JLayeredPane {
 		for(InteractiveShape s:this.getShapeSelection()){
 			s.translateOriginLocation(translationVectorGrid);
 		}
+		for(InteractiveCableComponent c: this.cableComponents){
+			c.updateView();
+		}
 		this.repaint();
 	}
 	
@@ -155,7 +160,18 @@ public class InteractivePane extends JLayeredPane {
 		this.repaint();
 	}
 	
+	public void remove(InteractiveComponent c){
+		if(c instanceof InteractiveCableComponent){
+			this.cableComponents.remove(c);
+		}
+		super.remove(c);
+		this.repaint();
+	}
+	
 	public void add(InteractiveComponent c){
+		if(c instanceof InteractiveCableComponent){
+			this.cableComponents.add((InteractiveCableComponent) c);
+		}
 		super.add(c);
 		c.updateView();
 		this.moveToFront(c);
@@ -303,11 +319,6 @@ public class InteractivePane extends JLayeredPane {
 	}
 	
 	
-	
-	public void remove(InteractiveComponent c){
-		super.remove(c);
-		this.repaint();
-	}
 	
 	public LinkedList<InteractiveShape> getShapes(){
 		return this.shapes;

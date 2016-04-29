@@ -1,6 +1,7 @@
 package gui.interactivepane;
 
 import java.awt.Component;
+import java.awt.Point;
 import java.util.Arrays;
 import java.util.LinkedList;
 
@@ -136,8 +137,16 @@ public class CablePointComponent extends JComponent implements CablePoint, Cable
 
 	@Override
 	public CablePoint getFreeCablePoint(CablePointType type) {
-		// TODO Auto-generated method stub
+		if(!this.isConnected()){
+			return this;
+		} else
 		return null;
+	}
+
+	@Override
+	public CablePoint getCablePoint(Point sourceInComponent) {
+		
+		return this;
 	}
 	
 	

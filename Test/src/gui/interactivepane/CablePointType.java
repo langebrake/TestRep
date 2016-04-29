@@ -8,19 +8,6 @@ public enum CablePointType {
 		THROUGH,
 		UNKNOWN;
 		
-		private Point position;
-		
-		CablePointType(){
-			this.position = null;
-		}
-		
-		CablePointType(Point position){
-			this.position = position;
-		}
-		
-		public Point getPosition(){
-			return this.position;
-		}
 		
 		public CablePointType getCounterPart(){
 			switch(this){
@@ -32,6 +19,25 @@ public enum CablePointType {
 				return THROUGH;
 			default:
 				return UNKNOWN;
+			}
+		}
+		
+		public boolean compatibleWith(CablePointType type){
+			switch(this){
+				case INPUT:
+					if(type == OUTPUT || type == THROUGH)
+						return true;
+				case OUTPUT:
+					if(type == INPUT || type == THROUGH)
+						return true;
+				case THROUGH:
+					if(type == INPUT || type == OUTPUT || type == THROUGH)
+						return true;
+				case UNKNOWN:
+					return false;
+				default:
+					return false;
+			
 			}
 		}
 }

@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.util.Arrays;
 import java.util.LinkedList;
 
@@ -141,8 +142,7 @@ public class CablePointPanel extends JPanel implements CablePoint,CablePointHost
 
 	@Override
 	public boolean contains(CablePoint point) {
-		// TODO Auto-generated method stub
-		return false;
+		return this == point;
 	}
 	@Override
 	public void setIndex(int i) {
@@ -155,8 +155,14 @@ public class CablePointPanel extends JPanel implements CablePoint,CablePointHost
 	}
 	@Override
 	public CablePoint getFreeCablePoint(CablePointType type) {
-		// TODO Auto-generated method stub
-		return null;
+		if(!this.isConnected())
+			return this;
+		else
+			return null;
+	}
+	@Override
+	public CablePoint getCablePoint(Point sourceInComponent) {
+		return this;
 	}
 
 }

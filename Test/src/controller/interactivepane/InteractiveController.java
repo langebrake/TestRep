@@ -3,6 +3,7 @@ package controller.interactivepane;
 import gui.interactivepane.CablePointPanel;
 import gui.interactivepane.CablePointType;
 import gui.interactivepane.InteractiveCable;
+import gui.interactivepane.InteractiveCableComponent;
 import gui.interactivepane.InteractiveComponent;
 import gui.interactivepane.InteractiveDisplay;
 import gui.interactivepane.InteractivePane;
@@ -125,7 +126,10 @@ public class InteractiveController implements MouseInputListener,WindowStateList
 				this.pane.add(src3);
 				this.pane.add(src4);
 				this.pane.addMouseListener(this.popupMenuListener);
-				
+				// a few graphical bugs come with the introduction of interactive cable components
+//				InteractiveCableComponent icc = new InteractiveCableComponent(p1,p2,this.pane);
+//				this.pane.add(icc);
+				// TODO: think about adding Cables as CableComponents instead of paint graphic shapes
 				ShapeListener sl = new ShapeListener(this);
 				this.pane.addMouseListener(sl);
 				this.pane.addMouseMotionListener(sl);
@@ -177,7 +181,8 @@ public class InteractiveController implements MouseInputListener,WindowStateList
 		if(validInteraction(arg0)){
 			if(!arg0.isShiftDown()
 					&& !SwingUtilities.isMiddleMouseButton(arg0)
-					&& !SwingUtilities.isRightMouseButton(arg0)){
+					&& !SwingUtilities.isRightMouseButton(arg0)
+					&&! arg0.isControlDown()){
 
 				this.pane.clearSelection();
 				this.pane.repaint();

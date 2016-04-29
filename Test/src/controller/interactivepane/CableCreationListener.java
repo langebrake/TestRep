@@ -39,7 +39,7 @@ public class CableCreationListener extends MouseAdapter{
 		componentSource = e.getSource();
 		Object source = searchSourceRecursive(e,(Component) e.getSource(),CablePointHost.class);
 		if( validInteraction(e) && source instanceof CablePointHost){
-			sourcePoint = ((CablePointHost) source).getCablePoint();
+			sourcePoint = ((CablePointHost) source).getCablePoint(e.getPoint());
 			if(sourcePoint.isConnected()){
 				this.oldSourceConnection = sourcePoint.getCable();
 				controller.getPane().remove(this.oldSourceConnection);
@@ -69,9 +69,8 @@ public class CableCreationListener extends MouseAdapter{
 			}
 			Component source = searchSourceRecursive(e,searchComponent,CablePointHost.class);
 			if(source instanceof CablePointHost){
-				CablePoint destPoint = ((CablePointHost) source).getCablePoint();
-				if(((CablePointHost) source).getCablePoint().getType()!=sourcePoint.getType() 
-						&& source!=null){
+				CablePoint destPoint = ((CablePointHost) source).getCablePoint(sourcePoint.getType().getCounterPart());
+				if(destPoint != null ){
 					
 					tmpCable.setDraggedEndpoint(false);
 					if(!destPoint.isConnected()){

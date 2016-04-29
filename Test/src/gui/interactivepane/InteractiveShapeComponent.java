@@ -33,10 +33,19 @@ public class InteractiveShapeComponent extends InteractiveComponent implements C
 	public void updateView(){
 		super.updateView();
 		this.s = new Ellipse2D.Float(0,0,this.getWidth() ,this.getHeight());
+		int i = 1;
 			for(CablePointSimple c:this.cablePoints){
-				c.setXOnScreen((int) (this.getLocationOnScreen().getX() + this.getWidth() / 2));
-				c.setYOnScreen((int) (this.getLocationOnScreen().getY() + this.getHeight() / 2));
-			}
+				if(c.getType() == CablePointType.INPUT){
+					c.setXOnScreen((int) (this.getLocationOnScreen().getX() + this.getWidth() / 4));
+					c.setYOnScreen((int) (this.getLocationOnScreen().getY() + i*(this.getHeight() / (cablePoints.size()+4))));
+				
+				}else {
+					c.setXOnScreen((int) (this.getLocationOnScreen().getX() + 3* this.getWidth() / 4));
+					c.setYOnScreen((int) (this.getLocationOnScreen().getY() + i*(this.getHeight() / (cablePoints.size() + 4))));
+				
+				}
+				i++;
+				}
 			this.repaint();
 
 	}
@@ -155,14 +164,15 @@ public class InteractiveShapeComponent extends InteractiveComponent implements C
 
 	@Override
 	public CablePoint getCablePoint(CablePointType type) {
-		for(CablePointSimple cps:this.cablePoints){
-			if(cps.getType() == type){
-				return cps;
-			}
-		}
+//		for(CablePointSimple cps:this.cablePoints){
+//			if(cps.getType() == type){
+//				return cps;
+//			}
+//		}
 		CablePointSimple cps = new CablePointSimple(type);
 		cps.setIndex(this.cablePoints.size());
 		this.cablePoints.add(cps);
+		this.updateView();
 		return cps;
 	}
 
@@ -194,6 +204,20 @@ public class InteractiveShapeComponent extends InteractiveComponent implements C
 	public CablePoint getFreeCablePoint(CablePointType type) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+
+
+
+
+	@Override
+	public CablePoint getCablePoint(Point sourceInComponent) {
+		if(sourceInComponent.getX()>this.getWidth()/2){
+			return this.getCablePoint(CablePointType.OUTPUT);
+		}else{
+			return this.getCablePoint(CablePointType.INPUT);
+		}
+		
 	}
 	
 	

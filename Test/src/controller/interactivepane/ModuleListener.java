@@ -121,6 +121,11 @@ public class ModuleListener extends ControllerListenerAdapter {
 		}
 	}
 	
+	@Override
+	public void mouseMoved(MouseEvent e){
+		
+	}
+	
 	private boolean validInteraction(MouseEvent e){
 		return SwingUtilities.isLeftMouseButton(e)
 				&& !(e.isControlDown() && e.isShiftDown())

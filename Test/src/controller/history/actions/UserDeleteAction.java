@@ -40,7 +40,7 @@ public class UserDeleteAction extends UserAction {
 						if(cableResurrect == cablePoint){
 							continue;
 						}
-						cableResurrect.getHost().forceExistence(cableResurrect);
+						//cableResurrect.getHost().forceExistence(cableResurrect);
 						cableResurrect.setCable(tmpCable);
 						
 					}
