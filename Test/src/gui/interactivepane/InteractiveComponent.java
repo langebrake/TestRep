@@ -45,6 +45,12 @@ public abstract class InteractiveComponent extends JPanel implements Interactive
 		
 	}
 	
+	public Dimension getOriginDimension(){
+		return this.originDimension;
+	}
+		public Vector getOriginLocation(){
+			return this.originLocation;
+		}
 	
 	public void translateOriginLocation(Vector translationVector){
 		this.originLocation = this.originLocation.addVector(translationVector);

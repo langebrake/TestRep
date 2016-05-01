@@ -202,6 +202,11 @@ public class InteractiveCable implements InteractiveShape{
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public boolean selectable() {
+		return true;
+	}
 	
 	
 }

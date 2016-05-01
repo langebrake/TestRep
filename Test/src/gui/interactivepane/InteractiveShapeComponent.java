@@ -73,6 +73,7 @@ public class InteractiveShapeComponent extends InteractiveComponent implements C
 	
 	public void paint(Graphics g){
 		super.paint(g);
+		this.updateView();
 		if(g instanceof Graphics2D){
 			Graphics2D g2d = (Graphics2D) g;
 
@@ -103,6 +104,9 @@ public class InteractiveShapeComponent extends InteractiveComponent implements C
 	
 	@Override
 	public void revalidate(){
+		if(this.getParentPane() != null && this.getParentPane().isShowing()){
+			this.updateView();
+		}
 		super.revalidate();
 	}
 

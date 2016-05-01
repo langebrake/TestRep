@@ -49,6 +49,7 @@ public class UserAddModuleAction extends UserAction {
 		interactiveModule.addMouseListener(controller.getModuleListener());
 		interactiveModule.addMouseMotionListener(controller.getModuleListener());
 		interactiveModule.addMouseWheelListener(controller.getModuleListener());
+		interactiveModule.inputPopout(true);
 		
 	}
 	@Override
@@ -70,11 +71,9 @@ public class UserAddModuleAction extends UserAction {
 		out.writeObject(this.plugin);
 	}
 	private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException {
-		System.out.println("ADDACTION START");
 		in.defaultReadObject();
-		System.out.println("read plugin");
+		// TODO: save plugin reading
 		this.plugin = (Plugin) in.readObject();
-		System.out.println("ADDACTION END");
 	}
 
 }

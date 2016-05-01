@@ -115,6 +115,7 @@ public class Controller implements Serializable,WindowListener {
 //			// TODO Auto-generated catch block
 //			e.printStackTrace();
 //		}
+		in.defaultReadObject();
 		try {
 			PluginManager.loadPlugins();
 		} catch (Exception e) {
@@ -122,7 +123,7 @@ public class Controller implements Serializable,WindowListener {
 			e.printStackTrace();
 		}
 		this.classes = PluginManager.classes;
-		in.defaultReadObject();
+		
 		
 		
 	}

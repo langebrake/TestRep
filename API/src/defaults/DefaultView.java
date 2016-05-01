@@ -8,6 +8,8 @@ import java.awt.BorderLayout;
 import java.awt.Font;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -47,6 +49,15 @@ public class DefaultView extends JPanel implements InteractiveUpdateable {
 
 		// Set the label's font size to the newly determined size.
 		this.lbl.setFont(new Font(labelFont.getName(), Font.PLAIN, fontSizeToUse));
+	}
+	
+	private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException {
+		in.defaultReadObject();
+		this.addComponentListener(new ComponentAdapter(){
+            public void componentResized(ComponentEvent e) {
+                DefaultView.this.sizeFont();
+            }
+		});
 	}
 	@Override
 	public void updateView() {
