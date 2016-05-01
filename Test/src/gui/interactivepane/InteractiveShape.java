@@ -2,8 +2,9 @@ package gui.interactivepane;
 
 import java.awt.Graphics2D;
 import java.awt.Shape;
+import java.io.Serializable;
 
-public interface InteractiveShape extends Shape {
+public interface InteractiveShape extends Shape, Serializable {
 	public void setSelected(boolean set);
 	public void setHovered(boolean set);
 	public boolean isSelected();

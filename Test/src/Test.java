@@ -4,7 +4,7 @@ import java.util.concurrent.TimeUnit;
 import javax.sound.midi.*;
 
 import model.graph.Module;
-import defaults.MidiIO;
+import defaults.MidiIOThrough;
 import engine.Engine;
 
 
@@ -59,7 +59,7 @@ public class Test {
 		Receiver ewql = null;
 		Transmitter midimini = null;
 		PrimReceive printreceiver = new PrimReceive();
-		MidiIO testio = new MidiIO(new Module(Engine.load()));
+		MidiIOThrough testio = new MidiIOThrough(new Module());
 		try {
 			ewql = outdevice.getReceiver();
 			midimini = indevice.getTransmitter();

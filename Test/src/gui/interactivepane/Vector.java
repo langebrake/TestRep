@@ -2,8 +2,9 @@ package gui.interactivepane;
 
 import java.awt.Point;
 import java.awt.geom.Point2D;
+import java.io.Serializable;
 
-public class Vector {
+public class Vector implements Serializable{
 	private Point2D.Float point;
 
 	public Vector(){

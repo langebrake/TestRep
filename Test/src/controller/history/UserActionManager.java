@@ -1,6 +1,7 @@
 package controller.history;
 
 import java.awt.event.ActionEvent;
+import java.io.Serializable;
 import java.util.EmptyStackException;
 import java.util.Stack;
 
@@ -8,7 +9,7 @@ import javax.swing.AbstractAction;
 
 import controller.interactivepane.InteractiveController;
 
-public class UserActionManager {
+public class UserActionManager implements Serializable{
 	private Stack<UserAction> undo;
 	private Stack<UserAction> redo;
 	private InteractiveController controller;

@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Name: Midi Output
+Description: A simple midi output plugin
+Version: 1.0
+Vendor: Hendrik Langebrake
+Web: hl-soundtracks.de
+Type: MidiOutputPlugin
+PluginInterfaceVersion: 0.1a

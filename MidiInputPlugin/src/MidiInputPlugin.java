@@ -1,28 +1,36 @@
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.Scanner;
 
 import javax.sound.midi.MidiDevice;
+import javax.sound.midi.MidiMessage;
 import javax.sound.midi.MidiUnavailableException;
+import javax.sound.midi.Receiver;
 import javax.sound.midi.Transmitter;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 
 import midiengine.MidiEngine;
 import defaults.DefaultView;
+import defaults.MidiIO;
 import plugin.Plugin;
 import pluginhost.PluginHost;
 import pluginhost.events.HostEvent;
 
 
-public class MidiInputPlugin extends Plugin{
+public class MidiInputPlugin extends Plugin implements Receiver, Serializable{
 
 	private static final int MAXINPUTS = 0;
 	private static final int MAXOUTPUTS = 1;
 	private static final int MININPUTS = 0;
 	private static final int MINOUTPUTS = 1;
 	private static final String NAME = "MidiInputPlugin";
-	private MidiDevice inputdevice;
-	private Transmitter inputtransmitter;
+	private transient MidiDevice inputdevice;
+	private transient Transmitter inputtransmitter;
+	private String midiDeviceName;
+	private MidiIO output;
 	
 	public static MidiInputPlugin getInstance(PluginHost host){
 		return new MidiInputPlugin(host);
@@ -90,6 +98,7 @@ public class MidiInputPlugin extends Plugin{
 			int i = Integer.parseInt(s.nextLine());
 			inputdevice = inputs.get(i);
 			inputdevice.open();
+			this.midiDeviceName = inputdevice.getDeviceInfo().getName();
 			inputtransmitter = inputdevice.getTransmitter();
 			
 		} catch (MidiUnavailableException e) {
@@ -100,7 +109,9 @@ public class MidiInputPlugin extends Plugin{
 		if(inputtransmitter == null) {
 			System.err.println("No Input Transmitter obtained!");
 		} else{
-			this.getPluginHost().getOuput(0).setInput(inputtransmitter);
+			inputtransmitter.setReceiver(this);
+			
+			this.output = this.getPluginHost().getOuput(0);
 		}
 
 		
@@ -108,6 +119,7 @@ public class MidiInputPlugin extends Plugin{
 
 	@Override
 	public void close() {
+		if(inputdevice != null)
 		inputdevice.close();
 		
 	}
@@ -119,6 +131,38 @@ public class MidiInputPlugin extends Plugin{
 
 	@Override
 	public void setDisplayName() {
+		
+	}
+
+
+	@Override
+	public void send(MidiMessage message, long timeStamp) {
+		this.output.send(message, timeStamp);
+		
+	}
+	
+	
+	public void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException{
+		this.inputdevice = this.getPluginHost().getEngine().getInputDevice(this.midiDeviceName);
+		
+		try {
+			this.inputdevice.open();
+			this.inputtransmitter = this.inputdevice.getTransmitter();
+		} catch (MidiUnavailableException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void reOpen() {
+		if(this.inputdevice != null)
+			try {
+				this.inputdevice.open();
+			} catch (MidiUnavailableException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		
 	}
 

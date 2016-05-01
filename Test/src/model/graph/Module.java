@@ -1,7 +1,12 @@
 package model.graph;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+
+import javax.sound.midi.MidiUnavailableException;
+
 import midiengine.MidiEngine;
-import defaults.MidiIO;
+import defaults.MidiIOThrough;
 import plugin.Plugin;
 import plugin.events.PluginEvent;
 import pluginhost.events.*;
@@ -10,12 +15,12 @@ import pluginhost.exceptions.*;
 
 public class Module extends PluginHost {
 
-	public Module(MidiEngine e) {
-		super(e);
+	public Module() throws MidiUnavailableException {
+		super();
 		// TODO Auto-generated constructor stub
 	}
 	
-	public void ConnectNewInput(MidiIO toConnect) throws PluginMaxInputsExceededException{
+	public void ConnectNewInput(MidiIOThrough toConnect) throws PluginMaxInputsExceededException{
 		super.connectNewInput(toConnect);
 		
 		}
@@ -24,6 +29,12 @@ public class Module extends PluginHost {
 	public void notify(PluginEvent e) {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		System.out.println("MODULE  STARTED");
+		in.defaultReadObject();
+		System.out.println("MODULE  FINISHED");
 	}
 
 }

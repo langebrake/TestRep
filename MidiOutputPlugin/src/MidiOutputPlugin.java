@@ -1,7 +1,10 @@
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.util.LinkedList;
 import java.util.Scanner;
 
 import javax.sound.midi.MidiDevice;
+import javax.sound.midi.MidiMessage;
 import javax.sound.midi.MidiUnavailableException;
 import javax.sound.midi.Receiver;
 import javax.sound.midi.Transmitter;
@@ -10,20 +13,22 @@ import javax.swing.JFrame;
 
 import midiengine.MidiEngine;
 import defaults.DefaultView;
+import defaults.MidiListener;
 import plugin.Plugin;
 import pluginhost.PluginHost;
 import pluginhost.events.HostEvent;
 
 
-public class MidiOutputPlugin extends Plugin{
+public class MidiOutputPlugin extends Plugin implements MidiListener {
 
 	private static final int MAXINPUTS = 1;
 	private static final int MAXOUTPUTS = 0;
 	private static final int MININPUTS = 1;
 	private static final int MINOUTPUTS = 0;
 	private static final String NAME = "MidiOutputPlugin";
-	private MidiDevice outputdevice;
-	private Receiver outputreceiver;
+	private transient MidiDevice outputdevice;
+	private transient Receiver outputreceiver;
+	private String mididDeviceName;
 	
 	public static MidiOutputPlugin getInstance(PluginHost host){
 		return new MidiOutputPlugin(host);
@@ -92,6 +97,7 @@ public class MidiOutputPlugin extends Plugin{
 			outputdevice = outputs.get(i);
 			outputdevice.open();
 			outputreceiver = outputdevice.getReceiver();
+			this.mididDeviceName = outputdevice.getDeviceInfo().getName();
 			
 		} catch (MidiUnavailableException e) {
 			// TODO Auto-generated catch block
@@ -101,7 +107,7 @@ public class MidiOutputPlugin extends Plugin{
 		if(outputreceiver == null) {
 			System.err.println("No Input Transmitter obtained!");
 		} else{
-			this.getPluginHost().getInput(0).setOutput(outputreceiver);
+			this.getPluginHost().getInput(0).addMidiListener(this);
 		}
 		
 		
@@ -113,6 +119,17 @@ public class MidiOutputPlugin extends Plugin{
 		outputdevice.close();
 		
 	}
+	
+	@Override
+	public void reOpen(){
+		if(outputdevice != null)
+			try {
+				outputdevice.open();
+			} catch (MidiUnavailableException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	}
 
 	@Override
 	public String getDisplayName() {
@@ -123,6 +140,23 @@ public class MidiOutputPlugin extends Plugin{
 	public void setDisplayName() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public void listen(MidiMessage msg, long timestamp) {
+		this.outputreceiver.send(msg, timestamp);
+		
+	}
+	
+	public void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException {
+		in.defaultReadObject();
+		this.outputdevice = this.getPluginHost().getEngine().getOutputDevice(mididDeviceName);
+		try {
+			this.outputreceiver = this.outputdevice.getReceiver();
+		} catch (MidiUnavailableException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 }

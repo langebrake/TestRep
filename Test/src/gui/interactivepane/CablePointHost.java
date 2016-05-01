@@ -1,9 +1,10 @@
 package gui.interactivepane;
 
 import java.awt.Point;
+import java.io.Serializable;
 import java.util.LinkedList;
 
-public interface CablePointHost {
+public interface CablePointHost extends Serializable {
 	public LinkedList<? extends CablePoint> getCablePoints();
 	public LinkedList<? extends CablePoint> getCablePoints(CablePointType type);
 	public LinkedList<? extends CablePoint> getCablePoints(CablePointType type,int... indices);

@@ -1,5 +1,7 @@
 package plugin;
 
+import java.io.Serializable;
+
 import guiinterface.SizeableComponent;
 
 import javax.swing.JComponent;
@@ -11,7 +13,7 @@ import pluginhost.events.*;
 import pluginhost.PluginHost;
 
 
-public abstract class Plugin {
+public abstract class Plugin implements Serializable{
 	
 	private PluginHost host;
 	
@@ -42,5 +44,7 @@ public abstract class Plugin {
 	public abstract void notify(HostEvent e);
 	public abstract void load();
 	public abstract void close();
+
+	public abstract void reOpen();
 	
 }

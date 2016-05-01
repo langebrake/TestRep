@@ -1,5 +1,8 @@
 package controller.history.actions;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.lang.reflect.InvocationTargetException;
 
 import javax.sound.midi.MidiUnavailableException;
@@ -13,14 +16,14 @@ import controller.history.UserActionManager;
 import engine.Engine;
 
 public class UserAddModuleAction extends UserAction {
-	private Plugin plugin;
+	private transient Plugin plugin;
 	private InteractiveModule interactiveModule;
 	private Module module;
 	public UserAddModuleAction(UserActionManager manager,Loadable p){
 		super(manager);
 		module = null;
 		try {
-			module = new Module(Engine.load());
+			module = new Module();
 		} catch (MidiUnavailableException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -60,6 +63,18 @@ public class UserAddModuleAction extends UserAction {
 	public void execute() {
 		controller.getPane().add(interactiveModule);
 
+	}
+	
+	private void writeObject(ObjectOutputStream out) throws IOException{
+		out.defaultWriteObject();
+		out.writeObject(this.plugin);
+	}
+	private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException {
+		System.out.println("ADDACTION START");
+		in.defaultReadObject();
+		System.out.println("read plugin");
+		this.plugin = (Plugin) in.readObject();
+		System.out.println("ADDACTION END");
 	}
 
 }

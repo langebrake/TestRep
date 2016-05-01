@@ -1,7 +1,9 @@
 package gui.interactivepane;
 
+import java.io.Serializable;
 
-public interface CablePoint  {
+
+public interface CablePoint extends Serializable  {
 	public int getXOnScreen();
 	public int getYOnScreen();
 	public InteractiveCable getCable();

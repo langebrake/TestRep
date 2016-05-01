@@ -5,9 +5,10 @@ import gui.interactivepane.Vector;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.Serializable;
 import java.util.LinkedList;
 
-public class ShapeListener extends MouseAdapter{
+public class ShapeListener extends MouseAdapter implements Serializable{
 	private boolean inPane;
 	private InteractiveController controller;
 	public ShapeListener(InteractiveController controller) {

@@ -13,6 +13,7 @@ import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
+import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -22,7 +23,7 @@ import javax.swing.SwingUtilities;
 
 import controller.history.actions.UserAddConnectionsAction;
 
-public class CableCreationListener extends MouseAdapter{
+public class CableCreationListener extends MouseAdapter implements Serializable{
 	private CablePointComponent tmpPoint;
 	private CablePoint sourcePoint;
 	private InteractiveCable tmpCable;

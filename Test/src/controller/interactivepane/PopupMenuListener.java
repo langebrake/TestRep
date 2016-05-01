@@ -7,6 +7,7 @@ import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.Vector;
 
@@ -21,7 +22,7 @@ import model.pluginmanager.Subgroup;
 import controller.pluginmanager.PluginAddAction;
 import controller.shortcut.DeleteAction;
 
-public class PopupMenuListener extends MouseAdapter {
+public class PopupMenuListener extends MouseAdapter implements Serializable {
 	private InteractiveController controller;
 	public PopupMenuListener(InteractiveController c) {
 		this.controller = c;

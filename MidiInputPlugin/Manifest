@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Name: Midi Input Plugin
+Description: A simple console MIDI input
+Version: 1.0
+Vendor: Hendrik Langebrake
+Web: hl-soundtracks.de
+Type: MidiInputPlugin
+PluginInterfaceVersion: 0.1a

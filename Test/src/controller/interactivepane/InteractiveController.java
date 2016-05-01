@@ -25,6 +25,7 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowStateListener;
+import java.io.Serializable;
 
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
@@ -43,7 +44,7 @@ import controller.shortcut.RedoAction;
 import controller.shortcut.UndoAction;
 import model.MidiGraph;
 
-public class InteractiveController implements MouseInputListener,WindowStateListener {
+public class InteractiveController implements MouseInputListener,WindowStateListener, Serializable {
 	private InteractivePane pane;
 	private MidiGraph graph;
 	private UserActionManager actionManager;

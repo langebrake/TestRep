@@ -5,6 +5,7 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Enumeration;
@@ -28,6 +29,7 @@ public class PluginManager {
 	
 	private Controller controller;
 	private static LinkedList<PluginHierarchyElement> plugins;
+	public static LinkedList<URLClassLoader> classes;
 	
 	/**
 	 * adds 
@@ -37,20 +39,21 @@ public class PluginManager {
 		return plugins;
 	}
 	
-	private static void loadPlugins(File dir,LinkedList<PluginHierarchyElement> appendList) throws IOException, ClassNotFoundException, NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException{
+	private static void loadPlugins(File dir,LinkedList<PluginHierarchyElement> appendList) throws Exception{
 		for(File file: dir.listFiles()){
 			if(file.isDirectory()) {
 				Subgroup s = new Subgroup(file.getName());
 				appendList.add(s);
 				loadPlugins(file,s);
 			}else if(file.getName().toLowerCase().endsWith(".jar")){
+				PluginManager.addPath(file.getPath());
 				String path = file.getPath();
 				JarFile jar = new JarFile(path);
 				Enumeration<JarEntry> en = jar.entries();
 				
 				URL[] urls = { new URL("jar:file:" + path +"!/") };
 				URLClassLoader cl = URLClassLoader.newInstance(urls);
-				
+				classes.add(cl);
 				while (en.hasMoreElements()) {
 				    JarEntry je = en.nextElement();
 				    if(je.isDirectory() || !je.getName().endsWith(".class")){
@@ -81,7 +84,18 @@ public class PluginManager {
 	}
 	public static void loadPlugins() throws Exception{
 		plugins = new LinkedList<PluginHierarchyElement>();
+		classes = new LinkedList<URLClassLoader>();
 		File f = new File("./plugin");
 		loadPlugins(f,plugins);
+	}
+	
+	public static void addPath(String s) throws Exception {
+	    File f = new File(s);
+	    URI u = f.toURI();
+	    URLClassLoader urlClassLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
+	    Class<URLClassLoader> urlClass = URLClassLoader.class;
+	    Method method = urlClass.getDeclaredMethod("addURL", new Class[]{URL.class});
+	    method.setAccessible(true);
+	    method.invoke(urlClassLoader, new Object[]{u.toURL()});
 	}
 }

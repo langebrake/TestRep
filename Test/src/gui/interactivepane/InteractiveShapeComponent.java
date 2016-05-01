@@ -37,11 +37,11 @@ public class InteractiveShapeComponent extends InteractiveComponent implements C
 			for(CablePointSimple c:this.cablePoints){
 				if(c.getType() == CablePointType.INPUT){
 					c.setXOnScreen((int) (this.getLocationOnScreen().getX() + this.getWidth() / 4));
-					c.setYOnScreen((int) (this.getLocationOnScreen().getY() + i*(this.getHeight() / (cablePoints.size()+4))));
+					c.setYOnScreen((int) (this.getLocationOnScreen().getY() + i*(this.getHeight() / (cablePoints.size()))));
 				
 				}else {
 					c.setXOnScreen((int) (this.getLocationOnScreen().getX() + 3* this.getWidth() / 4));
-					c.setYOnScreen((int) (this.getLocationOnScreen().getY() + i*(this.getHeight() / (cablePoints.size() + 4))));
+					c.setYOnScreen((int) (this.getLocationOnScreen().getY() + i*(this.getHeight() / (cablePoints.size()))));
 				
 				}
 				i++;
@@ -95,10 +95,15 @@ public class InteractiveShapeComponent extends InteractiveComponent implements C
 	
 	@Override
 	public void validate(){
-		if(this.getParentPane() != null){
+		if(this.getParentPane() != null && this.getParentPane().isShowing()){
 			this.updateView();
 		}
 		super.validate();
+	}
+	
+	@Override
+	public void revalidate(){
+		super.revalidate();
 	}
 
 	@Override

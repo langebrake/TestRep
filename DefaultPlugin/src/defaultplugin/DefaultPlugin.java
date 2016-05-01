@@ -1,6 +1,9 @@
 package defaultplugin;
 import guiinterface.SizeableComponent;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.LinkedList;
 
 import javax.sound.midi.MidiMessage;
@@ -15,18 +18,21 @@ import pluginhost.events.*;
 import pluginhost.PluginHost;
 import defaults.DefaultView;
 import defaults.MidiIO;
+import defaults.MidiIOThrough;
+import defaults.MidiListener;
 
 
 
-public class DefaultPlugin extends Plugin implements Receiver, Transmitter{
+public class DefaultPlugin extends Plugin implements MidiListener{
 	private static final int MAXINPUTS = 1;
 	private static final int MAXOUTPUTS = 1;
 	private static final int MININPUTS = 1;
 	private static final int MINOUTPUTS = 1;
 	private static final String NAME = "DummyPlugin";
 	private String msg = "DummyPlugin";
-	private Receiver rc;
 	private DefaultView view;
+	private MidiIO input,output;
+	
 	public static Plugin getInstance(PluginHost host){
 		return new DefaultPlugin(host);
 	}
@@ -66,20 +72,20 @@ public class DefaultPlugin extends Plugin implements Receiver, Transmitter{
 	public void load() {
 		this.view = new DefaultView(msg);
 		PluginHost host = this.getPluginHost();
-		MidiIO input = host.getInput(0);
-		MidiIO output = host.getOuput(0);
-		input.setOutput(this);
-		this.setReceiver(output);
-		Utilities.print();
+		input = host.getInput(0);
+		output = host.getOuput(0);
+		input.addMidiListener(this);
+		
 		
 		
 	}
 	@Override
 	public void close() {
 		PluginHost host = this.getPluginHost();
-		MidiIO input = host.getInput(0);
-		MidiIO output = host.getOuput(0);
+		MidiIOThrough input = host.getInput(0);
+		MidiIOThrough output = host.getOuput(0);
 		input.disconnectOutput();
+		output.disconnectInput();
 		
 	}
 	@Override
@@ -95,27 +101,21 @@ public class DefaultPlugin extends Plugin implements Receiver, Transmitter{
 		return NAME;
 	}
 	
-	
-	@Override
-	public Receiver getReceiver() {
-		return null;
-	}
-	@Override
-	public void setReceiver(Receiver arg0) {
-		this.rc = arg0;
-		
-	}
-	@Override
-	public void send(MidiMessage arg0, long arg1) {
-		this.msg = arg0.getMessage().toString();
-		
-		this.rc.send(arg0, arg1);
-	}
 	@Override
 	public void setDisplayName() {
 	
 		
 	}
-
+	@Override
+	public void listen(MidiMessage msg, long timestamp) {
+		output.send(msg, timestamp);
+		
+	}
+	@Override
+	public void reOpen() {
+		// TODO Auto-generated method stub
+		
+	}
+	
 
 }

@@ -15,6 +15,9 @@ public interface MidiEngine {
 	
 	public MidiDevice getInputDevice(int indexID);
 	
-	public MidiDevice getOutputDevice(int indexID);
+	public MidiDevice getInputDevice(String name);
 	
+	public MidiDevice getOutputDevice(int indexID);
+
+	public MidiDevice getOutputDevice(String name);
 }

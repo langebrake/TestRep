@@ -1,14 +1,14 @@
 package pluginhost.events;
 
-import defaults.MidiIO;
+import defaults.MidiIOThrough;
 
 public class NewInputEvent extends HostEvent {
-	private MidiIO newInput;
+	private MidiIOThrough newInput;
 	
-	public NewInputEvent(MidiIO newInput){
+	public NewInputEvent(MidiIOThrough newInput){
 		this.newInput = newInput;
 	}
-	public MidiIO getNewInput(){
+	public MidiIOThrough getNewInput(){
 		return this.newInput;
 	}
 }

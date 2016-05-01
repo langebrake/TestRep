@@ -1,25 +1,32 @@
 package pluginhost;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.LinkedList;
 
+import javax.sound.midi.MidiUnavailableException;
+
 import midiengine.MidiEngine;
-import defaults.MidiIO;
+import defaults.MidiIOThrough;
+import engine.Engine;
 import plugin.Plugin;
 import plugin.events.PluginEvent;
 import pluginhost.exceptions.*;
 import pluginhost.events.*;
 
 
-public abstract class PluginHost implements AutoCloseable{
+public abstract class PluginHost implements AutoCloseable, Serializable{
 	
-	private LinkedList<MidiIO> inputs,outputs;
+	private LinkedList<MidiIOThrough> inputs,outputs;
 	private Plugin plugin;
-	private MidiEngine engine;
+	private transient MidiEngine engine;
 	
-	public PluginHost(MidiEngine e){
-		this.inputs = new LinkedList<MidiIO>();
-		this.outputs = new LinkedList<MidiIO>();
-		this.engine = e;
+	public PluginHost() throws MidiUnavailableException{
+		this.inputs = new LinkedList<MidiIOThrough>();
+		this.outputs = new LinkedList<MidiIOThrough>();
+		this.engine = Engine.load();
 	}
 	
 	
@@ -65,8 +72,8 @@ public abstract class PluginHost implements AutoCloseable{
 	 * @param toConnect
 	 * @throws PluginMaxInputsExceededException 
 	 */
-	public void connectInput(MidiIO toConnect) throws PluginMaxInputsExceededException{
-		LinkedList<MidiIO> freeInputs = this.getFreeInputs();
+	public void connectInput(MidiIOThrough toConnect) throws PluginMaxInputsExceededException{
+		LinkedList<MidiIOThrough> freeInputs = this.getFreeInputs();
 		if(freeInputs.size() == 0){
 			this.connectNewInput(toConnect);
 		} else {
@@ -79,7 +86,7 @@ public abstract class PluginHost implements AutoCloseable{
 	 * @param toConnect
 	 * @throws PluginMaxInputsExceededException
 	 */
-	public void connectNewInput(MidiIO toConnect) throws PluginMaxInputsExceededException{
+	public void connectNewInput(MidiIOThrough toConnect) throws PluginMaxInputsExceededException{
 		this.connectNewInput(toConnect, this.getInputCount());
 	}
 	
@@ -90,13 +97,13 @@ public abstract class PluginHost implements AutoCloseable{
 	 * @param id
 	 * @throws PluginMaxInputsExceededException
 	 */
-	public void connectNewInput(MidiIO toConnect, int id) throws PluginMaxInputsExceededException{
+	public void connectNewInput(MidiIOThrough toConnect, int id) throws PluginMaxInputsExceededException{
 		if(plugin.getMaxInputs() >= this.getInputCount()){
 			throw new PluginMaxInputsExceededException();
 		}else if (this.getInputCount() < id) {
 			throw new IllegalArgumentException("Input connection error: illegal id");
 		}else {
-		MidiIO newInput = new MidiIO(this);
+		MidiIOThrough newInput = new MidiIOThrough(this);
 		newInput.setInput(toConnect);
 		this.inputs.add(id,newInput);
 		//TODO: Host Event Implementation of InputEvent
@@ -105,11 +112,11 @@ public abstract class PluginHost implements AutoCloseable{
 	}
 	
 	
-	public void connectNewInputs(LinkedList<MidiIO> toConnect){
+	public void connectNewInputs(LinkedList<MidiIOThrough> toConnect){
 		this.connectNewInputs(toConnect,this.getInputCount());
 	}
 	
-	public void connectNewInputs(LinkedList<MidiIO> toConnect, int id ){
+	public void connectNewInputs(LinkedList<MidiIOThrough> toConnect, int id ){
 		//TODO: Implementation!!
 	}
 	/**
@@ -119,7 +126,7 @@ public abstract class PluginHost implements AutoCloseable{
 	 * @param givenInput
 	 * @throws PluginException
 	 */
-	public void connectWithInput(MidiIO toConnect, MidiIO givenInput) throws PluginException{
+	public void connectWithInput(MidiIOThrough toConnect, MidiIOThrough givenInput) throws PluginException{
 		int id = this.inputs.indexOf(givenInput);
 		this.connectWithInput(toConnect, id);
 	}
@@ -130,7 +137,7 @@ public abstract class PluginHost implements AutoCloseable{
 	 * @param givenInputID
 	 * @throws PluginException
 	 */
-	public void connectWithInput(MidiIO source, int givenInputID) throws PluginException{
+	public void connectWithInput(MidiIOThrough source, int givenInputID) throws PluginException{
 		if (this.inputs.size() - 1 < givenInputID || givenInputID<0){
 			throw new PluginInputNotFoundException();
 		} else if (source.hasOutput()){
@@ -147,7 +154,7 @@ public abstract class PluginHost implements AutoCloseable{
 	 * @param sources
 	 * @param givenInputs
 	 */
-	public void connectWithInputs(LinkedList<MidiIO> sources, LinkedList<MidiIO> givenInputs){
+	public void connectWithInputs(LinkedList<MidiIOThrough> sources, LinkedList<MidiIOThrough> givenInputs){
 		//TODO: implement
 	}
 	
@@ -157,7 +164,7 @@ public abstract class PluginHost implements AutoCloseable{
  * @param startID
  * @param enableNewInputs
  */
-	public void connectWithInputs(LinkedList<MidiIO> sources, int startID, boolean enableNewInputs){
+	public void connectWithInputs(LinkedList<MidiIOThrough> sources, int startID, boolean enableNewInputs){
 		//TODO: implement
 	}
 	
@@ -167,7 +174,7 @@ public abstract class PluginHost implements AutoCloseable{
 	 * @return new input
 	 * @throws PluginMaxInputsExceededException
 	 */
-	public MidiIO newInput() throws PluginMaxInputsExceededException{
+	public MidiIOThrough newInput() throws PluginMaxInputsExceededException{
 		return this.newInput(this.getInputCount());
 	}
 	
@@ -178,11 +185,11 @@ public abstract class PluginHost implements AutoCloseable{
 	 * @return
 	 * @throws PluginMaxInputsExceededException
 	 */
-	public MidiIO newInput(int id) throws PluginMaxInputsExceededException{
+	public MidiIOThrough newInput(int id) throws PluginMaxInputsExceededException{
 		if(this.plugin.getMaxInputs() != -1 && this.plugin.getMaxInputs() <= this.getInputCount()){
 			throw new PluginMaxInputsExceededException();
 		} else{
-			MidiIO tmp = new MidiIO(this);
+			MidiIOThrough tmp = new MidiIOThrough(this);
 			this.inputs.add(id, tmp);
 		//TODO: HostEvent implementation for this event!
 			this.plugin.notify(new HostEvent());
@@ -203,7 +210,7 @@ public abstract class PluginHost implements AutoCloseable{
 	 * @param input
 	 * @throws PluginInputNotFoundException 
 	 */
-	public void disconnectInput(MidiIO input) throws PluginInputNotFoundException{
+	public void disconnectInput(MidiIOThrough input) throws PluginInputNotFoundException{
 		this.disconnectInput(this.inputs.indexOf(input));
 	}
 	
@@ -222,7 +229,7 @@ public abstract class PluginHost implements AutoCloseable{
 		}
 	}
 	
-	public void disconnectInputs(LinkedList<MidiIO> inputs){
+	public void disconnectInputs(LinkedList<MidiIOThrough> inputs){
 		//TODO: implement!
 	}
 	
@@ -249,7 +256,7 @@ public abstract class PluginHost implements AutoCloseable{
 	 * @throws PluginInputNotFoundException
 	 * @throws PluginMinInputsExceededException 
 	 */
-	public void removeInput(MidiIO input) throws PluginInputNotFoundException, PluginMinInputsExceededException{
+	public void removeInput(MidiIOThrough input) throws PluginInputNotFoundException, PluginMinInputsExceededException{
 		this.removeInput(this.inputs.indexOf(input));
 	}
 	
@@ -275,7 +282,7 @@ public abstract class PluginHost implements AutoCloseable{
 		}
 	}
 	
-	public void removeInputs(LinkedList<MidiIO> inputs){
+	public void removeInputs(LinkedList<MidiIOThrough> inputs){
 		//TODO: implement, mind the minimal inputs
 	}
 	
@@ -295,7 +302,7 @@ public abstract class PluginHost implements AutoCloseable{
 		//TODO: implement good Host Event
 		this.plugin.notify(new HostEvent());
 		this.disconnectAllInputs();
-		this.inputs = new LinkedList<MidiIO>();
+		this.inputs = new LinkedList<MidiIOThrough>();
 	}
 	
 	/**
@@ -312,8 +319,8 @@ public abstract class PluginHost implements AutoCloseable{
 	 * @param toConnect
 	 * @throws PluginMaxOutputsExceededException 
 	 */
-	public void connectOutput(MidiIO toConnect) throws PluginMaxOutputsExceededException {
-		LinkedList<MidiIO> freeOutputs = this.getFreeOutputs();
+	public void connectOutput(MidiIOThrough toConnect) throws PluginMaxOutputsExceededException {
+		LinkedList<MidiIOThrough> freeOutputs = this.getFreeOutputs();
 		if(freeOutputs.size() == 0){
 			this.connectNewOutput(toConnect);
 		} else {
@@ -326,7 +333,7 @@ public abstract class PluginHost implements AutoCloseable{
 	 * @param toConnect
 	 * @throws PluginMaxOutputsExceededException
 	 */
-	public void connectNewOutput(MidiIO toConnect) throws PluginMaxOutputsExceededException{
+	public void connectNewOutput(MidiIOThrough toConnect) throws PluginMaxOutputsExceededException{
 		this.connectNewOutput(toConnect, this.getOutputCount());
 	}
 	
@@ -337,13 +344,13 @@ public abstract class PluginHost implements AutoCloseable{
 	 * @param id
 	 * @throws PluginMaxOutputsExceededException
 	 */
-	public void connectNewOutput(MidiIO toConnect, int id) throws PluginMaxOutputsExceededException{
+	public void connectNewOutput(MidiIOThrough toConnect, int id) throws PluginMaxOutputsExceededException{
 		if(plugin.getMaxOutputs() >= this.getOutputCount()){
 			throw new PluginMaxOutputsExceededException();
 		}else if (this.getOutputCount() < id) {
 			throw new IllegalArgumentException("Output connection error: illegal id");
 		}else {
-		MidiIO newOutput = new MidiIO(this);
+		MidiIOThrough newOutput = new MidiIOThrough(this);
 		newOutput.setOutput(toConnect);
 		this.outputs.add(id,newOutput);
 		//TODO: Host Event Implementation of OutputEvent
@@ -352,11 +359,11 @@ public abstract class PluginHost implements AutoCloseable{
 	}
 	
 	
-	public void connectNewOutputs(LinkedList<MidiIO> toConnect){
+	public void connectNewOutputs(LinkedList<MidiIOThrough> toConnect){
 		this.connectNewOutputs(toConnect,this.getOutputCount());
 	}
 	
-	public void connectNewOutputs(LinkedList<MidiIO> toConnect, int id ){
+	public void connectNewOutputs(LinkedList<MidiIOThrough> toConnect, int id ){
 		//TODO: Implementation!!
 	}
 	/**
@@ -366,7 +373,7 @@ public abstract class PluginHost implements AutoCloseable{
 	 * @param givenOutput
 	 * @throws PluginException
 	 */
-	public void connectWithOutput(MidiIO toConnect, MidiIO givenOutput) throws PluginException{
+	public void connectWithOutput(MidiIOThrough toConnect, MidiIOThrough givenOutput) throws PluginException{
 		int id = this.outputs.indexOf(givenOutput);
 		this.connectWithOutput(toConnect, id);
 	}
@@ -377,7 +384,7 @@ public abstract class PluginHost implements AutoCloseable{
 	 * @param givenOutputID
 	 * @throws PluginException
 	 */
-	public void connectWithOutput(MidiIO destination, int givenOutputID) throws PluginException{
+	public void connectWithOutput(MidiIOThrough destination, int givenOutputID) throws PluginException{
 		if (this.outputs.size() - 1 < givenOutputID || givenOutputID<0){
 			throw new PluginOutputNotFoundException();
 		} else if (destination.hasInput()){
@@ -394,7 +401,7 @@ public abstract class PluginHost implements AutoCloseable{
 	 * @param destinations
 	 * @param givenOutputs
 	 */
-	public void connectWithOutputs(LinkedList<MidiIO> destinations, LinkedList<MidiIO> givenOutputs){
+	public void connectWithOutputs(LinkedList<MidiIOThrough> destinations, LinkedList<MidiIOThrough> givenOutputs){
 		//TODO: implement
 	}
 	
@@ -404,7 +411,7 @@ public abstract class PluginHost implements AutoCloseable{
  * @param startID
  * @param enableNewOutputs
  */
-	public void connectWithOutputs(LinkedList<MidiIO> destinations, int startID, boolean enableNewOutputs){
+	public void connectWithOutputs(LinkedList<MidiIOThrough> destinations, int startID, boolean enableNewOutputs){
 		//TODO: implement
 	}
 	
@@ -414,7 +421,7 @@ public abstract class PluginHost implements AutoCloseable{
 	 * @return new outputs
 	 * @throws PluginMaxOutputsExceededException
 	 */
-	public MidiIO newOutput() throws PluginMaxOutputsExceededException{
+	public MidiIOThrough newOutput() throws PluginMaxOutputsExceededException{
 		return this.newOutput(this.getOutputCount());
 	}
 	
@@ -425,11 +432,11 @@ public abstract class PluginHost implements AutoCloseable{
 	 * @return
 	 * @throws PluginMaxOutputsExceededException
 	 */
-	public MidiIO newOutput(int id) throws PluginMaxOutputsExceededException{
+	public MidiIOThrough newOutput(int id) throws PluginMaxOutputsExceededException{
 		if(this.plugin.getMaxOutputs() <= this.getOutputCount()){
 			throw new PluginMaxOutputsExceededException();
 		} else{
-			MidiIO tmp = new MidiIO(this);
+			MidiIOThrough tmp = new MidiIOThrough(this);
 			this.outputs.add(id, tmp);
 		//TODO: HostEvent implementation for this event!
 			this.plugin.notify(new HostEvent());
@@ -457,7 +464,7 @@ public abstract class PluginHost implements AutoCloseable{
 	 * @param output
 	 * @throws PluginOutputNotFoundException 
 	 */
-	public void disconnectOutput(MidiIO output) throws PluginOutputNotFoundException{
+	public void disconnectOutput(MidiIOThrough output) throws PluginOutputNotFoundException{
 		this.disconnectOutput(this.outputs.indexOf(output));
 	}
 	
@@ -479,7 +486,7 @@ public abstract class PluginHost implements AutoCloseable{
 	 * unimplemented
 	 * @param outputs
 	 */
-	public void disconnectOutputs(LinkedList<MidiIO> outputs){
+	public void disconnectOutputs(LinkedList<MidiIOThrough> outputs){
 		//TODO: implement!
 	}
 	/**
@@ -507,7 +514,7 @@ public abstract class PluginHost implements AutoCloseable{
 	 * @throws PluginOutputNotFoundException
 	 * @throws PluginMinOutputsExceededException 
 	 */
-	public void removeOutput(MidiIO output) throws PluginOutputNotFoundException, PluginMinOutputsExceededException{
+	public void removeOutput(MidiIOThrough output) throws PluginOutputNotFoundException, PluginMinOutputsExceededException{
 		this.removeOutput(this.outputs.indexOf(output));
 	}
 	
@@ -537,7 +544,7 @@ public abstract class PluginHost implements AutoCloseable{
 	 * unimplemented
 	 * @param outputs
 	 */
-	public void removeOutputs(LinkedList<MidiIO> outputs){
+	public void removeOutputs(LinkedList<MidiIOThrough> outputs){
 		//TODO: implement, mind the min outputs by plugin
 	}
 	/**
@@ -561,7 +568,7 @@ public abstract class PluginHost implements AutoCloseable{
 		//TODO: implement good Host Event
 		this.plugin.notify(new HostEvent());
 		this.disconnectAllOutputs();
-		this.outputs = new LinkedList<MidiIO>();
+		this.outputs = new LinkedList<MidiIOThrough>();
 	}
 	
 	/**
@@ -572,7 +579,7 @@ public abstract class PluginHost implements AutoCloseable{
 		return this.outputs.size();
 	}
 	
-	public int getMidiIOId(MidiIO m){
+	public int getMidiIOId(MidiIOThrough m){
 		int tmp = this.inputs.indexOf(m);
 		if(tmp!=-1){
 			return tmp;
@@ -581,19 +588,19 @@ public abstract class PluginHost implements AutoCloseable{
 		}
 	}
 	
-	public LinkedList<MidiIO> getOutputs(){
+	public LinkedList<MidiIOThrough> getOutputs(){
 		return this.outputs;
 	}
 	
-	public LinkedList<MidiIO> getInputs(){
+	public LinkedList<MidiIOThrough> getInputs(){
 		return this.inputs;
 	}
 	
-	public MidiIO getOuput(int indexID){
+	public MidiIOThrough getOuput(int indexID){
 		return this.outputs.get(indexID);
 	}
 	
-	public MidiIO getInput(int indexID){
+	public MidiIOThrough getInput(int indexID){
 		return this.inputs.get(indexID);
 	}
 	
@@ -601,9 +608,9 @@ public abstract class PluginHost implements AutoCloseable{
 	 * Get a list of not connected outputs
 	 * @return
 	 */
-	public LinkedList<MidiIO> getFreeOutputs(){
-		LinkedList<MidiIO> tmp = new LinkedList<MidiIO>();
-		for(MidiIO m: this.outputs){
+	public LinkedList<MidiIOThrough> getFreeOutputs(){
+		LinkedList<MidiIOThrough> tmp = new LinkedList<MidiIOThrough>();
+		for(MidiIOThrough m: this.outputs){
 			if(!m.hasOutput()){
 				tmp.add(m);
 			}
@@ -611,9 +618,9 @@ public abstract class PluginHost implements AutoCloseable{
 		return tmp;
 	}
 	
-	public LinkedList<MidiIO> getFreeInputs(){
-		LinkedList<MidiIO> tmp = new LinkedList<MidiIO>();
-		for(MidiIO m: this.inputs){
+	public LinkedList<MidiIOThrough> getFreeInputs(){
+		LinkedList<MidiIOThrough> tmp = new LinkedList<MidiIOThrough>();
+		for(MidiIOThrough m: this.inputs){
 			if(!m.hasInput()){
 				tmp.add(m);
 			}
@@ -621,9 +628,9 @@ public abstract class PluginHost implements AutoCloseable{
 		return tmp;
 	}
 	
-	public LinkedList<MidiIO> getConnectedOutputs(){
-		LinkedList<MidiIO> tmp = new LinkedList<MidiIO>();
-		for(MidiIO m: this.outputs){
+	public LinkedList<MidiIOThrough> getConnectedOutputs(){
+		LinkedList<MidiIOThrough> tmp = new LinkedList<MidiIOThrough>();
+		for(MidiIOThrough m: this.outputs){
 			if(m.hasOutput()){
 				tmp.add(m);
 			}
@@ -631,9 +638,9 @@ public abstract class PluginHost implements AutoCloseable{
 		return tmp;
 	}
 	
-	public LinkedList<MidiIO> getConnectedInputs(){
-		LinkedList<MidiIO> tmp = new LinkedList<MidiIO>();
-		for(MidiIO m: this.inputs){
+	public LinkedList<MidiIOThrough> getConnectedInputs(){
+		LinkedList<MidiIOThrough> tmp = new LinkedList<MidiIOThrough>();
+		for(MidiIOThrough m: this.inputs){
 			if(m.hasOutput()){
 				tmp.add(m);
 			}
@@ -647,6 +654,18 @@ public abstract class PluginHost implements AutoCloseable{
 	
 	public void close(){
 		this.plugin.close();
+	}
+	
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.defaultReadObject();
+		try {
+			this.engine = Engine.load();
+		} catch (MidiUnavailableException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
 	}
 	
 	public abstract void notify(PluginEvent e);
