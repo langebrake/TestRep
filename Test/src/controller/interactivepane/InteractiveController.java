@@ -25,6 +25,8 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowStateListener;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
 
 import javax.swing.AbstractAction;
@@ -47,15 +49,15 @@ import model.MidiGraph;
 public class InteractiveController implements MouseInputListener,WindowStateListener, Serializable {
 	private InteractivePane pane;
 	private MidiGraph graph;
-	private UserActionManager actionManager;
+	private transient UserActionManager actionManager;
 	private Vector lastMousePaneLocation,
 					lastMouseGridLocation;
-	private ModuleListener moduleListener;
-	private PopupMenuListener popupMenuListener;
-	private ShapeListener shapeListener;
-	private CableCreationListener cableCreationListener;
-	private boolean componentAndViewDrag;
-	private boolean cableAddProcess;
+	private transient ModuleListener moduleListener;
+	private transient PopupMenuListener popupMenuListener;
+	private transient ShapeListener shapeListener;
+	private transient CableCreationListener cableCreationListener;
+	private transient boolean componentAndViewDrag;
+	private transient boolean cableAddProcess;
 	
 	public InteractiveController(){
 		this(new InteractivePane(), new MidiGraph(), new UserActionManager());
@@ -305,6 +307,17 @@ public class InteractiveController implements MouseInputListener,WindowStateList
 		
 	}
 
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException{
+		in.defaultReadObject();
+		this.actionManager = new UserActionManager();
+		this.actionManager.setController(this);
+		this.moduleListener = new ModuleListener(this);
+		this.popupMenuListener = new PopupMenuListener(this);
+		this.shapeListener = new ShapeListener(this);
+		this.cableCreationListener = new CableCreationListener(this);
+		this.cableAddProcess = false;
+		this.componentAndViewDrag = false;
+	}
 
 	
 

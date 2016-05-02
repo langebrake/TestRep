@@ -1,5 +1,8 @@
 package plugin;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 import guiinterface.SizeableComponent;
@@ -24,6 +27,10 @@ public abstract class Plugin implements Serializable{
 	public static Plugin getInstance(PluginHost host){
 		return null;
 	}
+	
+	public void setPluginHost(PluginHost host){
+		this.host = host;
+	}
 	/**
 	 * This method returns the plugins name
 	 * @return static String as name
@@ -46,5 +53,6 @@ public abstract class Plugin implements Serializable{
 	public abstract void close();
 
 	public abstract void reOpen();
+	
 	
 }
