@@ -30,26 +30,28 @@ public class UserDeleteAction extends UserAction {
 	public void undo() {
 		//Implement Connecting etc. of modules
 		for(InteractiveComponent c: components){
-			controller.getPane().add(c);
-			LinkedList<CablePointHost> cablePointHosts = getRecursive(c,CablePointHost.class);
-			for(CablePointHost cablePointHost: cablePointHosts){
-				for(CablePoint cablePoint:cablePointHost.getCablePoints()){
-				if(cablePoint.isConnected()){
-					InteractiveCable tmpCable = cablePoint.getCable();
-					for(CablePoint cableResurrect: tmpCable.getCablePoints()){
-						if(cableResurrect == cablePoint){
-							continue;
+			if(c.reopen()){
+				controller.getPane().add(c);
+				LinkedList<CablePointHost> cablePointHosts = getRecursive(c,CablePointHost.class);
+				for(CablePointHost cablePointHost: cablePointHosts){
+					for(CablePoint cablePoint:cablePointHost.getCablePoints()){
+					if(cablePoint.isConnected()){
+						InteractiveCable tmpCable = cablePoint.getCable();
+						for(CablePoint cableResurrect: tmpCable.getCablePoints()){
+							if(cableResurrect == cablePoint){
+								continue;
+							}
+							//cableResurrect.getHost().forceExistence(cableResurrect);
+							cableResurrect.setCable(tmpCable);
+							
 						}
-						//cableResurrect.getHost().forceExistence(cableResurrect);
-						cableResurrect.setCable(tmpCable);
 						
-					}
-					
-					if(!controller.getPane().getShapes().contains(tmpCable)){
-						controller.getPane().add(tmpCable);
+						if(!controller.getPane().getShapes().contains(tmpCable)){
+							controller.getPane().add(tmpCable);
+						}
 					}
 				}
-			}
+				}
 			}
 		}
 		
@@ -70,25 +72,27 @@ public class UserDeleteAction extends UserAction {
 	public void execute() {
 		
 		for(InteractiveComponent c: components){
-			LinkedList<CablePointHost> cablePointHosts = getRecursive(c,CablePointHost.class);
-				for(CablePointHost cablePointHost: cablePointHosts){	
-					for(CablePoint cablePoint:cablePointHost.getCablePoints()){
-						if(cablePoint.isConnected()){
-						
-						InteractiveCable tmpCable = cablePoint.getCable();
-						controller.getPane().remove(tmpCable);
-						for(CablePoint cableErase: tmpCable.getCablePoints()){
-							if(cableErase == cablePoint){
-								continue; //don't remove Reference on components own cablepoint, otherwise undo is impossible!
+			if(c.close()){
+				LinkedList<CablePointHost> cablePointHosts = getRecursive(c,CablePointHost.class);
+					for(CablePointHost cablePointHost: cablePointHosts){	
+						for(CablePoint cablePoint:cablePointHost.getCablePoints()){
+							if(cablePoint.isConnected()){
+							
+							InteractiveCable tmpCable = cablePoint.getCable();
+							controller.getPane().remove(tmpCable);
+							for(CablePoint cableErase: tmpCable.getCablePoints()){
+								if(cableErase == cablePoint){
+									continue; //don't remove Reference on components own cablepoint, otherwise undo is impossible!
+								}
+								cableErase.disconnect();
 							}
-							cableErase.disconnect();
+							this.shapes.remove(tmpCable);
 						}
-						this.shapes.remove(tmpCable);
+						
 					}
-					
 				}
+				controller.getPane().remove(c);
 			}
-			controller.getPane().remove(c);
 		}
 		for(InteractiveShape c:shapes){
 			//TODO: implement Disconnecting etc. on View and Model!

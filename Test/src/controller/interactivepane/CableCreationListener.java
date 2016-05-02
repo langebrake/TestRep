@@ -8,6 +8,7 @@ import gui.interactivepane.CablePointType;
 import gui.interactivepane.InteractiveCable;
 import gui.interactivepane.Vector;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Point;
 import java.awt.event.MouseAdapter;
@@ -48,7 +49,7 @@ public class CableCreationListener extends MouseAdapter implements Serializable{
 			
 			tmpPoint = new CablePointComponent(controller.getPane(),CablePointType.THROUGH);
 			tmpPoint.setLocation(controller.relativeToPane(e).toPoint());
-			tmpCable = new InteractiveCable(sourcePoint,tmpPoint,controller.getPane());
+			tmpCable = new InteractiveCable(sourcePoint,tmpPoint,1,Color.BLACK,controller.getPane());
 			tmpPoint.setCable(tmpCable);
 			sourcePoint.setCable(tmpCable);
 			tmpCable.setDraggedEndpoint(true);

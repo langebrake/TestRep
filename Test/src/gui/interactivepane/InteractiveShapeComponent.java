@@ -33,21 +33,26 @@ public class InteractiveShapeComponent extends InteractiveComponent implements C
 	public void updateView(){
 		super.updateView();
 		this.s = new Ellipse2D.Float(0,0,this.getWidth() ,this.getHeight());
+		this.updateCablePoints();
+
+
+	}
+	
+	private void updateCablePoints(){
 		int i = 1;
-			for(CablePointSimple c:this.cablePoints){
-				if(c.getType() == CablePointType.INPUT){
-					c.setXOnScreen((int) (this.getLocationOnScreen().getX() + this.getWidth() / 4));
-					c.setYOnScreen((int) (this.getLocationOnScreen().getY() + (this.getHeight() / 2)));
-				
-				}else {
-					c.setXOnScreen((int) (this.getLocationOnScreen().getX() + 3* this.getWidth() / 4));
-					c.setYOnScreen((int) (this.getLocationOnScreen().getY() + (this.getHeight() / 2)));
-				
-				}
-				i++;
-				}
-
-
+		if(this.isShowing())
+		for(CablePointSimple c:this.cablePoints){
+			if(c.getType() == CablePointType.INPUT){
+				c.setXOnScreen((int) (this.getLocationOnScreen().getX() + this.getWidth() / 4));
+				c.setYOnScreen((int) (this.getLocationOnScreen().getY() + (this.getHeight() / 2)));
+			
+			}else {
+				c.setXOnScreen((int) (this.getLocationOnScreen().getX() + 3* this.getWidth() / 4));
+				c.setYOnScreen((int) (this.getLocationOnScreen().getY() + (this.getHeight() / 2)));
+			
+			}
+			i++;
+			}
 	}
 	
 	@Override
@@ -211,6 +216,25 @@ public class InteractiveShapeComponent extends InteractiveComponent implements C
 		}else{
 			return this.getCablePoint(CablePointType.INPUT);
 		}
+		
+	}
+
+
+
+
+
+	@Override
+	public boolean close() {
+		return true;
+	}
+
+
+
+
+
+	@Override
+	public boolean reopen() {
+		return true;
 		
 	}
 	

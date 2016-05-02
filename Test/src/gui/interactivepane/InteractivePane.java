@@ -36,6 +36,7 @@ public class InteractivePane extends JLayeredPane {
 	 * Cables
 	 */
 	private LinkedList<InteractiveShape> shapes;
+	private LinkedList<InteractiveShape> staticShapes;
 	private LinkedList<InteractiveShape> selectedShapes;
 	private LinkedList<InteractiveShape> tmpSelectedShapes;
 	private LinkedList<InteractiveCableComponent> cableComponents;
@@ -64,6 +65,7 @@ public class InteractivePane extends JLayeredPane {
 		this.scaleMax = 3;
 		this.viewportTranslation = new Vector(0,0);
 		this.shapes = new LinkedList<InteractiveShape>();
+		this.staticShapes = new LinkedList<InteractiveShape>();
 		this.selectedComponents = new LinkedList<InteractiveComponent>();
 		this.selectedShapes = new LinkedList<InteractiveShape>();
 		this.tmpSelectedShapes = new LinkedList<InteractiveShape>();
@@ -155,6 +157,15 @@ public class InteractivePane extends JLayeredPane {
 		this.repaint();
 	}
 	
+	public void addStatic(InteractiveShape c){
+		this.staticShapes.add(c);
+		this.repaint();
+	}
+	
+	public void removeStatic(InteractiveShape c){
+		this.staticShapes.remove(c);
+		this.repaint();
+	}
 	public void remove(InteractiveShape c){
 		this.shapes.remove(c);
 		this.repaint();
@@ -176,7 +187,6 @@ public class InteractivePane extends JLayeredPane {
 		c.updateView();
 		this.moveToFront(c);
 		this.repaint();
-		
 	}
 	
 
@@ -334,6 +344,9 @@ public class InteractivePane extends JLayeredPane {
 			Graphics2D g2d = (Graphics2D) g;
 			g2d.setRenderingHints(rh);
 			for(InteractiveShape c: this.shapes){
+				c.updateView(g2d);
+			}
+			for(InteractiveShape c: this.staticShapes){
 				c.updateView(g2d);
 			}
 		}

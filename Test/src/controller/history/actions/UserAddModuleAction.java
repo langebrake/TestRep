@@ -42,7 +42,7 @@ public class UserAddModuleAction extends UserAction {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		interactiveModule = new InteractiveModule(controller.getPane(), controller.getLastMouseGridLocation(), module);
+		interactiveModule = new InteractiveModule(controller.getPane(), controller.getLastMouseGridLocation(), module,manager.getController());
 		interactiveModule.addMouseListener(controller.getPopupMenuListener());
 		interactiveModule.addMouseMotionListener(controller.getPopupMenuListener());
 		interactiveModule.addMouseWheelListener(controller.getPopupMenuListener());
@@ -50,6 +50,7 @@ public class UserAddModuleAction extends UserAction {
 		interactiveModule.addMouseMotionListener(controller.getModuleListener());
 		interactiveModule.addMouseWheelListener(controller.getModuleListener());
 		interactiveModule.inputPopout(true);
+		interactiveModule.outputPopout(true);
 		
 	}
 	@Override

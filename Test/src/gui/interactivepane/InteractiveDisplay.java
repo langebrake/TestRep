@@ -67,6 +67,17 @@ public class InteractiveDisplay extends InteractiveComponent  {
 		
 	}
 
+	@Override
+	public boolean close() {
+		return true;
+	}
+
+	@Override
+	public boolean reopen() {
+		return true;
+		
+	}
+
 	
 	
 }

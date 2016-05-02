@@ -27,22 +27,25 @@ public class InteractiveCable implements InteractiveShape{
 	private boolean hover;
 	private InteractivePane parent;
 	private Paint color;
+	private Paint originColor;
+	private float originWidth;
 	private float width;
 	private boolean draggedEndpoint;
 	
 	public InteractiveCable(InteractivePane parent){
-		this(null,null,parent);
+		this(null,null,1,Color.BLACK,parent);
 	}
 	
-	public InteractiveCable(CablePoint source, CablePoint dest,InteractivePane parent){
+	public InteractiveCable(CablePoint source, CablePoint dest,float width,Color color, InteractivePane parent){
 		this.source = source;
 		this.dest = dest;
 		this.cablePoints = new LinkedList<CablePoint>();
 		this.selected = false;
 		this.parent = parent;
-		this.color = Color.black;
-		this.width = 1;
-		
+		this.originColor = color;
+		this.originWidth = width;
+		this.color = this.originColor;
+		this.width = this.originWidth;
 	}
 	
 	public void setSource(CablePoint source){
@@ -118,7 +121,7 @@ public class InteractiveCable implements InteractiveShape{
 		if(set){
 			this.color = Color.RED;
 		}else{
-			this.color = Color.BLACK;
+			this.color = this.originColor;
 			
 		}
 	}
@@ -133,9 +136,9 @@ public class InteractiveCable implements InteractiveShape{
 	public void setHovered(boolean set){
 		this.hover = set;
 		if(set){
-			this.width = 2;
+			this.width = originWidth*2;
 		} else {
-			this.width = 1;
+			this.width = originWidth*1;
 		}
 	}
 	

@@ -179,4 +179,14 @@ public class InteractiveCableComponent extends InteractiveComponent {
 		this.repaint();
 		
 	}
+	@Override
+	public boolean close() {
+		return true;
+		
+	}
+	@Override
+	public boolean reopen() {
+		return true;
+		
+	}
 }

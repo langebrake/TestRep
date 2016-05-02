@@ -1,6 +1,7 @@
 package controller.interactivepane;
 
 import gui.interactivepane.CablePointPanel;
+import gui.interactivepane.CablePointSimple;
 import gui.interactivepane.CablePointType;
 import gui.interactivepane.InteractiveCable;
 import gui.interactivepane.InteractiveCableComponent;
@@ -101,10 +102,10 @@ public class InteractiveController implements MouseInputListener,WindowStateList
 				
 				
 				//TODO: remove this cable debug thing
-				CablePointPanel p1 = new CablePointPanel(this.pane,CablePointType.INPUT);
-				CablePointPanel p2 = new CablePointPanel(this.pane,CablePointType.OUTPUT);
-				CablePointPanel p3 = new CablePointPanel(this.pane, CablePointType.INPUT);
-				CablePointPanel p4 = new CablePointPanel(this.pane, CablePointType.OUTPUT);
+				CablePointPanel p1 = new CablePointPanel(new CablePointSimple(CablePointType.INPUT));
+				CablePointPanel p2 = new CablePointPanel(new CablePointSimple(CablePointType.OUTPUT));
+				CablePointPanel p3 = new CablePointPanel(new CablePointSimple(CablePointType.OUTPUT));
+				CablePointPanel p4 = new CablePointPanel(new CablePointSimple(CablePointType.INPUT));
 				p1.setSize(50, 50);
 				p2.setSize(50, 50);
 				p3.setSize(50, 50);
@@ -287,6 +288,14 @@ public class InteractiveController implements MouseInputListener,WindowStateList
 	
 	public ModuleListener getModuleListener(){
 		return this.moduleListener;
+	}
+	
+	public ShapeListener getShapeListener(){
+		return this.shapeListener;
+	}
+	
+	public CableCreationListener getCableCreationListener(){
+		return this.cableCreationListener;
 	}
 	
 	public InteractivePane getPane(){
