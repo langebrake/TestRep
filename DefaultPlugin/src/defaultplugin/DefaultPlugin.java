@@ -4,6 +4,8 @@ import guiinterface.SizeableComponent;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 
 import javax.sound.midi.MidiMessage;
@@ -14,6 +16,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 
 import plugin.Plugin;
+import plugin.events.NewInputRequestEvent;
+import plugin.events.NewOutputRequestEvent;
 import pluginhost.events.*;
 import pluginhost.PluginHost;
 import defaults.DefaultView;
@@ -24,24 +28,49 @@ import defaults.MidiListener;
 
 
 public class DefaultPlugin extends Plugin implements MidiListener{
-	private static final int MAXINPUTS = 1;
-	private static final int MAXOUTPUTS = 1;
+	private static final int MAXINPUTS = -1;
+	private static final int MAXOUTPUTS = -1;
 	private static final int MININPUTS = 1;
 	private static final int MINOUTPUTS = 1;
 	private static final String NAME = "DummyPlugin";
 	private String msg = "DummyPlugin";
 	private DefaultView view;
-	private MidiIO input,output;
+	private HashMap<MidiIO,MidiIO> ioMap;
 	
 	public static Plugin getInstance(PluginHost host){
 		return new DefaultPlugin(host);
 	}
 	public DefaultPlugin(PluginHost host){
 		super(host);
+		this.ioMap = new HashMap<MidiIO,MidiIO>();
+		
 	}
+	private boolean block;
 	@Override
 	public void notify(HostEvent e) {
-		
+		if(!block){
+			block = true;
+			if(e.getClass() == NewInputEvent.class){
+				if(!ioMap.containsKey(((NewInputEvent)e).getNewInput())){
+					NewOutputRequestEvent event = new NewOutputRequestEvent();
+					this.getPluginHost().notify(event);
+					if(event.io != null){
+						this.ioMap.put(((NewInputEvent)e).getNewInput(), event.io);
+						((NewInputEvent)e).getNewInput().addMidiListener(this);
+					}
+				}
+			} else if(e.getClass() == NewOutputEvent.class){
+				if(!ioMap.containsValue(((NewOutputEvent)e).getNewOutput())){
+					NewInputRequestEvent event = new NewInputRequestEvent();
+					this.getPluginHost().notify(event);
+					if(event.io != null){
+						this.ioMap.put(event.io,((NewOutputEvent)e).getNewOutput());
+						(event.io).addMidiListener(this);
+					}
+				}
+			}
+		}
+		block = false;
 	}
 	@Override
 	public JComponent getMinimizedView() {
@@ -72,9 +101,8 @@ public class DefaultPlugin extends Plugin implements MidiListener{
 	public void load() {
 		this.view = new DefaultView(msg);
 		PluginHost host = this.getPluginHost();
-		input = host.getInput(0);
-		output = host.getOuput(0);
-		input.addMidiListener(this);
+		this.ioMap.put(host.getInput(0), host.getOuput(0));
+		host.getInput(0).addMidiListener(this);
 		
 		
 		
@@ -107,8 +135,8 @@ public class DefaultPlugin extends Plugin implements MidiListener{
 		
 	}
 	@Override
-	public void listen(MidiMessage msg, long timestamp) {
-		output.send(msg, timestamp);
+	public void listen(MidiIO source, MidiMessage msg, long timestamp) {
+		ioMap.get(source).send(msg, timestamp);
 		
 	}
 	@Override

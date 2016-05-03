@@ -51,7 +51,6 @@ public abstract class Plugin implements Serializable{
 	public abstract void notify(HostEvent e);
 	public abstract void load();
 	public abstract void close();
-
 	public abstract void reOpen();
 	
 	

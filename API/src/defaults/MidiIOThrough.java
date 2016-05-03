@@ -34,7 +34,7 @@ public class MidiIOThrough implements MidiIO,Serializable{
 			this.output.send(message, timeStamp);
 		}
 		for(MidiListener l:listeners){
-			l.listen(message, timeStamp);
+			l.listen(this, message, timeStamp);
 		}
 		
 		
@@ -105,6 +105,7 @@ public class MidiIOThrough implements MidiIO,Serializable{
 
 	@Override
 	public void addMidiListener(MidiListener listener) {
+		if(!listeners.contains(listener))
 		this.listeners.add(listener);
 		
 	}

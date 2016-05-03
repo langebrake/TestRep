@@ -75,12 +75,14 @@ public class CableCreationListener extends MouseAdapter implements Serializable{
 			Component source = searchSourceRecursive(e,searchComponent,CablePointHost.class);
 			if(source instanceof CablePointHost){
 				CablePoint destPoint = ((CablePointHost) source).getCablePoint(sourcePoint.getType().getCounterPart());
+
 				if(destPoint != null ){
 					
 					tmpCable.setDraggedEndpoint(false);
 					if(!destPoint.isConnected()){
 						tmpCable.setDestination(destPoint);
 						controller.getPane().remove(tmpCable);
+						
 						InteractiveCable[] overrides = null;
 						if(this.oldSourceConnection != null){
 							

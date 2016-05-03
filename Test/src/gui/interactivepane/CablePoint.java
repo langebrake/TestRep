@@ -15,6 +15,8 @@ public interface CablePoint extends Serializable, Comparable<CablePoint>  {
 	public void disconnect();
 	public void setIndex(int i);
 	public int getIndex();
+	public boolean getTmpDisconnect();
+	public void tmpDisconnect(boolean set);
 	
 
 }

@@ -20,9 +20,11 @@ import controller.interactivepane.InteractiveController;
 import engine.Engine;
 
 public class Controller implements Serializable,WindowListener {
+	
 	private JFrame mainFrame;
 	private LinkedList<InteractiveController> interactivePanes;
 	private transient LinkedList<URLClassLoader> classes;
+	
 	public Controller(){
 		mainFrame = new JFrame("GuiTest");
 		mainFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);

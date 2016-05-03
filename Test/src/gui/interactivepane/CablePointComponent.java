@@ -13,6 +13,7 @@ public class CablePointComponent extends JComponent implements CablePoint, Cable
 	private CablePointHost host;
 	private Component parent;
 	private int index;
+	private boolean tmpDisconnect;
 	public CablePointComponent(Component parent, CablePointType type){
 		this.type = type;
 		this.parent = parent;
@@ -159,6 +160,18 @@ public class CablePointComponent extends JComponent implements CablePoint, Cable
 	public int compareTo(CablePoint arg0) {
 		return this.getIndex() - arg0.getIndex();
 	}
+
+	@Override
+	public boolean getTmpDisconnect() {
+		return this.tmpDisconnect;
+	}
+
+	@Override
+	public void tmpDisconnect(boolean set) {
+		this.tmpDisconnect = set;		
+	}
+
+
 	
 	
 

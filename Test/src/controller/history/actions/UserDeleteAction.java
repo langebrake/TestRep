@@ -39,6 +39,7 @@ public class UserDeleteAction extends UserAction {
 						InteractiveCable tmpCable = cablePoint.getCable();
 						for(CablePoint cableResurrect: tmpCable.getCablePoints()){
 							if(cableResurrect == cablePoint){
+								cableResurrect.tmpDisconnect(false);
 								continue;
 							}
 							//cableResurrect.getHost().forceExistence(cableResurrect);
@@ -82,6 +83,7 @@ public class UserDeleteAction extends UserAction {
 							controller.getPane().remove(tmpCable);
 							for(CablePoint cableErase: tmpCable.getCablePoints()){
 								if(cableErase == cablePoint){
+									cableErase.tmpDisconnect(true);
 									continue; //don't remove Reference on components own cablepoint, otherwise undo is impossible!
 								}
 								cableErase.disconnect();

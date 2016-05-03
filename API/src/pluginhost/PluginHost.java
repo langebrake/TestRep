@@ -16,6 +16,8 @@ import midiengine.MidiEngine;
 import defaults.MidiIOThrough;
 import engine.Engine;
 import plugin.Plugin;
+import plugin.events.NewInputRequestEvent;
+import plugin.events.NewOutputRequestEvent;
 import plugin.events.PluginEvent;
 import pluginhost.exceptions.*;
 import pluginhost.events.*;
@@ -26,6 +28,7 @@ public abstract class PluginHost implements AutoCloseable, Serializable{
 	private LinkedList<MidiIOThrough> inputs,outputs;
 	private transient Plugin plugin;
 	private transient MidiEngine engine;
+	private PluginStateChangedListener stateChangedListeners;
 	
 	public PluginHost() throws MidiUnavailableException{
 		this.inputs = new LinkedList<MidiIOThrough>();
@@ -38,7 +41,7 @@ public abstract class PluginHost implements AutoCloseable, Serializable{
 		return this.plugin;
 	}
 	
-	public void setPlugin(Plugin p){
+	public void setPlugin(Plugin p) throws PluginMaxOutputsExceededException{
 		if(this.plugin!= null){
 			this.plugin.close();
 		}
@@ -46,28 +49,21 @@ public abstract class PluginHost implements AutoCloseable, Serializable{
 		
 		// fill minimum inputs
 		for(int i = this.getInputCount();i<this.plugin.getMinInputs();i++){
-			try {
-				this.newInput();
-			} catch (PluginMaxInputsExceededException e) {
-				// Cannot happen by default
-				//TODO: log unexpected error
-				e.printStackTrace();
-			}
+			this.newInput();
 		}
 		//fill minimum outputs
 		for(int i = this.getOutputCount();i<this.plugin.getMinOutputs();i++){
-			try {
-				this.newOutput();
-			} catch (PluginMaxOutputsExceededException e) {
-				// Cannot happen by default
-				//TODO: log unexpected error
-				e.printStackTrace();
-			}
+			this.newOutput();
 		}
 		//TODO: delete maximum outputs
 		
 		//TODO: delete maximum inputs
 		p.load();
+	}
+	
+	
+	public void addPluginStateChangedListener(PluginStateChangedListener l){
+		this.stateChangedListeners = l;
 	}
 	
 	/**
@@ -178,25 +174,33 @@ public abstract class PluginHost implements AutoCloseable, Serializable{
 	 * @return new input
 	 * @throws PluginMaxInputsExceededException
 	 */
-	public MidiIOThrough newInput() throws PluginMaxInputsExceededException{
+	public MidiIOThrough newInput() {
 		return this.newInput(this.getInputCount());
 	}
 	
 	/**
 	 * creates a new input at the specified index id.
 	 * notifies the plugin about the change
+	 * returns null if no vaild input can be obtained
 	 * @param id
 	 * @return
 	 * @throws PluginMaxInputsExceededException
 	 */
-	public MidiIOThrough newInput(int id) throws PluginMaxInputsExceededException{
+	public MidiIOThrough newInput(int id) {
 		if(this.plugin.getMaxInputs() != -1 && this.plugin.getMaxInputs() <= this.getInputCount()){
-			throw new PluginMaxInputsExceededException();
+			return null;
 		} else{
 			MidiIOThrough tmp = new MidiIOThrough(this);
 			this.inputs.add(id, tmp);
+			
 		//TODO: HostEvent implementation for this event!
-			this.plugin.notify(new HostEvent());
+			
+			NewInputEvent event = new NewInputEvent(tmp);
+			this.plugin.notify(event);
+			
+			if(this.stateChangedListeners != null)
+				this.stateChangedListeners.listen(event);
+			
 			return tmp;
 		}
 	}
@@ -425,25 +429,30 @@ public abstract class PluginHost implements AutoCloseable, Serializable{
 	 * @return new outputs
 	 * @throws PluginMaxOutputsExceededException
 	 */
-	public MidiIOThrough newOutput() throws PluginMaxOutputsExceededException{
+	public MidiIOThrough newOutput() {
 		return this.newOutput(this.getOutputCount());
 	}
 	
 	/**
 	 * creates a new output at the specified index id.
 	 * notifies the plugin about the change
+	 * returns null if  max outputs exceeded
 	 * @param id
 	 * @return
 	 * @throws PluginMaxOutputsExceededException
 	 */
-	public MidiIOThrough newOutput(int id) throws PluginMaxOutputsExceededException{
-		if(this.plugin.getMaxOutputs() <= this.getOutputCount()){
-			throw new PluginMaxOutputsExceededException();
+	public MidiIOThrough newOutput(int id) {
+		if(this.plugin.getMaxOutputs() != -1 && this.plugin.getMaxOutputs() <= this.getOutputCount()){
+			return null;
 		} else{
 			MidiIOThrough tmp = new MidiIOThrough(this);
 			this.outputs.add(id, tmp);
 		//TODO: HostEvent implementation for this event!
-			this.plugin.notify(new HostEvent());
+			NewOutputEvent event = new NewOutputEvent(tmp);
+			this.plugin.notify(event);
+			
+			if(this.stateChangedListeners != null)
+				this.stateChangedListeners.listen(event);
 			return tmp;
 		}
 	}
@@ -676,6 +685,16 @@ public abstract class PluginHost implements AutoCloseable, Serializable{
 		this.plugin = (Plugin) in.readObject();
 	}
 	
-	public abstract void notify(PluginEvent e);
+	public void notify(PluginEvent e){
+		if(e.getClass() == NewOutputRequestEvent.class){
+			((NewOutputRequestEvent)e).io = this.newOutput();
+		} else if(e.getClass() == NewInputRequestEvent.class){
+			((NewInputRequestEvent)e).io = this.newInput();
+		}
+		
+		if(this.stateChangedListeners != null)
+			this.stateChangedListeners.listen(e);
+	}
+	
 	
 }

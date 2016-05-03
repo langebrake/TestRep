@@ -87,6 +87,20 @@ public class CablePointSimple implements CablePoint {
 	public int compareTo(CablePoint o) {
 		return this.getIndex() - o.getIndex();
 	}
+
+	private boolean tmpDisconnect;
+	@Override
+	public boolean getTmpDisconnect() {
+		return this.tmpDisconnect;
+	}
+
+	@Override
+	public void tmpDisconnect(boolean set) {
+		this.tmpDisconnect = set;
+		if(host!=null)
+			host.changedState(this);
+		
+	}
 	
 	
 

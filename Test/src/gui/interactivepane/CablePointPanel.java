@@ -1,7 +1,6 @@
 package gui.interactivepane;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -20,7 +19,6 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
 public class CablePointPanel extends JPanel implements CablePointHost, MouseListener,MouseMotionListener,MouseWheelListener {
-	private InteractiveCable cable;
 	private final CablePointType type;
 	private CablePointSimple cps;
 	private int index;
@@ -137,7 +135,6 @@ public class CablePointPanel extends JPanel implements CablePointHost, MouseList
 	
 	@Override
 	public void mouseClicked(MouseEvent arg0) {
-		System.out.println("PANEL CLICKED");
 		modifyEvent(arg0);
 		this.getParent().dispatchEvent(arg0);
 		
@@ -184,13 +181,12 @@ public class CablePointPanel extends JPanel implements CablePointHost, MouseList
 	
 	private void modifyEvent(MouseEvent arg0){
 		arg0.setSource(this.getParent());
-//		arg0.getPoint().translate((this.getParent().getLocationOnScreen().x-this.getLocationOnScreen().x),
-//				this.getParent().getLocationOnScreen().y-this.getLocationOnScreen().y);
+		arg0.getPoint().translate((this.getParent().getLocationOnScreen().x-this.getLocationOnScreen().x),
+				this.getParent().getLocationOnScreen().y-this.getLocationOnScreen().y);
 
 	}
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent arg0) {
-		modifyEvent(arg0);
 		this.getParent().dispatchEvent(arg0);
 		
 	}

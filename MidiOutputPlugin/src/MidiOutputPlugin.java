@@ -13,6 +13,7 @@ import javax.swing.JFrame;
 
 import midiengine.MidiEngine;
 import defaults.DefaultView;
+import defaults.MidiIO;
 import defaults.MidiListener;
 import plugin.Plugin;
 import pluginhost.PluginHost;
@@ -143,7 +144,7 @@ public class MidiOutputPlugin extends Plugin implements MidiListener {
 	}
 
 	@Override
-	public void listen(MidiMessage msg, long timestamp) {
+	public void listen(MidiIO source,MidiMessage msg, long timestamp) {
 		this.outputreceiver.send(msg, timestamp);
 		
 	}

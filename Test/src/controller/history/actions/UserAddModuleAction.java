@@ -11,6 +11,7 @@ import model.graph.Module;
 import model.pluginmanager.Loadable;
 import gui.interactivepane.InteractiveModule;
 import plugin.Plugin;
+import pluginhost.exceptions.PluginMaxOutputsExceededException;
 import controller.history.UserAction;
 import controller.history.UserActionManager;
 import engine.Engine;
@@ -39,6 +40,9 @@ public class UserAddModuleAction extends UserAction {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (InvocationTargetException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (PluginMaxOutputsExceededException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

@@ -22,19 +22,11 @@ public class Module extends PluginHost {
 	
 	public void ConnectNewInput(MidiIOThrough toConnect) throws PluginMaxInputsExceededException{
 		super.connectNewInput(toConnect);
-		
 		}
 
-	@Override
-	public void notify(PluginEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
 	
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-		System.out.println("MODULE  STARTED");
 		in.defaultReadObject();
-		System.out.println("MODULE  FINISHED");
 	}
 
 }

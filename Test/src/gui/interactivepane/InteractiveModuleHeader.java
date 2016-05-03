@@ -54,9 +54,9 @@ public class InteractiveModuleHeader extends JPanel implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		if(arg0.getActionCommand().equals("LEFT")){
-			parent.inputPopout(!parent.hasInputPopout(), true);
+			parent.inputPopout(!parent.hasInputPopout(), !parent.hasInputPopout());
 		} else {
-			parent.outputPopout(!parent.hasOutputPopout(), true);
+			parent.outputPopout(!parent.hasOutputPopout(), !parent.hasOutputPopout());
 		}
 		
 	}
