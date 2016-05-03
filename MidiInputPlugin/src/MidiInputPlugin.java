@@ -126,7 +126,7 @@ public class MidiInputPlugin extends Plugin implements Receiver, Serializable{
 
 	@Override
 	public String getDisplayName() {
-		return NAME;
+		return this.midiDeviceName;
 	}
 
 	@Override
@@ -142,12 +142,13 @@ public class MidiInputPlugin extends Plugin implements Receiver, Serializable{
 	}
 	
 	
-	public void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException{
+	private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException{
+		in.defaultReadObject();
 		this.inputdevice = this.getPluginHost().getEngine().getInputDevice(this.midiDeviceName);
-		
 		try {
 			this.inputdevice.open();
 			this.inputtransmitter = this.inputdevice.getTransmitter();
+			inputtransmitter.setReceiver(this);
 		} catch (MidiUnavailableException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

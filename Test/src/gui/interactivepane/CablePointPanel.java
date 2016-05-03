@@ -208,4 +208,9 @@ public class CablePointPanel extends JPanel implements CablePointHost, MouseList
 		this.getParent().dispatchEvent(arg0);
 		
 	}
+	@Override
+	public void changedState(CablePoint point) {
+		// TODO Auto-generated method stub
+		
+	}
 }

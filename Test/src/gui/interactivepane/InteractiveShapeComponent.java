@@ -237,6 +237,16 @@ public class InteractiveShapeComponent extends InteractiveComponent implements C
 		return true;
 		
 	}
+
+
+
+
+
+	@Override
+	public void changedState(CablePoint point) {
+		// TODO Auto-generated method stub
+		
+	}
 	
 	
 }

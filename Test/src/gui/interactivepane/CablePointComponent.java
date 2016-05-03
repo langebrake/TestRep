@@ -148,6 +148,17 @@ public class CablePointComponent extends JComponent implements CablePoint, Cable
 		
 		return this;
 	}
+
+	@Override
+	public void changedState(CablePoint point) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public int compareTo(CablePoint arg0) {
+		return this.getIndex() - arg0.getIndex();
+	}
 	
 	
 

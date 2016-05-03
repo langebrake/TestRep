@@ -42,6 +42,8 @@ public class CablePointSimple implements CablePoint {
 	@Override
 	public void setCable(InteractiveCable cable) {
 		this.cable = cable;
+		if(host!=null)
+		host.changedState(this);
 	}
 	@Override
 	public boolean isConnected() {
@@ -59,6 +61,8 @@ public class CablePointSimple implements CablePoint {
 	@Override
 	public void disconnect() {
 		this.cable = null;
+		if(host!=null)
+		host.changedState(this);
 		
 	}
 
@@ -77,6 +81,11 @@ public class CablePointSimple implements CablePoint {
 	@Override
 	public int getIndex() {
 		return this.index;
+	}
+
+	@Override
+	public int compareTo(CablePoint o) {
+		return this.getIndex() - o.getIndex();
 	}
 	
 	

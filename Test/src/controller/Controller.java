@@ -11,11 +11,13 @@ import java.io.Serializable;
 import java.net.URLClassLoader;
 import java.util.LinkedList;
 
+import javax.sound.midi.MidiUnavailableException;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import model.pluginmanager.PluginManager;
 import controller.interactivepane.InteractiveController;
+import engine.Engine;
 
 public class Controller implements Serializable,WindowListener {
 	private JFrame mainFrame;
@@ -115,14 +117,21 @@ public class Controller implements Serializable,WindowListener {
 //			// TODO Auto-generated catch block
 //			e.printStackTrace();
 //		}
-		in.defaultReadObject();
 		try {
 			PluginManager.loadPlugins();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		this.classes = PluginManager.classes;
+		try {
+			Engine e = Engine.load();
+			e.refreshMidiDevices();
+		} catch (MidiUnavailableException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		in.defaultReadObject();
+		
 		
 		
 		

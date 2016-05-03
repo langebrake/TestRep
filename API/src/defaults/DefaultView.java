@@ -5,6 +5,7 @@ import guiinterface.InteractiveUpdateable;
 import guiinterface.SizeableLabel;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
@@ -22,7 +23,8 @@ public class DefaultView extends JPanel implements InteractiveUpdateable {
 	}
 	public DefaultView(String name){
 		super(new BorderLayout());
-		this.setSize(200, 100);
+		this.setPreferredSize(new Dimension(200,100));
+		this.setMinimumSize(new Dimension(0,10));
 		this.addComponentListener(new ComponentAdapter(){
             public void componentResized(ComponentEvent e) {
                 DefaultView.this.sizeFont();
@@ -31,6 +33,7 @@ public class DefaultView extends JPanel implements InteractiveUpdateable {
 		this.lbl = new JLabel(name);
 		this.add(lbl,BorderLayout.CENTER);
 	}
+
 	private void sizeFont(){
 		Font labelFont = this.lbl.getFont();
 		String labelText = this.lbl.getText();

@@ -24,7 +24,7 @@ import pluginhost.events.*;
 public abstract class PluginHost implements AutoCloseable, Serializable{
 	
 	private LinkedList<MidiIOThrough> inputs,outputs;
-	private Plugin plugin;
+	private transient Plugin plugin;
 	private transient MidiEngine engine;
 	
 	public PluginHost() throws MidiUnavailableException{
@@ -660,67 +660,20 @@ public abstract class PluginHost implements AutoCloseable, Serializable{
 		this.plugin.close();
 	}
 	
-	private void writeObject(ObjectOutputStream out) throws IOException{
+	private void writeObject(ObjectOutputStream out) throws IOException {
 		out.defaultWriteObject();
-//		byte[] pluginToByte;
-//		Class<? extends Plugin> pluginClass;
-//		pluginClass = this.plugin.getClass();
-//		out.writeObject(pluginClass);
-//		ByteArrayOutputStream bos = new ByteArrayOutputStream();
-//		ObjectOutputStream oos = new ObjectOutputStream(bos);
-//		System.out.println("Try Plugin Output");
-//		try{
-//			oos.writeObject(this.plugin);
-//			pluginToByte = bos.toByteArray();
-//		} catch (IOException ex){
-//			pluginToByte = new byte[0];
-//		}
-//		
-//		//TODO:flushing?
-//		out.writeObject(pluginToByte);
+		out.writeObject(this.plugin);
 	}
+	
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.defaultReadObject();
-//		Class<? extends Plugin> pluginClass = (Class<? extends Plugin>) in.readObject();
-		// TODO: try catch here if error on saving occured
-//		byte[] pluginToByte = (byte[]) in.readObject();
-//		if(pluginToByte.length == 0){
-//			//TODO: plugin not loaded probably
-//			Method getInstance = null;
-//			try {
-//				getInstance = pluginClass.getMethod("getInstance",PluginHost.class);
-//			} catch (NoSuchMethodException | SecurityException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//			try {
-//				this.plugin = (Plugin) getInstance.invoke(null, this);
-//				this.plugin.setPluginHost(this);
-//			} catch (IllegalAccessException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			} catch (IllegalArgumentException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			} catch (InvocationTargetException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//			
-//		} else {
-//			ByteArrayInputStream bos = new ByteArrayInputStream(pluginToByte);
-//			ObjectInputStream oos = new ObjectInputStream(bos);
-//			this.plugin = (Plugin) oos.readObject();
-//		}
-//		
-//		try {
-//			this.engine = Engine.load();
-//		} catch (MidiUnavailableException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-		
-		
+		try {
+			this.engine = Engine.load();
+		} catch (MidiUnavailableException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		this.plugin = (Plugin) in.readObject();
 	}
 	
 	public abstract void notify(PluginEvent e);

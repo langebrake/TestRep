@@ -15,5 +15,6 @@ public interface CablePointHost extends Serializable {
 	public CablePoint getFreeCablePoint(CablePointType type);
 	public boolean forceExistence(CablePoint... forceThis);
 	public boolean contains(CablePoint point);
+	public void changedState(CablePoint point);
 	
 }

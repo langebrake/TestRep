@@ -148,10 +148,11 @@ public class MidiOutputPlugin extends Plugin implements MidiListener {
 		
 	}
 	
-	public void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException {
+	private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException {
 		in.defaultReadObject();
 		this.outputdevice = this.getPluginHost().getEngine().getOutputDevice(mididDeviceName);
 		try {
+			this.outputdevice.open();
 			this.outputreceiver = this.outputdevice.getReceiver();
 		} catch (MidiUnavailableException e) {
 			// TODO Auto-generated catch block

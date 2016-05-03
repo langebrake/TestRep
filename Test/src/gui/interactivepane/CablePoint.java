@@ -3,7 +3,7 @@ package gui.interactivepane;
 import java.io.Serializable;
 
 
-public interface CablePoint extends Serializable  {
+public interface CablePoint extends Serializable, Comparable<CablePoint>  {
 	public int getXOnScreen();
 	public int getYOnScreen();
 	public InteractiveCable getCable();

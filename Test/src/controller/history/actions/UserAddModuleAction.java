@@ -16,7 +16,7 @@ import controller.history.UserActionManager;
 import engine.Engine;
 
 public class UserAddModuleAction extends UserAction {
-	private transient Plugin plugin;
+	private Plugin plugin;
 	private InteractiveModule interactiveModule;
 	private Module module;
 	public UserAddModuleAction(UserActionManager manager,Loadable p){
@@ -43,38 +43,26 @@ public class UserAddModuleAction extends UserAction {
 			e.printStackTrace();
 		}
 		interactiveModule = new InteractiveModule(controller.getPane(), controller.getLastMouseGridLocation(), module,manager.getController());
-		interactiveModule.addMouseListener(controller.getPopupMenuListener());
-		interactiveModule.addMouseMotionListener(controller.getPopupMenuListener());
-		interactiveModule.addMouseWheelListener(controller.getPopupMenuListener());
-		interactiveModule.addMouseListener(controller.getModuleListener());
-		interactiveModule.addMouseMotionListener(controller.getModuleListener());
-		interactiveModule.addMouseWheelListener(controller.getModuleListener());
-		interactiveModule.inputPopout(true);
-		interactiveModule.outputPopout(true);
+		interactiveModule.addListeners(controller.getModuleListener(), controller.getPopupMenuListener(),controller.getCableCreationListener());
+
 		
 	}
 	@Override
 	public void undo() {
 		//TODO: Opening and closing Plugins necessary for System Ressources!
 		// disconnecting Connections not necessary, cause a newly added module has none!
-		controller.getPane().remove(interactiveModule);
+		if(interactiveModule.close()){
+			controller.getPane().remove(interactiveModule);
+		}
 
 	}
 
 	@Override
 	public void execute() {
-		controller.getPane().add(interactiveModule);
+		if(interactiveModule.reopen()){
+			controller.getPane().add(interactiveModule);
+		}
 
 	}
 	
-	private void writeObject(ObjectOutputStream out) throws IOException{
-		out.defaultWriteObject();
-		out.writeObject(this.plugin);
-	}
-	private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException {
-		in.defaultReadObject();
-		// TODO: save plugin reading
-		this.plugin = (Plugin) in.readObject();
-	}
-
 }

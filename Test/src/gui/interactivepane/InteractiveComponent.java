@@ -57,6 +57,10 @@ public abstract class InteractiveComponent extends JPanel implements Interactive
 		this.updateView();
 	}
 	
+	public void setOriginLocation(Vector location){
+		this.originLocation = location;
+	}
+	
 	protected void setOriginDimension(Dimension d){
 		this.originDimension = d;
 	}

@@ -74,7 +74,7 @@ public class DefaultPlugin extends Plugin implements MidiListener{
 		PluginHost host = this.getPluginHost();
 		input = host.getInput(0);
 		output = host.getOuput(0);
-//		input.addMidiListener(this);
+		input.addMidiListener(this);
 		
 		
 		

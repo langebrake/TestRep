@@ -42,26 +42,29 @@ public class CableCreationListener extends MouseAdapter implements Serializable{
 		Object source = searchSourceRecursive(e,(Component) e.getSource(),CablePointHost.class);
 		if( validInteraction(e) && source instanceof CablePointHost){
 			sourcePoint = ((CablePointHost) source).getCablePoint(e.getPoint());
-			if(sourcePoint.isConnected()){
-				this.oldSourceConnection = sourcePoint.getCable();
-				controller.getPane().remove(this.oldSourceConnection);
+			if(sourcePoint!=null){
+				if(sourcePoint.isConnected()){
+					this.oldSourceConnection = sourcePoint.getCable();
+					controller.getPane().remove(this.oldSourceConnection);
+				}
+				
+				tmpPoint = new CablePointComponent(controller.getPane(),CablePointType.THROUGH);
+				tmpPoint.setLocation(controller.relativeToPane(e).toPoint());
+				tmpCable = new InteractiveCable(sourcePoint,tmpPoint,1,Color.BLACK,controller.getPane());
+				tmpPoint.setCable(tmpCable);
+				sourcePoint.setCable(tmpCable);
+				tmpCable.setDraggedEndpoint(true);
+				controller.getPane().add(tmpCable);
+				controller.getPane().add(tmpPoint);
+				controller.setCableAddProcess(true);
 			}
-			
-			tmpPoint = new CablePointComponent(controller.getPane(),CablePointType.THROUGH);
-			tmpPoint.setLocation(controller.relativeToPane(e).toPoint());
-			tmpCable = new InteractiveCable(sourcePoint,tmpPoint,1,Color.BLACK,controller.getPane());
-			tmpPoint.setCable(tmpCable);
-			sourcePoint.setCable(tmpCable);
-			tmpCable.setDraggedEndpoint(true);
-			controller.getPane().add(tmpCable);
-			controller.getPane().add(tmpPoint);
-			controller.setCableAddProcess(true);
 		}
+			
 	}
 	
 	public void mouseReleased(MouseEvent e){
 		
-		if(tmpPoint != null && SwingUtilities.isLeftMouseButton(e) && !SwingUtilities.isMiddleMouseButton(e)){
+		if(tmpPoint != null && sourcePoint != null && SwingUtilities.isLeftMouseButton(e) && !SwingUtilities.isMiddleMouseButton(e)){
 			// TODO : Safe casting of getSource!
 			Component searchComponent;
 			if(e.getSource() == componentSource){

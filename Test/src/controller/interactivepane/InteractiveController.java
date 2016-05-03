@@ -50,7 +50,7 @@ import model.MidiGraph;
 public class InteractiveController implements MouseInputListener,WindowStateListener, Serializable {
 	private InteractivePane pane;
 	private MidiGraph graph;
-	private transient UserActionManager actionManager;
+	private  UserActionManager actionManager;
 	private Vector lastMousePaneLocation,
 					lastMouseGridLocation;
 	private transient ModuleListener moduleListener;
@@ -318,8 +318,8 @@ public class InteractiveController implements MouseInputListener,WindowStateList
 
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException{
 		in.defaultReadObject();
-		this.actionManager = new UserActionManager();
-		this.actionManager.setController(this);
+//		this.actionManager = new UserActionManager();
+//		this.actionManager.setController(this);
 		this.moduleListener = new ModuleListener(this);
 		this.popupMenuListener = new PopupMenuListener(this);
 		this.shapeListener = new ShapeListener(this);
