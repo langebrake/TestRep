@@ -76,10 +76,12 @@ public abstract class InteractiveComponent extends JPanel implements Interactive
 	
 	public void setHovered(boolean set){
 		this.hovered = set;
+		this.repaint();
 	}
 	
 	public void setSelected(boolean set){
 		this.selected = set;
+		this.repaint();
 	}
 
 

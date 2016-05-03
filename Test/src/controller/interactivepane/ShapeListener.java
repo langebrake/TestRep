@@ -34,10 +34,12 @@ public class ShapeListener extends MouseAdapter implements Serializable{
 			LinkedList<InteractiveShape> shapes = controller.getPane().getShapes();
 			
 			for (InteractiveShape s:shapes){
-					if(s.contains(paneVector.toPoint())){
-						controller.getPane().setShapeHovered(s, true);
+					if(s.contains(paneVector.toPoint()) ){
+						if(!s.isHovered())
+							controller.getPane().setShapeHovered(s, true);
 					} else {
-						controller.getPane().setShapeHovered(s, false);
+						if(s.isHovered())
+							controller.getPane().setShapeHovered(s, false);
 					}
 			}
 		}

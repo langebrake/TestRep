@@ -185,6 +185,7 @@ public class InteractivePane extends JLayeredPane {
 		}
 		super.add(c);
 		c.updateView();
+		c.revalidate();
 		this.moveToFront(c);
 		this.repaint();
 	}
@@ -290,17 +291,17 @@ public class InteractivePane extends JLayeredPane {
 				if(!c.isSelected()){
 					c.setSelected(true);
 					this.tmpSelectedShapes.add(c);
-					this.repaint();
 				}
 			} else {
 				// TODO: Field tmpselected will give better performance than calling contains!
 				if(!this.selectedShapes.contains(c)){
 					c.setSelected(false);
 					this.tmpSelectedShapes.remove(c);
-					this.repaint();
+					
 				}
 			}
 			}
+		this.repaint();
 		
 		
 	}

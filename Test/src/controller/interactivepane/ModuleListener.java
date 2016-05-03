@@ -70,14 +70,16 @@ public class ModuleListener extends ControllerListenerAdapter {
 
 	@Override
 	public void mouseEntered(MouseEvent arg0) {
-		if(arg0.getSource() instanceof InteractiveComponent)
-		controller.getPane().setComponentHovered((InteractiveComponent) arg0.getSource(), true);
+		if(arg0.getSource() instanceof InteractiveComponent){
+			controller.getPane().setComponentHovered((InteractiveComponent) arg0.getSource(), true);
+		}
 		
 	}
 	@Override
 	public void mouseExited(MouseEvent arg0) {
-		if(arg0.getSource() instanceof InteractiveComponent)
-		controller.getPane().setComponentHovered((InteractiveComponent) arg0.getSource(), false);
+		if(arg0.getSource() instanceof InteractiveComponent){
+			controller.getPane().setComponentHovered((InteractiveComponent) arg0.getSource(), false);
+		}
 		
 	}
 

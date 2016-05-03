@@ -272,15 +272,12 @@ public class InteractiveModule extends InteractiveComponent implements CablePoin
 		} else {
 			cpsSet = this.outputMap.keySet();
 		}
-		CablePointSimple res = null;
 		for(CablePointSimple cps: cpsSet) {
 			if(!cps.isConnected()){
-				res = cps;
-				break;
+				return cps;
 			}
 		}
-		System.out.println(res);
-		return res;
+		return null;
 	}
 
 	@Override
