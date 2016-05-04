@@ -152,7 +152,7 @@ public class CablePointPanel extends JPanel implements CablePointHost, MouseList
 
 	@Override
 	public void mouseExited(MouseEvent arg0) {
-		this.setBorder(new EmptyBorder(1, 1, 1, 1));
+		this.setBorder(new LineBorder(new Color(0,0,0,0)));
 		modifyEvent(arg0);
 		this.getParent().dispatchEvent(arg0);
 		
