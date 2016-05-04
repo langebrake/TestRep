@@ -14,6 +14,7 @@ import java.util.Vector;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
+import javax.swing.JPopupMenu.Separator;
 
 import model.pluginmanager.Loadable;
 import model.pluginmanager.PluginHierarchyElement;
@@ -21,6 +22,7 @@ import model.pluginmanager.PluginManager;
 import model.pluginmanager.Subgroup;
 import controller.pluginmanager.PluginAddAction;
 import controller.shortcut.DeleteAction;
+import controller.shortcut.GroupingAction;
 
 public class PopupMenuListener extends MouseAdapter implements Serializable {
 	private InteractiveController controller;
@@ -56,7 +58,11 @@ public class PopupMenuListener extends MouseAdapter implements Serializable {
 				}
 			JPopupMenu popup = new JPopupMenu();
 			addStandardMenu(popup);
+			Separator s;
+			s = new JPopupMenu.Separator();
+			popup.add(s);
 			addPluginMenu(popup);
+			addGroupingMenu(popup);
 			popup.show(e.getComponent(), e.getX(), e.getY());
 		}
 	}
@@ -85,6 +91,12 @@ public class PopupMenuListener extends MouseAdapter implements Serializable {
 				m.add(tmp);
 			}
 		}
+	}
+	
+	private void addGroupingMenu(JPopupMenu p){
+		JMenuItem item = new JMenuItem(new GroupingAction(this.controller));
+		item.setEnabled(controller.getPane().getComponentSelection().size()!=0);
+		p.add(item);
 	}
 	
 }

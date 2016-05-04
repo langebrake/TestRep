@@ -91,14 +91,17 @@ public class Grouping extends Plugin {
 		controller = new InteractiveController();
 	}
 	
-	public void group(InteractiveController info){
-		LinkedList<InteractiveComponent> grouping = info.getPane().getComponentSelection();
+	public void group(InteractiveController info, LinkedList<InteractiveModule> groupThis){
 		
 		//TODO: mind the translation: the modules in the new pane need to be translated relative to their old position! best: 
 		// where left-click for grouping was detected is the new (0|0)
 	}
 	
 	public void ungroup(InteractiveController info){
+		
+	}
+	
+	public void init(){
 		
 	}
 	

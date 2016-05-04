@@ -458,7 +458,7 @@ public class InteractiveModule extends InteractiveComponent implements CablePoin
 				}
 				this.add(p);
 			}
-			this.setOriginDimension(new Dimension(50,(cpsSet.size())*50-cpsSet.size()));
+			this.setOriginDimension(new Dimension(51,cpsSet.size()*51));
 			this.updateView();
 			this.revalidate();
 		}

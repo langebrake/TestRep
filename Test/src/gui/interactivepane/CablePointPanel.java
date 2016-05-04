@@ -32,7 +32,9 @@ public class CablePointPanel extends JPanel implements CablePointHost, MouseList
 		this.addMouseWheelListener(this);
 		this.addMouseMotionListener(this);
 		this.addMouseListener(this);
-		this.setMinimumSize(new Dimension(0,0));
+		this.setMinimumSize(new Dimension(1,1));
+		this.setPreferredSize(new Dimension(50,50));
+		this.setBorder(new LineBorder(new Color(0,0,0,0)));
 	}
 	public void updatePoint(){
 		if(this.isShowing()){
