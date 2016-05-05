@@ -122,7 +122,7 @@ public class MidiInputPlugin extends Plugin implements Serializable{
 	@Override
 	public boolean close() {
 		if(inputdevice != null)
-		inputdevice.close();
+			inputdevice.close();
 		return true;
 		
 	}
@@ -158,6 +158,8 @@ public class MidiInputPlugin extends Plugin implements Serializable{
 		if(this.inputdevice != null)
 			try {
 				this.inputdevice.open();
+				this.inputtransmitter = inputdevice.getTransmitter();
+				this.inputtransmitter.setReceiver(firstReceiver);
 			} catch (MidiUnavailableException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

@@ -140,7 +140,6 @@ public class CablePointPanel extends JPanel implements CablePointHost, MouseList
 	public void mouseClicked(MouseEvent arg0) {
 		modifyEvent(arg0);
 		this.getParent().dispatchEvent(arg0);
-		
 	}
 
 

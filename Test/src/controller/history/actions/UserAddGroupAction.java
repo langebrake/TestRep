@@ -35,6 +35,7 @@ public class UserAddGroupAction extends UserAction {
 			e.printStackTrace();
 		}
 		this.groupModule = new InteractiveModule(controller.getLastMouseGridLocation(), module, controller);
+		((Grouping) module.getPlugin()).getController().setGrouping(grouping);
 	}
 
 	@Override

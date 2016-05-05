@@ -40,6 +40,7 @@ import javax.swing.event.ChangeListener;
 
 import plugin.Plugin;
 import pluginhost.PluginHost;
+import stdlib.grouping.Grouping;
 import controller.history.UserAction;
 import controller.history.UserActionManager;
 import controller.shortcut.DeleteAction;
@@ -53,6 +54,7 @@ public class InteractiveController implements MouseInputListener,WindowStateList
 	private transient UserActionManager actionManager;
 	private Vector lastMousePaneLocation,
 					lastMouseGridLocation;
+	private Grouping group;
 	private transient ModuleListener moduleListener;
 	private transient PopupMenuListener popupMenuListener;
 	private transient ShapeListener shapeListener;
@@ -161,11 +163,17 @@ public class InteractiveController implements MouseInputListener,WindowStateList
 	public void redoAction(){
 		this.actionManager.redo();
 	}
-	
 
-	
 	public UserActionManager getActionManager(){
 		return this.actionManager;
+	}
+	
+	public Grouping getGrouping(){
+		return this.group;
+	}
+	
+	public void setGrouping(Grouping g){
+		this.group = g;
 	}
 	
 	@Override

@@ -303,6 +303,7 @@ public class InteractiveModule extends InteractiveComponent implements CablePoin
 	
 	public void setName(String name){
 		this.module.setName(name);
+		this.displayHeader.setText(name);
 		if(this.fullView != null){
 			this.fullView.setTitle(this.getName());
 		}

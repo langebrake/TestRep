@@ -11,6 +11,7 @@ import model.graph.Module;
 import model.pluginmanager.Loadable;
 import gui.interactivepane.InteractiveModule;
 import plugin.Plugin;
+import pluginhost.PluginHost;
 import pluginhost.exceptions.PluginMaxOutputsExceededException;
 import controller.history.UserAction;
 import controller.history.UserActionManager;
@@ -18,12 +19,12 @@ import controller.interactivepane.InteractiveController;
 import engine.Engine;
 
 public class UserAddModuleAction extends UserAction {
-	private Plugin plugin;
 	private InteractiveModule interactiveModule;
-	private Module module;
+	
 	public UserAddModuleAction(InteractiveController sourceController, Loadable p){
 		super(sourceController);
-		module = null;
+		Module module = null;
+		Plugin plugin = null;
 		try {
 			module = new Module();
 		} catch (MidiUnavailableException e) {
@@ -48,10 +49,13 @@ public class UserAddModuleAction extends UserAction {
 			e.printStackTrace();
 		}
 		interactiveModule = new InteractiveModule(controller.getLastMouseGridLocation(), module, controller);
-		
-
-		
 	}
+	
+	public UserAddModuleAction(InteractiveController sourceController, InteractiveModule module) {
+		super(sourceController);
+		interactiveModule = module;
+	}
+	
 	@Override
 	public void undo() {
 		//TODO: Opening and closing Plugins necessary for System Ressources!

@@ -47,6 +47,8 @@ public class DefaultPlugin extends Plugin implements MidiListener{
 		
 	}
 	private boolean block;
+	
+	
 	@Override
 	public void notify(HostEvent e) {
 		if(!block){
