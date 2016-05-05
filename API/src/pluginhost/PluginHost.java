@@ -1,5 +1,7 @@
 package pluginhost;
 
+import java.awt.Component;
+import java.awt.Container;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -23,12 +25,13 @@ import pluginhost.exceptions.*;
 import pluginhost.events.*;
 
 
-public abstract class PluginHost implements AutoCloseable, Serializable{
+public abstract class PluginHost implements Serializable{
 	
 	private LinkedList<MidiIOThrough> inputs,outputs;
 	private transient Plugin plugin;
 	private transient MidiEngine engine;
 	private PluginStateChangedListener stateChangedListeners;
+	private String name;
 	
 	public PluginHost() throws MidiUnavailableException{
 		this.inputs = new LinkedList<MidiIOThrough>();
@@ -58,12 +61,22 @@ public abstract class PluginHost implements AutoCloseable, Serializable{
 		//TODO: delete maximum outputs
 		
 		//TODO: delete maximum inputs
+		
+		this.name = plugin.getPluginName();
 		p.load();
 	}
 	
 	
 	public void addPluginStateChangedListener(PluginStateChangedListener l){
 		this.stateChangedListeners = l;
+	}
+	
+	public void setName(String name){
+		this.name = name;
+	}
+	
+	public String getName(){
+		return this.name;
 	}
 	
 	/**
@@ -665,8 +678,30 @@ public abstract class PluginHost implements AutoCloseable, Serializable{
 		return this.engine;
 	}
 	
-	public void close(){
-		this.plugin.close();
+	public boolean close(){
+		return this.plugin.close();
+	}
+	
+	public boolean reOpen(){
+		return this.plugin.reOpen();
+	}
+	
+
+	
+	public void notify(PluginEvent e){
+		if(e.getClass() == NewOutputRequestEvent.class){
+			((NewOutputRequestEvent)e).io = this.newOutput();
+		} else if(e.getClass() == NewInputRequestEvent.class){
+			((NewInputRequestEvent)e).io = this.newInput();
+		}
+		
+		if(this.stateChangedListeners != null)
+			this.stateChangedListeners.listen(e);
+	}
+	
+	
+	public Component getFullView(){
+		return this.plugin.getFullView();
 	}
 	
 	private void writeObject(ObjectOutputStream out) throws IOException {
@@ -684,17 +719,5 @@ public abstract class PluginHost implements AutoCloseable, Serializable{
 		}
 		this.plugin = (Plugin) in.readObject();
 	}
-	
-	public void notify(PluginEvent e){
-		if(e.getClass() == NewOutputRequestEvent.class){
-			((NewOutputRequestEvent)e).io = this.newOutput();
-		} else if(e.getClass() == NewInputRequestEvent.class){
-			((NewInputRequestEvent)e).io = this.newInput();
-		}
-		
-		if(this.stateChangedListeners != null)
-			this.stateChangedListeners.listen(e);
-	}
-	
 	
 }

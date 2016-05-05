@@ -14,6 +14,8 @@ import javax.swing.BorderFactory;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 
+import stdlib.grouping.Grouping;
+
 
 public class InteractivePane extends JLayeredPane {
 
@@ -47,6 +49,7 @@ public class InteractivePane extends JLayeredPane {
 	 */
 	private LinkedList<InteractiveComponent> selectedComponents;
 	private LinkedList<InteractiveComponent> tmpSelectedComponents;
+	private LinkedList<InteractiveModule> groupings;
 	private JPanel selectionArea;
 	
 	
@@ -70,10 +73,10 @@ public class InteractivePane extends JLayeredPane {
 		this.selectedShapes = new LinkedList<InteractiveShape>();
 		this.tmpSelectedShapes = new LinkedList<InteractiveShape>();
 		this.tmpSelectedComponents = new LinkedList<InteractiveComponent>();
+		this.groupings = new LinkedList<InteractiveModule>();
 		this.selectionArea = new JPanel();
 		this.selectionArea.setBorder(BorderFactory.createLineBorder(Color.black));
 		this.selectionArea.setOpaque(false);
-		this.add(selectionArea);
 		
 
 		
@@ -172,7 +175,11 @@ public class InteractivePane extends JLayeredPane {
 	}
 	
 	public void remove(InteractiveComponent c){
-		if(c instanceof InteractiveCableComponent){
+		if (c instanceof InteractiveModule){
+			if(((InteractiveModule) c).getModule().getPlugin() instanceof Grouping){
+				this.groupings.remove((InteractiveModule) c);
+			}
+		} else if(c instanceof InteractiveCableComponent){
 			this.cableComponents.remove(c);
 		}
 		super.remove(c);
@@ -180,9 +187,13 @@ public class InteractivePane extends JLayeredPane {
 	}
 	
 	public void add(InteractiveComponent c){
-		if(c instanceof InteractiveCableComponent){
+		if (c instanceof InteractiveModule){
+			if(((InteractiveModule) c).getModule().getPlugin() instanceof Grouping){
+				this.groupings.add((InteractiveModule) c);
+			}
+		} else if(c instanceof InteractiveCableComponent){
 			this.cableComponents.add((InteractiveCableComponent) c);
-		}
+		} 
 		super.add(c);
 		c.updateView();
 		c.revalidate();
@@ -263,6 +274,9 @@ public class InteractivePane extends JLayeredPane {
 		height = Math.max(vec1.getY(), vec2.getY()) - ypos;
 		width = Math.max(vec1.getX(), vec2.getX()) - xpos;
 		this.selectionArea.setVisible(true);
+		if(!this.selectionArea.isShowing()){
+			this.add(selectionArea);
+		}
 		this.selectionArea.setBounds(xpos, ypos, width, height);
 		this.moveToFront(selectionArea);
 		
@@ -312,6 +326,7 @@ public class InteractivePane extends JLayeredPane {
 		this.selectedShapes.addAll(this.tmpSelectedShapes);
 		this.tmpSelectedShapes = new LinkedList<InteractiveShape>();
 		this.selectionArea.setVisible(false);
+		this.remove(selectionArea);
 	}
 	
 	

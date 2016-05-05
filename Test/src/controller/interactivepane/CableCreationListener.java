@@ -32,6 +32,7 @@ public class CableCreationListener extends MouseAdapter implements Serializable{
 	private HashMap<InteractiveCable,InteractiveCable[]> newConnections;
 	private InteractiveCable oldSourceConnection;
 	private Object componentSource;
+	
 	public CableCreationListener(InteractiveController c) {
 		this.controller = c;
 		this.newConnections = new HashMap<InteractiveCable,InteractiveCable[]>();
@@ -50,7 +51,7 @@ public class CableCreationListener extends MouseAdapter implements Serializable{
 				
 				tmpPoint = new CablePointComponent(controller.getPane(),CablePointType.THROUGH);
 				tmpPoint.setLocation(controller.relativeToPane(e).toPoint());
-				tmpCable = new InteractiveCable(sourcePoint,tmpPoint,1,Color.BLACK,controller.getPane());
+				tmpCable = new InteractiveCable(sourcePoint,tmpPoint,1,Color.BLACK,controller);
 				tmpPoint.setCable(tmpCable);
 				sourcePoint.setCable(tmpCable);
 				tmpCable.setDraggedEndpoint(true);
@@ -91,7 +92,7 @@ public class CableCreationListener extends MouseAdapter implements Serializable{
 						}
 						this.newConnections.put(tmpCable, overrides);
 						
-						this.controller.executeAction(new UserAddConnectionsAction(controller.getActionManager(),newConnections));
+						this.controller.executeAction(new UserAddConnectionsAction(controller,newConnections));
 					} else {
 						if(! (this.oldSourceConnection != null 
 								&&((destPoint == this.oldSourceConnection.getDestination() 
@@ -110,7 +111,7 @@ public class CableCreationListener extends MouseAdapter implements Serializable{
 								overrides[0] = destPoint.getCable();
 							}
 							this.newConnections.put(tmpCable, overrides);
-							this.controller.executeAction(new UserAddConnectionsAction(controller.getActionManager(),newConnections));
+							this.controller.executeAction(new UserAddConnectionsAction(controller,newConnections));
 						} else {
 							sourcePoint.setCable(this.oldSourceConnection);
 							controller.getPane().remove(tmpCable);

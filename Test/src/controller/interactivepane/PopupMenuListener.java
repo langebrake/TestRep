@@ -1,6 +1,7 @@
 package controller.interactivepane;
 
 import gui.interactivepane.InteractiveComponent;
+import gui.interactivepane.InteractiveModule;
 import gui.interactivepane.InteractiveShape;
 
 import java.awt.Point;
@@ -23,6 +24,7 @@ import model.pluginmanager.Subgroup;
 import controller.pluginmanager.PluginAddAction;
 import controller.shortcut.DeleteAction;
 import controller.shortcut.GroupingAction;
+import controller.shortcut.RenameAction;
 
 public class PopupMenuListener extends MouseAdapter implements Serializable {
 	private InteractiveController controller;
@@ -57,7 +59,7 @@ public class PopupMenuListener extends MouseAdapter implements Serializable {
 					}
 				}
 			JPopupMenu popup = new JPopupMenu();
-			addStandardMenu(popup);
+			addStandardMenu(popup, e);
 			Separator s;
 			s = new JPopupMenu.Separator();
 			popup.add(s);
@@ -67,10 +69,16 @@ public class PopupMenuListener extends MouseAdapter implements Serializable {
 		}
 	}
 	
-	private void addStandardMenu(JPopupMenu p){
+	private void addStandardMenu(JPopupMenu p, MouseEvent e){
 		JMenuItem item = new JMenuItem(new DeleteAction(this.controller));
 		item.setEnabled(controller.getPane().hasSelected());
 		p.add(item);
+		Object source = e.getSource();
+
+		item = new JMenuItem(new RenameAction(e.getSource()));
+		p.add(item);
+		item.setEnabled(source instanceof InteractiveModule);
+
 
 	}
 	

@@ -115,14 +115,15 @@ public class MidiOutputPlugin extends Plugin implements MidiListener {
 	}
 
 	@Override
-	public void close() {
+	public boolean close() {
 		if(outputdevice != null)
 		outputdevice.close();
 		
+		return true;
 	}
 	
 	@Override
-	public void reOpen(){
+	public boolean reOpen(){
 		if(outputdevice != null)
 			try {
 				outputdevice.open();
@@ -130,6 +131,8 @@ public class MidiOutputPlugin extends Plugin implements MidiListener {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+		
+		return true;
 	}
 
 	@Override

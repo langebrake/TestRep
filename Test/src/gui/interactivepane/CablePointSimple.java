@@ -62,7 +62,7 @@ public class CablePointSimple implements CablePoint {
 	public void disconnect() {
 		this.cable = null;
 		if(host!=null)
-		host.changedState(this);
+			host.changedState(this);
 		
 	}
 

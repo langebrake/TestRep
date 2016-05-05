@@ -20,7 +20,7 @@ import pluginhost.PluginHost;
 import pluginhost.events.HostEvent;
 
 
-public class MidiInputPlugin extends Plugin implements Receiver, Serializable{
+public class MidiInputPlugin extends Plugin implements Serializable{
 
 	private static final int MAXINPUTS = 0;
 	private static final int MAXOUTPUTS = 1;
@@ -31,6 +31,7 @@ public class MidiInputPlugin extends Plugin implements Receiver, Serializable{
 	private transient Transmitter inputtransmitter;
 	private String midiDeviceName;
 	private MidiIO output;
+	private InputReceiver firstReceiver;
 	
 	public static MidiInputPlugin getInstance(PluginHost host){
 		return new MidiInputPlugin(host);
@@ -88,6 +89,7 @@ public class MidiInputPlugin extends Plugin implements Receiver, Serializable{
 	public void load() {
 		MidiEngine engine = this.getPluginHost().getEngine();
 		LinkedList<MidiDevice> inputs = engine.getInputDevices();
+		this.firstReceiver = new InputReceiver();
 		for(int i = 0; i<inputs.size();i++){
 			System.out.println(i+": "+inputs.get(i).getDeviceInfo());
 		}
@@ -109,7 +111,7 @@ public class MidiInputPlugin extends Plugin implements Receiver, Serializable{
 		if(inputtransmitter == null) {
 			System.err.println("No Input Transmitter obtained!");
 		} else{
-			inputtransmitter.setReceiver(this);
+			inputtransmitter.setReceiver(this.firstReceiver);
 			
 			this.output = this.getPluginHost().getOuput(0);
 		}
@@ -118,9 +120,10 @@ public class MidiInputPlugin extends Plugin implements Receiver, Serializable{
 	}
 
 	@Override
-	public void close() {
+	public boolean close() {
 		if(inputdevice != null)
 		inputdevice.close();
+		return true;
 		
 	}
 
@@ -135,11 +138,6 @@ public class MidiInputPlugin extends Plugin implements Receiver, Serializable{
 	}
 
 
-	@Override
-	public void send(MidiMessage message, long timeStamp) {
-		this.output.send(message, timeStamp);
-		
-	}
 	
 	
 	private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException{
@@ -148,7 +146,7 @@ public class MidiInputPlugin extends Plugin implements Receiver, Serializable{
 		try {
 			this.inputdevice.open();
 			this.inputtransmitter = this.inputdevice.getTransmitter();
-			inputtransmitter.setReceiver(this);
+			inputtransmitter.setReceiver(this.firstReceiver);
 		} catch (MidiUnavailableException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -156,7 +154,7 @@ public class MidiInputPlugin extends Plugin implements Receiver, Serializable{
 	}
 
 	@Override
-	public void reOpen() {
+	public boolean reOpen() {
 		if(this.inputdevice != null)
 			try {
 				this.inputdevice.open();
@@ -164,6 +162,23 @@ public class MidiInputPlugin extends Plugin implements Receiver, Serializable{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+		
+		return true;
+	
+	}
+	
+	private class InputReceiver implements Receiver, Serializable {
+
+		@Override
+		public void close() {
+			
+		}
+
+		@Override
+		public void send(MidiMessage arg0, long arg1) {
+			output.send(arg0, arg1);
+			
+		}
 		
 	}
 

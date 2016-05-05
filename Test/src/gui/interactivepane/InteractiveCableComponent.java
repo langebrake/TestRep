@@ -13,6 +13,8 @@ import java.util.LinkedList;
 
 import javax.swing.BorderFactory;
 
+import controller.interactivepane.InteractiveController;
+
 public class InteractiveCableComponent extends InteractiveComponent {
 	
 	private GeneralPath cable;
@@ -24,7 +26,7 @@ public class InteractiveCableComponent extends InteractiveComponent {
 	private float width;
 	private boolean draggedEndpoint;
 	
-	public InteractiveCableComponent(CablePoint source, CablePoint dest,InteractivePane parent){
+	public InteractiveCableComponent(CablePoint source, CablePoint dest,InteractiveController parent){
 		this(parent, null);
 		this.source = source;
 		this.dest = dest;
@@ -34,7 +36,7 @@ public class InteractiveCableComponent extends InteractiveComponent {
 		this.cable = new GeneralPath();
 		
 	}
-	private InteractiveCableComponent(InteractivePane parent, Vector origin) {
+	private InteractiveCableComponent(InteractiveController parent, Vector origin) {
 		super(parent, origin);
 		// TODO Auto-generated constructor stub
 	}
@@ -95,11 +97,11 @@ public class InteractiveCableComponent extends InteractiveComponent {
 	
 	@Override
 	public void updateView(){
-		if(this.getParentPane().isShowing()){
-		this.setBounds(this.getParentPane().getBounds());
+		if(controller.getPane().isShowing()){
+		this.setBounds(controller.getPane().getBounds());
 		
-		int paneX =  (int) this.getParentPane().getLocationOnScreen().getX();
-		int paneY =  (int) this.getParentPane().getLocationOnScreen().getY();
+		int paneX =  (int) controller.getPane().getLocationOnScreen().getX();
+		int paneY =  (int) controller.getPane().getLocationOnScreen().getY();
 		float x1pos =(float) (this.source.getXOnScreen() - paneX);
 		float y1pos =(float) (this.source.getYOnScreen() - paneY);
 		float x2pos =(float) (this.dest.getXOnScreen() - paneX);
@@ -139,7 +141,7 @@ public class InteractiveCableComponent extends InteractiveComponent {
 			Graphics2D g2d = (Graphics2D) g;
 		
 			g2d.setPaint(this.color);
-			g2d.setStroke(new BasicStroke(this.width*this.getParentPane().getScaleFactor()));
+			g2d.setStroke(new BasicStroke(this.width*controller.getPane().getScaleFactor()));
 			
 			g2d.draw(this.cable);
 		}

@@ -9,10 +9,10 @@ import model.graph.Module;
 public class GraphTest {
 	public static void main(String[] args) {
 		System.out.println("WELCOME!");
-		try (	Module inputModule = new Module();
-				Module defaultModule= new Module();
-				Module outputModule= new Module()){
-			
+		try {
+			Module inputModule = new Module();
+			Module defaultModule= new Module();
+			Module outputModule= new Module();
 //			Plugin inputPlugin = new MidiInputPlugin(inputModule);
 //			inputModule.setPlugin(inputPlugin);
 			
@@ -28,7 +28,9 @@ public class GraphTest {
 			Scanner s = new Scanner(System.in);
 			s.nextLine();
 			s.close();
-			
+			inputModule.close();
+			defaultModule.close();
+			outputModule.close();
 		}catch(Exception e){
 			e.printStackTrace();
 		}

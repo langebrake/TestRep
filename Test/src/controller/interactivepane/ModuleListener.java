@@ -91,7 +91,7 @@ public class ModuleListener extends ControllerListenerAdapter {
 			if(arg0.getClickCount() == 2){
 				if (source instanceof InteractiveModule){
 					//TODO: Save all active Frames into one Hashmap to be able to hide all
-					((InteractiveModule) source).getModule().getPlugin().getFullView().setVisible(true);
+					((InteractiveModule) source).openFullView();
 				}
 			}
 			boolean componentWasSelected = ((InteractiveComponent) source).isSelected();

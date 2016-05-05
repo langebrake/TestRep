@@ -19,30 +19,57 @@ import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
+import controller.interactivepane.CableCreationListener;
+import controller.interactivepane.InteractiveController;
+import controller.interactivepane.ModuleListener;
+import controller.interactivepane.PopupMenuListener;
+
 public abstract class InteractiveComponent extends JPanel implements InteractiveUpdateable {
 
 	private Vector originLocation;
 	private Dimension originDimension;
-	private InteractivePane parent;
 	private boolean selected;
 	private boolean hovered;
+	protected InteractiveController controller;
 	
 	/**
 	 * creates a new interactive gui component and places it to the origin vector
 	 * @param parent
 	 * @param origin
 	 */
-	public InteractiveComponent(InteractivePane parent, Vector origin){
-		this.parent = parent;
+	public InteractiveComponent(InteractiveController controller, Vector origin){
 		this.originLocation = origin;
 		this.selected = false;
 		this.hovered=false;
 		this.originDimension = new Dimension();
+		this.setController(controller);
 		this.setOpaque(false);
+	}
 	
+	public void setController(InteractiveController controller){
+		this.addListeners(controller.getModuleListener(), controller.getPopupMenuListener(),controller.getCableCreationListener());
+		if(this.controller != null)
+			this.removeListeners(this.controller.getModuleListener(), this.controller.getPopupMenuListener(), this.controller.getCableCreationListener());
+		this.controller = controller;
+	}
+	
+	public void removeListeners(MouseListener... listeners) {
+		for(EventListener l: listeners){
+			if(l instanceof MouseListener){
+				this.removeMouseListener((MouseListener) l);
+			} 
+			if (l instanceof MouseMotionListener){
+				this.removeMouseMotionListener((MouseMotionListener) l);
+			} 
+			if (l instanceof MouseWheelListener){
+				this.removeMouseWheelListener((MouseWheelListener) l);
+			}
+		}
 		
-		
-		
+	}
+
+	public InteractiveController getController(){
+		return this.controller;
 	}
 	
 	public Dimension getOriginDimension(){
@@ -68,9 +95,9 @@ public abstract class InteractiveComponent extends JPanel implements Interactive
 	public void updateView(){
 		
 		//set components screen location
-		this.setLocation(parent.convertToScreenLocation(this.originLocation).toPoint());
+		this.setLocation(controller.getPane().convertToScreenLocation(this.originLocation).toPoint());
 		//size component
-		double scaleFactor = this.parent.getScaleFactor();
+		double scaleFactor = this.controller.getPane().getScaleFactor();
 		this.setSize((int)(this.originDimension.width*scaleFactor), (int) (this.originDimension.height*scaleFactor));
 	}
 	
@@ -93,9 +120,6 @@ public abstract class InteractiveComponent extends JPanel implements Interactive
 		return this.hovered;
 	}
 	
-	protected InteractivePane getParentPane(){
-		return this.parent;
-	}
 	
 	public boolean intersects(Shape s){
 		return s.intersects(this.getBounds());

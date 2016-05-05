@@ -50,7 +50,7 @@ import model.MidiGraph;
 public class InteractiveController implements MouseInputListener,WindowStateListener, Serializable {
 	private InteractivePane pane;
 	private MidiGraph graph;
-	private  UserActionManager actionManager;
+	private transient UserActionManager actionManager;
 	private Vector lastMousePaneLocation,
 					lastMouseGridLocation;
 	private transient ModuleListener moduleListener;
@@ -101,35 +101,37 @@ public class InteractiveController implements MouseInputListener,WindowStateList
 				
 				
 				
-				//TODO: remove this cable debug thing
-				CablePointPanel p1 = new CablePointPanel(new CablePointSimple(CablePointType.INPUT));
-				CablePointPanel p2 = new CablePointPanel(new CablePointSimple(CablePointType.OUTPUT));
-				CablePointPanel p3 = new CablePointPanel(new CablePointSimple(CablePointType.OUTPUT));
-				CablePointPanel p4 = new CablePointPanel(new CablePointSimple(CablePointType.INPUT));
-				p1.setSize(50, 50);
-				p2.setSize(50, 50);
-				p3.setSize(50, 50);
-				p4.setSize(50, 50);
-				p1.setBackground(Color.LIGHT_GRAY);
-				p2.setBackground(Color.LIGHT_GRAY);
-				p3.setBackground(Color.LIGHT_GRAY);
-				p4.setBackground(Color.LIGHT_GRAY);
-				
-				InteractiveComponent src = new InteractiveDisplay(this.pane,new Vector(0,0), p1);
-				InteractiveComponent src2 = new InteractiveDisplay(this.pane,new Vector(500,900), p2);
-				InteractiveComponent src3 = new InteractiveDisplay(this.pane,new Vector(24,789), p3);
-				InteractiveComponent src4 = new InteractiveDisplay(this.pane,new Vector(654,345), p4);
-
-				
-				src.addListeners(this.moduleListener,this.popupMenuListener,this.shapeListener,this.cableCreationListener);
-				src2.addListeners(this.moduleListener,this.popupMenuListener,this.shapeListener,this.cableCreationListener);
-				src3.addListeners(this.moduleListener,this.popupMenuListener,this.shapeListener,this.cableCreationListener);
-				src4.addListeners(this.moduleListener,this.popupMenuListener,this.shapeListener,this.cableCreationListener);
-				this.pane.add(src);
-				this.pane.add(src2);
-				this.pane.add(src3);
-				this.pane.add(src4);
-				this.pane.addMouseListener(this.popupMenuListener);
+//				//TODO: remove this cable debug thing
+//				CablePointPanel p1 = new CablePointPanel(new CablePointSimple(CablePointType.INPUT));
+//				CablePointPanel p2 = new CablePointPanel(new CablePointSimple(CablePointType.OUTPUT));
+//				CablePointPanel p3 = new CablePointPanel(new CablePointSimple(CablePointType.OUTPUT));
+//				CablePointPanel p4 = new CablePointPanel(new CablePointSimple(CablePointType.INPUT));
+//				p1.setSize(50, 50);
+//				p2.setSize(50, 50);
+//				p3.setSize(50, 50);
+//				p4.setSize(50, 50);
+//				p1.setBackground(Color.LIGHT_GRAY);
+//				p2.setBackground(Color.LIGHT_GRAY);
+//				p3.setBackground(Color.LIGHT_GRAY);
+//				p4.setBackground(Color.LIGHT_GRAY);
+//				
+//				InteractiveComponent src = new InteractiveDisplay(this,new Vector(0,0), p1);
+//				InteractiveComponent src2 = new InteractiveDisplay(this,new Vector(500,900), p2);
+//				InteractiveComponent src3 = new InteractiveDisplay(this,new Vector(24,789), p3);
+//				InteractiveComponent src4 = new InteractiveDisplay(this,new Vector(654,345), p4);
+//
+//				
+//				src.addListeners(this.moduleListener,this.popupMenuListener,this.shapeListener,this.cableCreationListener);
+//				src2.addListeners(this.moduleListener,this.popupMenuListener,this.shapeListener,this.cableCreationListener);
+//				src3.addListeners(this.moduleListener,this.popupMenuListener,this.shapeListener,this.cableCreationListener);
+//				src4.addListeners(this.moduleListener,this.popupMenuListener,this.shapeListener,this.cableCreationListener);
+//				this.pane.add(src);
+//				this.pane.add(src2);
+//				this.pane.add(src3);
+//				this.pane.add(src4);
+//				InteractiveShapeComponent s = new InteractiveShapeComponent(this, new Vector(0,0));
+//				s.addListeners(this.moduleListener,this.popupMenuListener, this.shapeListener, this.cableCreationListener);
+//				this.pane.add(s);
 				// a few graphical bugs come with the introduction of interactive cable components
 //				InteractiveCableComponent icc = new InteractiveCableComponent(p1,p2,this.pane);
 //				this.pane.add(icc);
@@ -138,14 +140,15 @@ public class InteractiveController implements MouseInputListener,WindowStateList
 				this.pane.addMouseListener(sl);
 				this.pane.addMouseMotionListener(sl);
 				this.pane.addMouseWheelListener(sl);
-				
-				InteractiveShapeComponent s = new InteractiveShapeComponent(this.pane, new Vector(0,0));
-				s.addListeners(this.moduleListener,this.popupMenuListener, this.shapeListener, this.cableCreationListener);
-				this.pane.add(s);
+				this.pane.addMouseListener(this.popupMenuListener);
+
 				
 		
 	}
 	
+	public void setUserActionManager(UserActionManager manager){
+		this.actionManager = manager;
+	}
 	public void executeAction(UserAction a){
 		this.actionManager.addEvent(a);
 		a.execute();
@@ -326,6 +329,8 @@ public class InteractiveController implements MouseInputListener,WindowStateList
 		this.cableCreationListener = new CableCreationListener(this);
 		this.cableAddProcess = false;
 		this.componentAndViewDrag = false;
+		this.actionManager = new UserActionManager();
+		this.actionManager.setController(this);
 	}
 
 	

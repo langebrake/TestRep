@@ -5,6 +5,7 @@ import gui.interactivepane.CablePointHost;
 import gui.interactivepane.CablePointPanel;
 import gui.interactivepane.InteractiveCable;
 import gui.interactivepane.InteractiveComponent;
+import gui.interactivepane.InteractivePane;
 import gui.interactivepane.InteractiveShape;
 
 import java.awt.Component;
@@ -20,8 +21,9 @@ import controller.interactivepane.InteractiveController;
 public class UserDeleteAction extends UserAction {
 	final LinkedList<InteractiveComponent> components;
 	final LinkedList<InteractiveShape> shapes;
-	public UserDeleteAction(UserActionManager manager, LinkedList<InteractiveComponent> components, LinkedList<InteractiveShape> shapes){
-		super(manager);
+	
+	public UserDeleteAction(InteractiveController sourceController, LinkedList<InteractiveComponent> components, LinkedList<InteractiveShape> shapes){
+		super(sourceController);
 		this.components = components;
 		this.shapes = shapes;
 	}
@@ -31,7 +33,8 @@ public class UserDeleteAction extends UserAction {
 		//Implement Connecting etc. of modules
 		for(InteractiveComponent c: components){
 			if(c.reopen()){
-				controller.getPane().add(c);
+				if(!c.getController().getPane().isAncestorOf(c))
+					c.getController().getPane().add(c);
 				LinkedList<CablePointHost> cablePointHosts = getRecursive(c,CablePointHost.class);
 				for(CablePointHost cablePointHost: cablePointHosts){
 					for(CablePoint cablePoint:cablePointHost.getCablePoints()){
@@ -46,9 +49,8 @@ public class UserDeleteAction extends UserAction {
 							cableResurrect.setCable(tmpCable);
 							
 						}
-						
-						if(!controller.getPane().getShapes().contains(tmpCable)){
-							controller.getPane().add(tmpCable);
+							if(!c.getController().getPane().getShapes().contains(tmpCable)){
+								c.getController().getPane().add(tmpCable);
 						}
 					}
 				}
@@ -64,14 +66,13 @@ public class UserDeleteAction extends UserAction {
 			}
 			
 			
-			controller.getPane().add(c);
+			c.getController().getPane().add(c);
 		}
 
 	}
 
 	@Override
 	public void execute() {
-		
 		for(InteractiveComponent c: components){
 			if(c.close()){
 				LinkedList<CablePointHost> cablePointHosts = getRecursive(c,CablePointHost.class);
@@ -80,7 +81,8 @@ public class UserDeleteAction extends UserAction {
 							if(cablePoint.isConnected()){
 							
 							InteractiveCable tmpCable = cablePoint.getCable();
-							controller.getPane().remove(tmpCable);
+							
+								c.getController().getPane().remove(tmpCable);
 							for(CablePoint cableErase: tmpCable.getCablePoints()){
 								if(cableErase == cablePoint){
 									cableErase.tmpDisconnect(true);
@@ -93,7 +95,7 @@ public class UserDeleteAction extends UserAction {
 						
 					}
 				}
-				controller.getPane().remove(c);
+				c.getController().getPane().remove(c);
 			}
 		}
 		for(InteractiveShape c:shapes){
@@ -102,7 +104,8 @@ public class UserDeleteAction extends UserAction {
 				((InteractiveCable) c).getSource().disconnect();
 				((InteractiveCable) c).getDestination().disconnect();
 			}
-			controller.getPane().remove(c);
+			
+			c.getController().getPane().remove(c);
 			
 		}
 

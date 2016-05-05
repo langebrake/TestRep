@@ -1,6 +1,6 @@
 package controller.history.actions;
 
-import gui.grouping.Grouping;
+import gui.interactivepane.InteractiveComponent;
 import gui.interactivepane.InteractiveModule;
 
 import java.util.LinkedList;
@@ -8,18 +8,20 @@ import java.util.LinkedList;
 import javax.sound.midi.MidiUnavailableException;
 
 import pluginhost.exceptions.PluginMaxOutputsExceededException;
+import stdlib.grouping.Grouping;
 import model.graph.Module;
 import controller.history.UserAction;
 import controller.history.UserActionManager;
+import controller.interactivepane.InteractiveController;
 
 public class UserAddGroupAction extends UserAction {
-	LinkedList<InteractiveModule> groupThis;
+	LinkedList<InteractiveComponent> groupThis;
 	InteractiveModule groupModule;
 	Grouping grouping;
 
-	public UserAddGroupAction(UserActionManager m, LinkedList<InteractiveModule> groupThis) {
-		super(m);
-		this.groupThis = groupThis;
+	public UserAddGroupAction(InteractiveController sourceController, LinkedList<InteractiveComponent> linkedList) {
+		super(sourceController);
+		this.groupThis = linkedList;
 		Module module = null;
 		try {
 			module = new Module();
@@ -32,13 +34,13 @@ public class UserAddGroupAction extends UserAction {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		this.groupModule = new InteractiveModule(controller.getPane(), controller.getLastMousePaneLocation(), module, controller);
+		this.groupModule = new InteractiveModule(controller.getLastMouseGridLocation(), module, controller);
 	}
 
 	@Override
 	public void undo() {
 		if(groupModule.close()){
-			grouping.ungroup(controller);
+			grouping.ungroup(controller,groupThis);
 			controller.getPane().remove(groupModule);
 		}
 

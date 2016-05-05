@@ -1,6 +1,7 @@
 package defaultplugin;
 import guiinterface.SizeableComponent;
 
+import java.awt.Component;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -77,12 +78,8 @@ public class DefaultPlugin extends Plugin implements MidiListener{
 		return view;
 	}
 	@Override
-	public JFrame getFullView() {
-		JFrame frame = new JFrame(this.NAME);
-		
-		frame.add(new DefaultView("DEFAULT PLUGIN INTERFACE"));
-		frame.pack();
-		return frame;
+	public Component getFullView() {
+		return new DefaultView("DEFAULT PLUGIN INTERFACE");
 	}
 	
 	public  String getPluginName() {
@@ -108,12 +105,13 @@ public class DefaultPlugin extends Plugin implements MidiListener{
 		
 	}
 	@Override
-	public void close() {
+	public boolean close() {
 		PluginHost host = this.getPluginHost();
 		MidiIOThrough input = host.getInput(0);
 		MidiIOThrough output = host.getOuput(0);
 		input.disconnectOutput();
 		output.disconnectInput();
+		return true;
 		
 	}
 	@Override
@@ -140,8 +138,8 @@ public class DefaultPlugin extends Plugin implements MidiListener{
 		
 	}
 	@Override
-	public void reOpen() {
-		// TODO Auto-generated method stub
+	public boolean reOpen() {
+		return true;
 		
 	}
 	

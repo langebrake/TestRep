@@ -14,6 +14,8 @@ import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
+import controller.interactivepane.InteractiveController;
+
 public class InteractiveDisplay extends InteractiveComponent  {
 
 	private JComponent contentPane;
@@ -23,7 +25,7 @@ public class InteractiveDisplay extends InteractiveComponent  {
 	 * @param parent
 	 * @param origin
 	 */
-	public InteractiveDisplay(InteractivePane parent, Vector origin, JComponent contentPane ){
+	public InteractiveDisplay(InteractiveController parent, Vector origin, JComponent contentPane ){
 		super(parent,origin);
 		super.setLayout(new BorderLayout());
 		this.contentPane = contentPane;
@@ -55,17 +57,6 @@ public class InteractiveDisplay extends InteractiveComponent  {
 			this.setBorder(BorderFactory.createEmptyBorder(1,1,1,1));
 	}
 	
-	public void inputPopout(boolean set){
-		this.getParentPane();
-	}
-	
-	public void outputPopout(boolean set){
-		
-	}
-	
-	public void openFullView(){
-		
-	}
 
 	@Override
 	public boolean close() {

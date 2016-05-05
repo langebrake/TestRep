@@ -14,14 +14,15 @@ import plugin.Plugin;
 import pluginhost.exceptions.PluginMaxOutputsExceededException;
 import controller.history.UserAction;
 import controller.history.UserActionManager;
+import controller.interactivepane.InteractiveController;
 import engine.Engine;
 
 public class UserAddModuleAction extends UserAction {
 	private Plugin plugin;
 	private InteractiveModule interactiveModule;
 	private Module module;
-	public UserAddModuleAction(UserActionManager manager,Loadable p){
-		super(manager);
+	public UserAddModuleAction(InteractiveController sourceController, Loadable p){
+		super(sourceController);
 		module = null;
 		try {
 			module = new Module();
@@ -46,8 +47,8 @@ public class UserAddModuleAction extends UserAction {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		interactiveModule = new InteractiveModule(controller.getPane(), controller.getLastMouseGridLocation(), module,manager.getController());
-		interactiveModule.addListeners(controller.getModuleListener(), controller.getPopupMenuListener(),controller.getCableCreationListener());
+		interactiveModule = new InteractiveModule(controller.getLastMouseGridLocation(), module, controller);
+		
 
 		
 	}
@@ -55,17 +56,22 @@ public class UserAddModuleAction extends UserAction {
 	public void undo() {
 		//TODO: Opening and closing Plugins necessary for System Ressources!
 		// disconnecting Connections not necessary, cause a newly added module has none!
-		if(interactiveModule.close()){
-			controller.getPane().remove(interactiveModule);
-		}
+//		if(interactiveModule.close()){
+//			interactiveModule.getController().getPane().remove(interactiveModule);
+//		}
+		interactiveModule.close();
+		interactiveModule.getController().getPane().remove(interactiveModule);
+
 
 	}
 
 	@Override
 	public void execute() {
-		if(interactiveModule.reopen()){
-			controller.getPane().add(interactiveModule);
-		}
+//		if(interactiveModule.reopen()){
+//			interactiveModule.getController().getPane().add(interactiveModule);
+//		}
+		interactiveModule.reopen();	
+		interactiveModule.getController().getPane().add(interactiveModule);
 
 	}
 	

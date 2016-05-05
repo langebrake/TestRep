@@ -1,5 +1,6 @@
 package plugin;
 
+import java.awt.Component;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -37,7 +38,7 @@ public abstract class Plugin implements Serializable{
 	 */
 	public abstract String getPluginName();
 	public abstract JComponent getMinimizedView();
-	public abstract JFrame getFullView();
+	public abstract Component getFullView();
 
 	public abstract String getDisplayName();
 	public abstract void setDisplayName();
@@ -50,8 +51,8 @@ public abstract class Plugin implements Serializable{
 	public abstract int getMinOutputs();
 	public abstract void notify(HostEvent e);
 	public abstract void load();
-	public abstract void close();
-	public abstract void reOpen();
+	public abstract boolean close();
+	public abstract boolean reOpen();
 	
 	
 }

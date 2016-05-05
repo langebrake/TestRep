@@ -18,6 +18,8 @@ import java.util.LinkedList;
 
 import javax.swing.JComponent;
 
+import controller.interactivepane.InteractiveController;
+
 public class InteractiveCable implements InteractiveShape{
 	
 	private GeneralPath cable;
@@ -25,27 +27,28 @@ public class InteractiveCable implements InteractiveShape{
 	private LinkedList<CablePoint> cablePoints;
 	private boolean selected;
 	private boolean hover;
-	private InteractivePane parent;
 	private Paint color;
 	private Paint originColor;
 	private float originWidth;
 	private float width;
 	private boolean draggedEndpoint;
+	protected InteractiveController controller;
 	
-	public InteractiveCable(InteractivePane parent){
+	public InteractiveCable(InteractiveController parent){
 		this(null,null,1,Color.BLACK,parent);
 	}
 	
-	public InteractiveCable(CablePoint source, CablePoint dest,float width,Color color, InteractivePane parent){
+	public InteractiveCable(CablePoint source, CablePoint dest,float width,Color color, InteractiveController parent){
 		this.source = source;
 		this.dest = dest;
 		this.cablePoints = new LinkedList<CablePoint>();
 		this.selected = false;
-		this.parent = parent;
 		this.originColor = color;
 		this.originWidth = width;
 		this.color = this.originColor;
 		this.width = this.originWidth;
+		this.controller = parent;
+		
 	}
 	
 	public void setSource(CablePoint source){
@@ -154,8 +157,8 @@ public class InteractiveCable implements InteractiveShape{
 		return points;
 	}
 	public void updateView(Graphics2D g2d){
-		int paneX =  (int) this.parent.getLocationOnScreen().getX();
-		int paneY =  (int) this.parent.getLocationOnScreen().getY();
+		int paneX =  (int) this.controller.getPane().getLocationOnScreen().getX();
+		int paneY =  (int) this.controller.getPane().getLocationOnScreen().getY();
 		float x1pos =(float) (this.source.getXOnScreen() - paneX);
 		float y1pos =(float) (this.source.getYOnScreen() - paneY);
 		float x2pos =(float) (this.dest.getXOnScreen() - paneX);
@@ -184,7 +187,7 @@ public class InteractiveCable implements InteractiveShape{
 
 		
 		g2d.setPaint(this.color);
-		g2d.setStroke(new BasicStroke(this.width*parent.getScaleFactor()));
+		g2d.setStroke(new BasicStroke(this.width*controller.getPane().getScaleFactor()));
 		
 		g2d.draw(this.cable);
 		
@@ -209,6 +212,15 @@ public class InteractiveCable implements InteractiveShape{
 	@Override
 	public boolean selectable() {
 		return true;
+	}
+
+	@Override
+	public InteractiveController getController() {
+		return this.controller;
+	}
+	
+	public void setController(InteractiveController controller){
+		this.controller = controller;
 	}
 	
 	

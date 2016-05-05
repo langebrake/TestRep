@@ -13,10 +13,12 @@ import java.util.LinkedList;
 
 import javax.swing.BorderFactory;
 
+import controller.interactivepane.InteractiveController;
+
 public class InteractiveShapeComponent extends InteractiveComponent implements CablePointHost{
 	private Shape s;
 	private LinkedList<CablePointSimple> cablePoints;
-	public InteractiveShapeComponent(InteractivePane parent, Vector origin) {
+	public InteractiveShapeComponent(InteractiveController parent, Vector origin) {
 		super(parent, origin);
 		this.setLayout(new BorderLayout());
 		this.cablePoints = new LinkedList<CablePointSimple>();

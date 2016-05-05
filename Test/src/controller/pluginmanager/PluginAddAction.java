@@ -27,7 +27,7 @@ public class PluginAddAction extends AbstractAction{
 		//TODO: Think about Threading!
 		Thread t = new Thread(){
 			public void run(){
-				UserAddModuleAction a = new UserAddModuleAction(controller.getActionManager(),plugin);
+				UserAddModuleAction a = new UserAddModuleAction(controller,plugin);
 				controller.executeAction(a);
 				
 			}

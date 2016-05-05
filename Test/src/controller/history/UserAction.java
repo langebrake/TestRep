@@ -7,9 +7,9 @@ import controller.interactivepane.InteractiveController;
 public abstract class UserAction implements Serializable {
 	protected UserActionManager manager;
 	protected InteractiveController controller;
-	public UserAction(UserActionManager m){
-		this.manager = m;
-		this.controller = m.getController();
+	public UserAction(InteractiveController controller){
+		this.controller = controller;
+		this.manager = controller.getActionManager();
 	}
 	public abstract void undo();
 

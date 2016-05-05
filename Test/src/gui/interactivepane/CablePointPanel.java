@@ -13,6 +13,7 @@ import java.awt.event.MouseWheelListener;
 import java.util.Arrays;
 import java.util.LinkedList;
 
+import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
@@ -34,7 +35,7 @@ public class CablePointPanel extends JPanel implements CablePointHost, MouseList
 		this.addMouseListener(this);
 		this.setMinimumSize(new Dimension(1,1));
 		this.setPreferredSize(new Dimension(50,50));
-		this.setBorder(new LineBorder(new Color(0,0,0,0)));
+		this.setBorder(BorderFactory.createEmptyBorder(1, 1, 1, 1));
 	}
 	public void updatePoint(){
 		if(this.isShowing()){
@@ -154,7 +155,7 @@ public class CablePointPanel extends JPanel implements CablePointHost, MouseList
 
 	@Override
 	public void mouseExited(MouseEvent arg0) {
-		this.setBorder(new LineBorder(new Color(0,0,0,0)));
+		this.setBorder(BorderFactory.createEmptyBorder(1, 1, 1, 1));
 		modifyEvent(arg0);
 		this.getParent().dispatchEvent(arg0);
 		

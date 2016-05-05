@@ -7,6 +7,7 @@ import gui.interactivepane.CablePoint;
 import gui.interactivepane.InteractiveCable;
 import controller.history.UserAction;
 import controller.history.UserActionManager;
+import controller.interactivepane.InteractiveController;
 
 public class UserAddConnectionsAction extends UserAction {
 	
@@ -16,8 +17,8 @@ public class UserAddConnectionsAction extends UserAction {
 	 * @param UserActionManager m
 	 * @param Calbe Map cables
 	 */
-	public UserAddConnectionsAction(UserActionManager m, HashMap<InteractiveCable,InteractiveCable[]> cables) {
-		super(m);
+	public UserAddConnectionsAction(InteractiveController sourceController, HashMap<InteractiveCable,InteractiveCable[]> cables) {
+		super(sourceController);
 		this.cables = cables;
 	}
 
