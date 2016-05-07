@@ -5,8 +5,14 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 
+import gui.interactivepane.CablePoint;
+import gui.interactivepane.CablePointHost;
+import gui.interactivepane.CablePointType;
+import gui.interactivepane.InteractiveCable;
 import gui.interactivepane.InteractiveComponent;
 import gui.interactivepane.InteractiveModule;
+import gui.interactivepane.InteractivePane;
+import gui.interactivepane.Vector;
 
 import javax.sound.midi.MidiUnavailableException;
 import javax.swing.JComponent;
@@ -20,7 +26,13 @@ import model.graph.Module;
 import plugin.Plugin;
 import pluginhost.PluginHost;
 import pluginhost.events.HostEvent;
+import pluginhost.events.NewInputEvent;
+import pluginhost.events.NewOutputEvent;
+import pluginhost.exceptions.PluginInputNotFoundException;
 import pluginhost.exceptions.PluginMaxOutputsExceededException;
+import pluginhost.exceptions.PluginMinInputsExceededException;
+import pluginhost.exceptions.PluginMinOutputsExceededException;
+import pluginhost.exceptions.PluginOutputNotFoundException;
 
 public class Grouping extends Plugin {
 	private static final int MAXINPUTS = -1;
@@ -33,6 +45,7 @@ public class Grouping extends Plugin {
 	private HashMap<MidiIO,MidiIO> ioMap;
 	private InteractiveController controller;
 	private InteractiveModule groupInput,groupOutput;
+	private boolean block;
 	
 	public static Grouping getInstance(PluginHost host){
 		return new Grouping(host);
@@ -95,9 +108,27 @@ public class Grouping extends Plugin {
 		return MINOUTPUTS;
 	}
 
+	
 	@Override
 	public void notify(HostEvent e) {
-		// TODO Auto-generated method stub
+		if(!block){
+			if(e instanceof NewInputEvent){
+				((GroupInput)groupInput.getModule().getPlugin()).block = true;
+				MidiIO externalInput = ((NewInputEvent) e).getNewInput();
+				MidiIO internalOutput = this.groupInput.getModule().getPlugin().getPluginHost().newOutput();
+				//TODO: use listener to make persistence efficient and safe
+				externalInput.setOutput(internalOutput);
+				internalOutput.setInput(externalInput);
+				((GroupInput)groupInput.getModule().getPlugin()).block = false;
+			} else if (e instanceof NewOutputEvent){
+				((GroupOutput)groupOutput.getModule().getPlugin()).block = true;
+				MidiIO externalOutput = ((NewOutputEvent) e).getNewOutput();
+				MidiIO internalInput = this.groupOutput.getModule().getPlugin().getPluginHost().newInput();
+				internalInput.setOutput(externalOutput);
+				externalOutput.setInput(internalInput);
+				((GroupOutput)groupOutput.getModule().getPlugin()).block = false;
+			}
+		}
 
 	}
 
@@ -108,9 +139,9 @@ public class Grouping extends Plugin {
 		
 		try {
 			Module m = new Module();
-			Plugin p = new GroupInput(m);
+			Plugin p = new GroupInput(m,this);
 			m.setPlugin(p);
-			groupInput = new InteractiveModule(controller.getLastMouseGridLocation(), m, controller);
+			groupInput = new InteractiveModule(new Vector(0,0), m, controller);
 		} catch (SecurityException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -124,9 +155,9 @@ public class Grouping extends Plugin {
 		
 		try {
 			Module m = new Module();
-			Plugin p = new GroupOutput(m);
+			Plugin p = new GroupOutput(m,this);
 			m.setPlugin(p);
-			groupOutput = new InteractiveModule(controller.getLastMouseGridLocation(), m, controller);
+			groupOutput = new InteractiveModule(new Vector(0,500), m, controller);
 		} catch (SecurityException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -144,38 +175,205 @@ public class Grouping extends Plugin {
 		
 	}
 	
-	public void group(InteractiveController info, LinkedList<InteractiveComponent> groupThis){
+	public void group(InteractiveModule groupModule, LinkedList<InteractiveComponent> groupThis){
 
-		this.controller.setUserActionManager(info.getActionManager());
+		this.controller.setUserActionManager(groupModule.getController().getActionManager());
+		InteractivePane oldPane = groupModule.getController().getPane();
+		InteractivePane newPane = this.controller.getPane();
+		Vector resetTranslation = groupModule.getOriginLocation().scaleVector(-1);
+		oldPane.clearSelection();
+		int inputCounter = 0, outputCounter = 0;
 		for(InteractiveComponent c:groupThis){
 			if(c instanceof Groupable){
 				c.setController(this.controller);
-				info.getPane().clearSelection();
-				info.getPane().remove(c);
-				this.controller.getPane().add(c);
+				c.translateOriginLocation(resetTranslation);
+				if(c instanceof CablePointHost){
+					for(CablePoint p:((CablePointHost) c).getCablePoints()){
+						if(p.isConnected()){
+							InteractiveCable cable = p.getCable();
+							if(cable.getController() != this.controller){
+								oldPane.remove(cable);
+								cable.setController(controller);
+								CablePoint otherEnd = (cable.getSource() == p) ? cable.getDestination():cable.getSource();
+								if(!groupThis.contains(otherEnd.getHost())){
+									//TODO: manage external Inputs
+									if(otherEnd.getType() == CablePointType.INPUT){
+										//external output
+										//TODO: Error Management, if null
+										CablePoint newExternalEndpoint = groupModule.getCablePoint(CablePointType.OUTPUT, outputCounter++);
+										if(newExternalEndpoint == null){
+											this.getPluginHost().newOutput();
+											//generating new Cable on original Pane, connect with groupmodule output
+											newExternalEndpoint = groupModule.getCablePoint(CablePointType.OUTPUT, groupModule.getCablePoints(CablePointType.OUTPUT).size() - 1);
+										}
+										InteractiveCable newExternalCable = new InteractiveCable(newExternalEndpoint,otherEnd,groupModule.getController());
+										oldPane.add(newExternalCable);
+										newExternalEndpoint.setCable(newExternalCable);
+										otherEnd.setCable(newExternalCable);
+										
+										//internal Cable gets new endpoint
+										cable.setSource(p);
+										CablePoint newInternalEndpoint = this.groupOutput.getCablePoint(CablePointType.INPUT, outputCounter-1);
+										cable.setDestination(newInternalEndpoint);
+										p.setCable(cable);
+										newInternalEndpoint.setCable(cable);
+										
+										
+									} else if(otherEnd.getType() == CablePointType.OUTPUT){
+										//external input
+										//TODO: Error Management, if null
+										
+										CablePoint newExternalEndpoint = groupModule.getCablePoint(CablePointType.INPUT, inputCounter++);
+										if(newExternalEndpoint == null){
+											this.getPluginHost().newInput();
+											//generating new Cable on original Pane, connect with groupmodule output
+											newExternalEndpoint = groupModule.getCablePoint(CablePointType.INPUT, groupModule.getCablePoints(CablePointType.INPUT).size() - 1);
+										}
+										InteractiveCable newExternalCable = new InteractiveCable(newExternalEndpoint,otherEnd,groupModule.getController());
+										oldPane.add(newExternalCable);
+										newExternalEndpoint.setCable(newExternalCable);
+										otherEnd.setCable(newExternalCable);
+										
+										//internal Cable gets new endpoint
+										cable.setSource(p);
+										CablePoint newInternalEndpoint = this.groupInput.getCablePoint(CablePointType.OUTPUT, inputCounter-1);
+										cable.setDestination(newInternalEndpoint);
+										p.setCable(cable);
+										newInternalEndpoint.setCable(cable);
+										
+									}
+								}
+								newPane.add(cable);
+							}
+							
+							
+						}
+						
+					}
+					
+					//handle external Connections
+					
+				}
+				oldPane.remove(c);
+				if(!newPane.isAncestorOf(c))
+					newPane.add(c);
 			}
 		}
-		this.controller.getPane().updateView();
+		newPane.updateView();
 		//TODO: mind the translation: the modules in the new pane need to be translated relative to their old position! best: 
 		// where left-click for grouping was detected is the new (0|0)
 	}
 	
-	public void ungroup(InteractiveController info, LinkedList<InteractiveComponent> groupThis){
-		this.controller.getPane().clearSelection();
-		for(Component c:this.controller.getPane().getComponents()){
-			if(groupThis != null){
-				if(c instanceof InteractiveComponent && c instanceof Groupable && groupThis.contains(c)){
-					
-				((InteractiveComponent) c).setController(info);
-				this.controller.getPane().remove(c);
-				if(!info.getPane().isAncestorOf(c))
-					info.getPane().add(c);
+	public void ungroup(InteractiveModule groupModule){
+		
+		InteractivePane oldPane = this.controller.getPane();
+		InteractivePane newPane = groupModule.getController().getPane();
+		oldPane.clearSelection();
+		Vector restoreTranslation = groupModule.getOriginLocation();
+		for(Component comp:this.controller.getPane().getComponents()){
+			if(comp instanceof InteractiveComponent && comp instanceof Groupable && ungroupable((InteractiveComponent) comp)){
+				InteractiveComponent c = (InteractiveComponent) comp;
+				c.setController(groupModule.getController());
+				c.translateOriginLocation(restoreTranslation);
+				
+				if(c instanceof CablePointHost){
+					for(CablePoint p:((CablePointHost) c).getCablePoints()){
+						if(p.isConnected()){
+							InteractiveCable cable = p.getCable();
+							if(cable.getController() != groupModule.getController()){
+								oldPane.remove(cable);
+								cable.setController(groupModule.getController());
+								CablePoint otherEnd = (cable.getSource() == p) ? cable.getDestination():cable.getSource();
+								
+								//TODO: better codemanagement possible, these cases are very similar
+								if(otherEnd.getHost() == this.groupOutput){
+										//external output
+										
+										CablePoint externalOutput = groupModule.getCablePoint(CablePointType.OUTPUT, otherEnd.getIndex());
+										if(externalOutput.isConnected()){
+											// p must be connected to externalOutputs other End
+											System.out.println("ExternalOutCable");
+											InteractiveCable externalCable = externalOutput.getCable();
+											newPane.remove(externalCable);
+											CablePoint externalEndpoint = externalCable.getSource() == externalOutput ? externalCable.getDestination():externalCable.getSource();
+											cable.setSource(p);
+											cable.setDestination(externalEndpoint);
+											p.setCable(cable);
+											externalEndpoint.setCable(cable);
+											System.out.println(externalEndpoint.getXOnScreen()+ " " + cable.getDestination().getXOnScreen());
+											newPane.add(cable);
+										} else {
+											// remove unused connection
+											p.disconnect();
+											otherEnd.disconnect();
+										}
+										
+									} else if(otherEnd.getHost() == this.groupInput){
+										//external input
+										CablePoint externalInput = groupModule.getCablePoint(CablePointType.INPUT, otherEnd.getIndex());
+										if(externalInput.isConnected()){
+											// p must be connected to externalOutputs other End
+											InteractiveCable externalCable = externalInput.getCable();
+											newPane.remove(externalCable);
+											CablePoint externalEndpoint = externalCable.getSource() == externalInput ? externalCable.getDestination():externalCable.getSource();
+											cable.setSource(p);
+											cable.setDestination(externalEndpoint);
+											p.setCable(cable);
+											externalEndpoint.setCable(cable);
+											System.out.println(externalEndpoint.getXOnScreen()+ " " + cable.getDestination().getXOnScreen());
+											newPane.add(cable);
+										} else {
+											// remove unused connection
+											p.disconnect();
+											otherEnd.disconnect();
+										}
+									} else {
+										newPane.add(cable);
+									}
+								
+								
+							}
+							
+							
+						}
+						
+					}
 				}
-			}
+				
+				
+				oldPane.remove(c);
+				if(!newPane.isAncestorOf(c))
+					newPane.add(c);
+				}
+			
 			
 		}
 		
-		info.getPane().updateView();
+		for(CablePoint p: groupModule.getCablePoints()){
+			if(p.isConnected()){
+				InteractiveCable tmp = p.getCable();
+				tmp.getSource().disconnect();
+				tmp.getDestination().disconnect();
+				newPane.remove(tmp);
+			}
+		}
+		
+		
+		groupModule.getController().getPane().updateView();
+	}
+	
+	public LinkedList<InteractiveComponent> getContent(){
+		LinkedList<InteractiveComponent> content = new LinkedList<InteractiveComponent>();
+		for(Component c:this.controller.getPane().getComponents()){
+			if(c instanceof InteractiveComponent && this.ungroupable((InteractiveComponent) c)){
+				content.add((InteractiveComponent) c);
+			}
+		}
+		return content;
+	}
+	
+	private boolean ungroupable(InteractiveComponent c){
+		return (c!=this.groupInput && c!=this.groupOutput);
 	}
 	
 	public InteractiveController getController(){
@@ -211,176 +409,209 @@ public class Grouping extends Plugin {
 	
 	
 	private class GroupInput extends Plugin {
-		
-		public GroupInput(PluginHost host) {
+		private final int MAXINPUTS = 0;
+		private final int MAXOUTPUTS = -1;
+		private final int MININPUTS = 0;
+		private final int MINOUTPUTS = 0;
+		private final String NAME = "Group Input";
+		private String msg = "groupinput";
+		private DefaultView view;
+		private boolean block;
+		private Grouping grouping;
+	
+		public GroupInput(PluginHost host, Grouping grouping) {
 			super(host);
-			// TODO Auto-generated constructor stub
+			this.grouping = grouping;
 		}
 		
 
 		@Override
 		public String getPluginName() {
-			// TODO Auto-generated method stub
-			return null;
+		
+			return NAME;
 		}
 
 		@Override
 		public JComponent getMinimizedView() {
-			// TODO Auto-generated method stub
-			return null;
+			return view;
 		}
 
 		@Override
 		public Component getFullView() {
-			// TODO Auto-generated method stub
-			return null;
+			
+			return view;
 		}
 
 		@Override
 		public String getDisplayName() {
-			// TODO Auto-generated method stub
-			return null;
+		
+			return NAME;
 		}
 
 		@Override
 		public void setDisplayName() {
-			// TODO Auto-generated method stub
+			
 			
 		}
 
 		@Override
 		public int getMaxInputs() {
-			// TODO Auto-generated method stub
-			return 0;
+			return MAXINPUTS;
 		}
 
 		@Override
 		public int getMaxOutputs() {
-			// TODO Auto-generated method stub
-			return 0;
+			return MAXOUTPUTS;
 		}
 
 		@Override
 		public int getMinInputs() {
 			// TODO Auto-generated method stub
-			return 0;
+			return MININPUTS;
 		}
 
 		@Override
 		public int getMinOutputs() {
 			// TODO Auto-generated method stub
-			return 0;
+			return MINOUTPUTS;
 		}
 
 		@Override
 		public void notify(HostEvent e) {
-			// TODO Auto-generated method stub
+			if(!block){
+				if(e instanceof NewInputEvent){
+					//TODO: unexpected Error
+				} else if (e instanceof NewOutputEvent){
+					grouping.block = true;
+					MidiIO internalOutput = ((NewOutputEvent) e).getNewOutput();
+					MidiIO externalInput = grouping.getPluginHost().newInput();
+					internalOutput.setInput(externalInput);
+					externalInput.setOutput(internalOutput);
+					grouping.block=false;
+				}
+			}
 			
 		}
 
 		@Override
 		public void load() {
-			// TODO Auto-generated method stub
+			this.view = new DefaultView(this.msg);
 			
 		}
 
 		@Override
 		public boolean close() {
-			// TODO Auto-generated method stub
-			return false;
+			return true;
 		}
 
 		@Override
 		public boolean reOpen() {
-			// TODO Auto-generated method stub
-			return false;
+			return true;
 		}
 		
 	}
 	
-	private class GroupOutput extends Plugin{
-
-		public GroupOutput(PluginHost host) {
+	private class GroupOutput extends Plugin {
+		private final int MAXINPUTS = -1;
+		private final int MAXOUTPUTS = 0;
+		private final int MININPUTS = 0;
+		private final int MINOUTPUTS = 0;
+		private final String NAME = "Group Output";
+		private String msg = "groupoutput";
+		private DefaultView view;
+		private boolean block;
+		private Grouping grouping;
+		
+		public GroupOutput(PluginHost host, Grouping grouping) {
 			super(host);
-			// TODO Auto-generated constructor stub
+			this.grouping = grouping;
 		}
+		
 
 		@Override
 		public String getPluginName() {
-			// TODO Auto-generated method stub
-			return null;
+		
+			return NAME;
 		}
 
 		@Override
 		public JComponent getMinimizedView() {
-			// TODO Auto-generated method stub
-			return null;
+			return view;
 		}
 
 		@Override
 		public Component getFullView() {
-			// TODO Auto-generated method stub
-			return null;
+			
+			return view;
 		}
 
 		@Override
 		public String getDisplayName() {
-			// TODO Auto-generated method stub
-			return null;
+		
+			return NAME;
 		}
 
 		@Override
 		public void setDisplayName() {
-			// TODO Auto-generated method stub
+			
 			
 		}
 
 		@Override
 		public int getMaxInputs() {
-			// TODO Auto-generated method stub
-			return 0;
+			return MAXINPUTS;
 		}
 
 		@Override
 		public int getMaxOutputs() {
-			// TODO Auto-generated method stub
-			return 0;
+			return MAXOUTPUTS;
 		}
 
 		@Override
 		public int getMinInputs() {
 			// TODO Auto-generated method stub
-			return 0;
+			return MININPUTS;
 		}
 
 		@Override
 		public int getMinOutputs() {
 			// TODO Auto-generated method stub
-			return 0;
+			return MINOUTPUTS;
 		}
 
 		@Override
 		public void notify(HostEvent e) {
-			// TODO Auto-generated method stub
+			if(!block){
+				if(e instanceof NewInputEvent){
+					grouping.block = true;
+					MidiIO internalInput = ((NewInputEvent) e).getNewInput();
+					MidiIO externalOutput = grouping.getPluginHost().newOutput();
+					internalInput.setOutput(externalOutput);
+					externalOutput.setInput(internalInput);
+					grouping.block=false;
+				} else if (e instanceof NewOutputEvent){
+					//TODO: unexpected Error
+				}
+			}
 			
 		}
 
 		@Override
 		public void load() {
-			// TODO Auto-generated method stub
+			this.view = new DefaultView(this.msg);
 			
 		}
 
 		@Override
 		public boolean close() {
-			// TODO Auto-generated method stub
-			return false;
+	
+			return true;
 		}
 
 		@Override
 		public boolean reOpen() {
-			// TODO Auto-generated method stub
-			return false;
+			
+			return true;
 		}
 		
 	}

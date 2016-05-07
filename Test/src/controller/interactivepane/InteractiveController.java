@@ -1,5 +1,6 @@
 package controller.interactivepane;
 
+import gui.interactivepane.CablePointHost;
 import gui.interactivepane.CablePointPanel;
 import gui.interactivepane.CablePointSimple;
 import gui.interactivepane.CablePointType;
@@ -61,6 +62,7 @@ public class InteractiveController implements MouseInputListener,WindowStateList
 	private transient CableCreationListener cableCreationListener;
 	private transient boolean componentAndViewDrag;
 	private transient boolean cableAddProcess;
+	private CablePointHost cableAddProcessSource;
 	
 	public InteractiveController(){
 		this(new InteractivePane(), new MidiGraph(), new UserActionManager());
@@ -339,6 +341,21 @@ public class InteractiveController implements MouseInputListener,WindowStateList
 		this.componentAndViewDrag = false;
 		this.actionManager = new UserActionManager();
 		this.actionManager.setController(this);
+	}
+	public void setCableAddProcessSource(CablePointHost source) {
+		this.cableAddProcessSource = source;
+		
+	}
+	
+	public CablePointHost getCableAddProcessSource(){
+		return this.cableAddProcessSource;
+	}
+	public boolean close() {
+		return true;
+	}
+	public boolean reOpen() {
+		return true;
+		
 	}
 
 	

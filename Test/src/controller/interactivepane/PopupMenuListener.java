@@ -17,16 +17,16 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JPopupMenu.Separator;
 
+import stdlib.grouping.Grouping;
 import model.pluginmanager.Loadable;
 import model.pluginmanager.PluginHierarchyElement;
 import model.pluginmanager.PluginManager;
 import model.pluginmanager.Subgroup;
 import controller.pluginmanager.PluginAddAction;
-import controller.shortcut.AddGroupingInputAction;
-import controller.shortcut.AddGroupingOutputAction;
 import controller.shortcut.DeleteAction;
 import controller.shortcut.GroupingAction;
 import controller.shortcut.RenameAction;
+import controller.shortcut.UngroupAction;
 
 public class PopupMenuListener extends MouseAdapter implements Serializable {
 	private InteractiveController controller;
@@ -66,7 +66,7 @@ public class PopupMenuListener extends MouseAdapter implements Serializable {
 			Separator s;
 			s = new JPopupMenu.Separator();
 			popup.add(s);
-			addGroupingMenu(popup);
+			addGroupingMenu(popup,e);
 			popup.show(e.getComponent(), e.getX(), e.getY());
 		}
 	}
@@ -104,17 +104,18 @@ public class PopupMenuListener extends MouseAdapter implements Serializable {
 		}
 	}
 	
-	private void addGroupingMenu(JPopupMenu p){
+	private void addGroupingMenu(JPopupMenu p,MouseEvent e){
 		JMenuItem item = new JMenuItem(new GroupingAction(this.controller));
 		item.setEnabled(controller.getPane().getComponentSelection().size()!=0);
 		p.add(item);
-		item = new JMenuItem();
-		item.setAction(new AddGroupingInputAction(controller.getGrouping()));
-		item.setEnabled(controller.getGrouping() != null);
-		p.add(item);
-		item = new JMenuItem();
-		item.setAction(new AddGroupingOutputAction(controller.getGrouping()));
-		item.setEnabled(controller.getGrouping() != null);
+		if(e.getSource() instanceof InteractiveModule &&((InteractiveModule) e.getSource()).getModule().getPlugin() instanceof Grouping){
+			item = new JMenuItem(new UngroupAction(this.controller,(InteractiveModule) e.getSource()));
+			item.setEnabled(true);
+		} else {
+			item = new JMenuItem(new UngroupAction(this.controller,null));
+			item.setEnabled(false);
+		}
+		
 		p.add(item);
 		
 		

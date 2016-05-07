@@ -57,7 +57,6 @@ public class UserAddConnectionsAction extends UserAction {
 		for(InteractiveCable c:cables.keySet()){
 			InteractiveCable[] overrides = cables.get(c);
 			if(overrides != null){
-				//TODO: disconnect old cable, mind the module connection!
 				for(InteractiveCable override:overrides){
 					controller.getPane().remove(override);
 					for(CablePoint p:override.getCablePoints()){
@@ -66,7 +65,6 @@ public class UserAddConnectionsAction extends UserAction {
 					}
 				}
 			}
-			//TODO: connect new cable and cableendpoints, mind the module connection!
 			for(CablePoint p:c.getCablePoints()){
 				p.setCable(c);
 			}

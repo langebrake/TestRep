@@ -58,6 +58,7 @@ public class CableCreationListener extends MouseAdapter implements Serializable{
 				controller.getPane().add(tmpCable);
 				controller.getPane().add(tmpPoint);
 				controller.setCableAddProcess(true);
+				controller.setCableAddProcessSource((CablePointHost)source);
 			}
 		}
 			
@@ -140,6 +141,7 @@ public class CableCreationListener extends MouseAdapter implements Serializable{
 			this.oldSourceConnection = null;
 			this.newConnections = new HashMap<InteractiveCable, InteractiveCable[]>();
 			controller.setCableAddProcess(false);
+			controller.setCableAddProcessSource(null);
 		} 
 	}
 	

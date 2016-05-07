@@ -356,8 +356,8 @@ public class InteractivePane extends JLayeredPane {
 	public void paint(Graphics g){
 		super.paint(g);
 		if(g instanceof Graphics2D){
-			RenderingHints rh = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 			Graphics2D g2d = (Graphics2D) g;
+			RenderingHints rh = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 			g2d.setRenderingHints(rh);
 			for(InteractiveShape c: this.shapes){
 				c.updateView(g2d);

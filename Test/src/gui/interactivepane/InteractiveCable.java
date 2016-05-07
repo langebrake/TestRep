@@ -35,7 +35,11 @@ public class InteractiveCable implements InteractiveShape{
 	protected InteractiveController controller;
 	
 	public InteractiveCable(InteractiveController parent){
-		this(null,null,1,Color.BLACK,parent);
+		this(null,null,parent);
+	}
+	
+	public InteractiveCable(CablePoint source, CablePoint dest, InteractiveController parent){
+		this(source,dest,1,Color.BLACK,parent);
 	}
 	
 	public InteractiveCable(CablePoint source, CablePoint dest,float width,Color color, InteractiveController parent){
@@ -156,6 +160,7 @@ public class InteractiveCable implements InteractiveShape{
 		points.add(dest);
 		return points;
 	}
+	
 	public void updateView(Graphics2D g2d){
 		int paneX =  (int) this.controller.getPane().getLocationOnScreen().getX();
 		int paneY =  (int) this.controller.getPane().getLocationOnScreen().getY();
@@ -205,7 +210,7 @@ public class InteractiveCable implements InteractiveShape{
 	
 	@Override
 	public void translateOriginLocation(Vector translationVectorGrid) {
-		// TODO Auto-generated method stub
+		
 		
 	}
 

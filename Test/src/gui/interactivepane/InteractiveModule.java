@@ -83,10 +83,10 @@ public class InteractiveModule extends InteractiveComponent implements CablePoin
 		inputPopupConnector = new CablePointSimple(CablePointType.INPUT);
 		outputPopupConnector = new CablePointSimple(CablePointType.OUTPUT);
 		this.inputPopout = new Popout(this.controller,this,
-				this.getOriginLocation().addVector(new Vector(-100,0)),
+				this.getOriginLocation().addVector(new Vector(-60,0)),
 				CablePointType.INPUT);
 		this.outputPopout = new Popout(this.controller,this,
-				this.getOriginLocation().addVector(new Vector(100+this.getOriginDimension().width,0)),
+				this.getOriginLocation().addVector(new Vector(this.getOriginDimension().width+10,0)),
 				CablePointType.OUTPUT);
 		this.inputMap = new ConcurrentSkipListMap<CablePointSimple,MidiIOThrough>();
 		this.outputMap = new ConcurrentSkipListMap<CablePointSimple,MidiIOThrough>();
@@ -110,6 +110,18 @@ public class InteractiveModule extends InteractiveComponent implements CablePoin
 	public void updateIO(){
 		updateInputs();
 		updateOutputs();
+	}
+	
+	public void resetIO(){
+		this.inputMap.clear();
+		this.outputMap.clear();
+		this.inputPopout = new Popout(this.controller,this,
+				this.getOriginLocation().addVector(new Vector(-60,0)),
+				CablePointType.INPUT);
+		this.outputPopout = new Popout(this.controller,this,
+				this.getOriginLocation().addVector(new Vector(this.getOriginDimension().width+10,0)),
+				CablePointType.OUTPUT);
+		updateIO();
 	}
 	
 	public void setController(InteractiveController c){
@@ -186,15 +198,17 @@ public class InteractiveModule extends InteractiveComponent implements CablePoin
 				this.t = new TimerTask() {
 					@Override
 					public void run() {
-						if(!inputPopoutActive && !closed){
-							inputPopout(true,inputPopoutPermanent);
-						}
-						if(!outputPopoutActive && !closed){
-							outputPopout(true,outputPopoutPermanent);
+						if(!controller.getDragged()){
+							if(!inputPopoutActive && !closed){
+								inputPopout(true,inputPopoutPermanent);
+							}
+							if(!outputPopoutActive && !closed){
+								outputPopout(true,outputPopoutPermanent);
+							}
 						}
 					}
 				};
-				t.schedule( this.t, 500);
+				t.schedule( this.t, 1000);
 			
 		}
 		else {
@@ -204,15 +218,29 @@ public class InteractiveModule extends InteractiveComponent implements CablePoin
 			this.t = new TimerTask() {
 				@Override
 				public void run() {
-					if(inputPopoutActive && !closed ){
+					while(outputPopout.navigating() || inputPopout.navigating() || controller.getCableAddProcess()){
+						close();
+						try {
+							Thread.sleep(1000);
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+					close();
+				}
+				
+				private void close(){
+					if(inputPopoutActive && !closed &&!inputPopout.navigating() && !inputPopout.isAncestorOf((Component) controller.getCableAddProcessSource())){
 						inputPopout(inputPopoutPermanent,inputPopoutPermanent);
 					}
-					if(outputPopoutActive && !closed ){
+					if(outputPopoutActive && !closed && !outputPopout.navigating() && !outputPopout.isAncestorOf((Component) controller.getCableAddProcessSource())){
 						outputPopout(outputPopoutPermanent,outputPopoutPermanent);
+						
 					}
 				}
 			};
-			t.schedule( this.t, 500);
+			t.schedule( this.t, 1000);
 			if(this.isSelected()){
 				this.setBorder(BorderFactory.createLineBorder(Color.red));
 			} else {
@@ -220,6 +248,7 @@ public class InteractiveModule extends InteractiveComponent implements CablePoin
 			}
 		}	
 	}
+	
 	
 	@Override
 	public void setSelected(boolean set){
@@ -399,8 +428,16 @@ public class InteractiveModule extends InteractiveComponent implements CablePoin
 
 	@Override
 	public CablePoint getCablePoint(CablePointType type, int index) {
-		// TODO Auto-generated method stub
-		return null;
+		LinkedList<CablePointSimple> tmp = new LinkedList<CablePointSimple>();
+		if(type == CablePointType.INPUT){
+			tmp.addAll(this.inputMap.keySet());
+		} else {
+			tmp.addAll(this.outputMap.keySet());
+		}
+		if(index >= tmp.size()){
+			return null;
+		}
+		return tmp.get(index);
 	}
 
 	@Override
@@ -517,6 +554,7 @@ public class InteractiveModule extends InteractiveComponent implements CablePoin
 			this.type = type;
 			this.connector = new CablePointSimple(type);
 		}
+		
 		
 		public void updateIO(){
 			this.removeAll();
@@ -701,7 +739,7 @@ public class InteractiveModule extends InteractiveComponent implements CablePoin
 			} 
 			CablePointHost p = tmp.getHost();
 			if(p instanceof InteractiveModule){
-				MidiIOThrough mit = ((InteractiveModule) p).getMidiIO(tmp);;
+				MidiIOThrough mit = ((InteractiveModule) p).getMidiIO(tmp);
 				if(point.getType() == CablePointType.INPUT){
 					this.inputMap.get(point).setInput(mit);
 				} else {

@@ -101,8 +101,13 @@ public abstract class InteractiveComponent extends JPanel implements Interactive
 		this.setSize((int)(this.originDimension.width*scaleFactor), (int) (this.originDimension.height*scaleFactor));
 	}
 	
+	private boolean navigating;
+	public boolean navigating(){
+		return this.navigating;
+	}
 	public void setHovered(boolean set){
 		this.hovered = set;
+		this.navigating = set;
 		this.repaint();
 	}
 	
