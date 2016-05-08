@@ -28,4 +28,11 @@ public class Project implements Serializable{
 	public Container getContentPane(){
 		return this.contentPane;
 	}
+
+	public void close() {
+		for(InteractiveController c:interactivePanes){
+			c.close();
+		}
+		
+	}
 }

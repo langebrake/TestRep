@@ -23,6 +23,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import model.pluginmanager.PluginManager;
 import controller.interactivepane.InteractiveController;
+import controller.maincontrol.NewProject;
 import controller.maincontrol.OpenProject;
 import controller.maincontrol.Project;
 import controller.maincontrol.SaveProject;
@@ -34,13 +35,14 @@ public class Controller implements WindowListener {
 	private Project project;
 	private JFileChooser fileChooser;
 	private File currentProject;
+	private final String programName = "Midi Manipulator v0.1a";
 	
 	public Controller(){
-		this.project = new Project();
 		this.fileChooser = new JFileChooser();
-		FileNameExtensionFilter fne = new FileNameExtensionFilter("Midi Manipulation Project" ,".mmp");
+		FileNameExtensionFilter fne = new FileNameExtensionFilter("Midi Manipulation Project" ,"mmp");
 		this.fileChooser.setFileFilter(fne);
 		this.createGui();
+		this.loadProject(new Project());
 		this.initClasses();
 	}
 	public Project getProject(){
@@ -53,8 +55,8 @@ public class Controller implements WindowListener {
 		mainFrame.setJMenuBar(mainBar);
 		mainFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		mainFrame.addWindowListener(this);
-		mainFrame.setContentPane(this.project.getContentPane());
 		mainFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+		mainFrame.setSize(500,500);
 	}
 	
 	private JMenuBar createMenuBar(){
@@ -65,10 +67,10 @@ public class Controller implements WindowListener {
 	
 	private JMenu createFileMenu(){
 		JMenu m = new JMenu("File");
-		JMenuItem open = new JMenuItem(new OpenProject(this));
-		JMenuItem save = new JMenuItem(new SaveProject(this));
-		m.add(open);
-		m.add(save);
+		m.add(new JMenuItem(new NewProject(this)));
+		m.add(new JMenuItem(new OpenProject(this)));
+		m.add(new JMenuItem(new SaveProject(this)));
+		
 		return m;
 	}
 	
@@ -99,14 +101,33 @@ public class Controller implements WindowListener {
 	public void loadProject(Project project){
 		this.project = project;
 		this.mainFrame.setContentPane(project.getContentPane());
+		String title = (this.currentProject == null) ? "Untitled" : this.currentProject.getName();
+		this.mainFrame.setTitle(this.programName + " - "+ title);
+		this.mainFrame.revalidate();
+		System.gc();
+	}
+	
+	public void newProject(){
+		this.currentProject = null;
+		closeProject();
+		this.loadProject(new Project());
+		
+	}
+	
+	public void closeProject(){
+		if(this.project != null) {
+			this.project.close();
+		}
 	}
 	
 	public void loadProject(File file){
+		closeProject();
 		FileInputStream fos;
 		try {
 			fos = new FileInputStream(file);
 			ObjectInputStream oos = new ObjectInputStream(fos);
 			this.project = (Project) oos.readObject();
+			this.currentProject = file;
 			this.loadProject(project);
 		} catch (FileNotFoundException e1) {
 			// TODO Auto-generated catch block

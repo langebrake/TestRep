@@ -25,6 +25,7 @@ import javax.swing.border.LineBorder;
 
 import plugin.events.NewInputRequestEvent;
 import plugin.events.NewOutputRequestEvent;
+import plugin.events.PluginError;
 import plugin.events.PluginEvent;
 import pluginhost.PluginStateChangedListener;
 import pluginhost.events.HostEvent;
@@ -143,6 +144,7 @@ public class InteractiveModule extends InteractiveComponent implements CablePoin
 			this.inputPopout(this.inputPopoutPermanent,this.inputPopoutPermanent);
 			this.outputPopout(this.outputPopoutPermanent,this.outputPopoutPermanent);
 		}
+		
 	}
 	
 	private void updateInputs(){
@@ -772,6 +774,8 @@ public class InteractiveModule extends InteractiveComponent implements CablePoin
 		if(e instanceof NewInputRequestEvent || e instanceof NewOutputRequestEvent){
 			this.updateIO();
 		}
-		
+		if(e.getClass() == PluginError.class){
+			//TODO
+		}
 	}
 }

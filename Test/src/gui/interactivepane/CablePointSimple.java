@@ -43,7 +43,7 @@ public class CablePointSimple implements CablePoint {
 	public void setCable(InteractiveCable cable) {
 		this.cable = cable;
 		if(host!=null)
-		host.changedState(this);
+			host.changedState(this);
 	}
 	@Override
 	public boolean isConnected() {

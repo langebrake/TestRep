@@ -20,6 +20,7 @@ import engine.Engine;
 import plugin.Plugin;
 import plugin.events.NewInputRequestEvent;
 import plugin.events.NewOutputRequestEvent;
+import plugin.events.PluginError;
 import plugin.events.PluginEvent;
 import pluginhost.exceptions.*;
 import pluginhost.events.*;
@@ -693,6 +694,8 @@ public abstract class PluginHost implements Serializable{
 			((NewOutputRequestEvent)e).io = this.newOutput();
 		} else if(e.getClass() == NewInputRequestEvent.class){
 			((NewInputRequestEvent)e).io = this.newInput();
+		} else if(e.getClass() == PluginError.class){
+			
 		}
 		
 		if(this.stateChangedListeners != null)

@@ -8,11 +8,13 @@ import gui.interactivepane.InteractiveCable;
 import gui.interactivepane.InteractiveCableComponent;
 import gui.interactivepane.InteractiveComponent;
 import gui.interactivepane.InteractiveDisplay;
+import gui.interactivepane.InteractiveModule;
 import gui.interactivepane.InteractivePane;
 import gui.interactivepane.InteractiveShape;
 import gui.interactivepane.InteractiveShapeComponent;
 import gui.interactivepane.Vector;
 
+import java.awt.Component;
 import java.awt.Window;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
@@ -351,6 +353,11 @@ public class InteractiveController implements MouseInputListener,WindowStateList
 		return this.cableAddProcessSource;
 	}
 	public boolean close() {
+		for(Component c:this.pane.getComponents()){
+			if(c instanceof InteractiveModule){
+				((InteractiveComponent) c).close();
+			}
+		}
 		return true;
 	}
 	public boolean reOpen() {

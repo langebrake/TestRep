@@ -49,6 +49,7 @@ public class UserAddModuleAction extends UserAction {
 			e.printStackTrace();
 		}
 		interactiveModule = new InteractiveModule(controller.getLastMouseGridLocation(), module, controller);
+		this.firsttime = true;
 	}
 	
 	public UserAddModuleAction(InteractiveController sourceController, InteractiveModule module) {
@@ -69,12 +70,19 @@ public class UserAddModuleAction extends UserAction {
 
 	}
 
+	private boolean firsttime;
 	@Override
 	public void execute() {
 //		if(interactiveModule.reopen()){
 //			interactiveModule.getController().getPane().add(interactiveModule);
 //		}
-		interactiveModule.reopen();	
+		if(!firsttime){
+			interactiveModule.reopen();
+			System.out.println("REOPEN");
+			
+		} else {
+			firsttime = false;
+		}
 		interactiveModule.getController().getPane().add(interactiveModule);
 
 	}

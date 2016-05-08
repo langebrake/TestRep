@@ -12,6 +12,9 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelListener;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.EventListener;
 import java.util.Random;
 
@@ -47,22 +50,28 @@ public abstract class InteractiveComponent extends JPanel implements Interactive
 	}
 	
 	public void setController(InteractiveController controller){
-		this.addListeners(controller.getModuleListener(), controller.getPopupMenuListener(),controller.getCableCreationListener());
-		if(this.controller != null)
-			this.removeListeners(this.controller.getModuleListener(), this.controller.getPopupMenuListener(), this.controller.getCableCreationListener());
+		if(this.controller != null){
+			for(MouseListener l: this.getMouseListeners()){
+				this.removeListeners(l);
+			}
+		}
+//			this.removeListeners(this.controller.getModuleListener(), this.controller.getPopupMenuListener(), this.controller.getCableCreationListener());
 		this.controller = controller;
+		this.addListeners(controller.getModuleListener(), controller.getPopupMenuListener(),controller.getCableCreationListener());
 	}
 	
 	public void removeListeners(MouseListener... listeners) {
 		for(EventListener l: listeners){
+			
 			if(l instanceof MouseListener){
 				this.removeMouseListener((MouseListener) l);
-			} 
+			}
 			if (l instanceof MouseMotionListener){
 				this.removeMouseMotionListener((MouseMotionListener) l);
-			} 
+			}
 			if (l instanceof MouseWheelListener){
 				this.removeMouseWheelListener((MouseWheelListener) l);
+				System.out.println("RemovedListener: "+l);
 			}
 		}
 		
@@ -143,9 +152,24 @@ public abstract class InteractiveComponent extends JPanel implements Interactive
 			}
 		}
 	}
+	
 
 	public abstract	boolean close();
 	public abstract boolean reopen();
 
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		for(MouseListener l: this.getMouseListeners()){
+			this.removeListeners(l);
+		}
+		out.defaultWriteObject();
+		this.addListeners(this.controller.getModuleListener(), this.controller.getPopupMenuListener(), this.controller.getCableCreationListener());
+	}
 	
+	private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException {
+		in.defaultReadObject();
+		//Necessary due to bug in java: mouselisteners cannot persistently be removed
+		//TODO: further debugging
+
+
+	}
 }

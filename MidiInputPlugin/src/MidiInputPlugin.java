@@ -123,6 +123,9 @@ public class MidiInputPlugin extends Plugin implements Serializable{
 	public boolean close() {
 		if(inputdevice != null)
 			inputdevice.close();
+		if(this.inputtransmitter != null){
+			inputtransmitter.close();
+		}
 		return true;
 		
 	}

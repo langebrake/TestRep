@@ -300,6 +300,7 @@ public class Grouping extends Plugin {
 											cable.setDestination(externalEndpoint);
 											p.setCable(cable);
 											externalEndpoint.setCable(cable);
+											externalOutput.disconnect();
 											System.out.println(externalEndpoint.getXOnScreen()+ " " + cable.getDestination().getXOnScreen());
 											newPane.add(cable);
 										} else {
@@ -320,7 +321,7 @@ public class Grouping extends Plugin {
 											cable.setDestination(externalEndpoint);
 											p.setCable(cable);
 											externalEndpoint.setCable(cable);
-											System.out.println(externalEndpoint.getXOnScreen()+ " " + cable.getDestination().getXOnScreen());
+											externalInput.disconnect();
 											newPane.add(cable);
 										} else {
 											// remove unused connection

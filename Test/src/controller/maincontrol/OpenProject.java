@@ -32,6 +32,9 @@ public class OpenProject extends AbstractAction {
 		int returnVal = fc.showOpenDialog(c.getMainFrame());
 		if(returnVal == JFileChooser.APPROVE_OPTION){
 			File file = fc.getSelectedFile();
+			if(!file.getName().endsWith(".mmp")){
+				file = new File(file.getAbsolutePath()+".mmp");
+			}
 			c.loadProject(file);
 			
 			
