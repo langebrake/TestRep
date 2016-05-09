@@ -36,6 +36,7 @@ import java.io.Serializable;
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
 import javax.swing.InputMap;
+import javax.swing.JComponent;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
@@ -86,7 +87,7 @@ public class InteractiveController implements MouseInputListener,WindowStateList
 		this.pane.addMouseListener(this.cableCreationListener);
 		this.pane.addMouseMotionListener(this.cableCreationListener);
 		// TODO: Shortcut handling should be done by other class
-				InputMap inputMap = this.pane.getInputMap();
+				InputMap inputMap = this.pane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
 				ActionMap actionMap = this.pane.getActionMap();
 				
 				//undo/redo shortcuts
@@ -333,8 +334,7 @@ public class InteractiveController implements MouseInputListener,WindowStateList
 
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException{
 		in.defaultReadObject();
-//		this.actionManager = new UserActionManager();
-//		this.actionManager.setController(this);
+		//just read the MIDI Graph, populate the pane! (transient pane) TODO
 		this.moduleListener = new ModuleListener(this);
 		this.popupMenuListener = new PopupMenuListener(this);
 		this.shapeListener = new ShapeListener(this);

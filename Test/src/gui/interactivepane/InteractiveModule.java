@@ -7,6 +7,9 @@ import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Point;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
@@ -43,7 +46,7 @@ public class InteractiveModule extends InteractiveComponent implements CablePoin
 	private transient JFrame fullView;
 	private boolean fullViewShowing;
 	private JComponent contentPane;
-	InteractiveModuleHeader displayHeader;
+	private InteractiveModuleHeader displayHeader;
 	protected boolean inputPopoutActive, outputPopoutActive,
 				inputPopoutPermanent, outputPopoutPermanent,
 				closed;
@@ -58,29 +61,12 @@ public class InteractiveModule extends InteractiveComponent implements CablePoin
 		super(controller, origin);
 		this.setBorder(BorderFactory.createEmptyBorder(1,1,1,1));
 		super.setLayout(new GridBagLayout());
-		this.contentPane = module.getPlugin().getMinimizedView();
-		this.setOriginDimension(contentPane.getPreferredSize());
-		this.displayHeader = new InteractiveModuleHeader(this);
-		GridBagConstraints c = new GridBagConstraints();
-		c.fill = GridBagConstraints.BOTH;
-		c.weightx = 1;
-		c.weighty = 1;
-		c.gridx = 0;
-		c.gridy = 0;
-		displayHeader.setMinimumSize(new Dimension(0,0));
-		displayHeader.setPreferredSize(new Dimension(0,0));
-		displayHeader.setBackground(Color.CYAN);
-		this.add(displayHeader , c);
-	
-		c.gridy = 1;
-		c.weighty = 2;
-		contentPane.setMinimumSize(new Dimension(0,0));
-		contentPane.setPreferredSize(new Dimension(0,0));
-		this.add(contentPane , c);
+		
+		
 		
 		
 		this.module = module;
-		this.displayHeader.setText(this.getName());
+		this.initView();
 		inputPopupConnector = new CablePointSimple(CablePointType.INPUT);
 		outputPopupConnector = new CablePointSimple(CablePointType.OUTPUT);
 		this.inputPopout = new Popout(this.controller,this,
@@ -99,6 +85,31 @@ public class InteractiveModule extends InteractiveComponent implements CablePoin
 		this.updateIO();
 		this.updateView();
 		
+	}
+	
+	private void initView(){
+		if(module.getPlugin()!=null){
+		this.contentPane = module.getPlugin().getMinimizedView();
+		this.setOriginDimension(new Dimension(200,100));
+		this.displayHeader = new InteractiveModuleHeader(this);
+		GridBagConstraints c = new GridBagConstraints();
+		c.fill = GridBagConstraints.BOTH;
+		c.weightx = 1;
+		c.weighty = 1;
+		c.gridx = 0;
+		c.gridy = 0;
+		displayHeader.setMinimumSize(new Dimension(0,0));
+		displayHeader.setPreferredSize(new Dimension(0,0));
+		displayHeader.setBackground(Color.CYAN);
+		this.add(displayHeader , c);
+	
+		c.gridy = 1;
+		c.weighty = 2;
+		contentPane.setMinimumSize(new Dimension(0,0));
+		contentPane.setPreferredSize(new Dimension(0,0));
+		this.add(contentPane , c);
+		this.displayHeader.setText(this.getName());
+		}
 	}
 	
 	public MidiIOThrough getMidiIO(CablePoint tmp){
@@ -777,5 +788,20 @@ public class InteractiveModule extends InteractiveComponent implements CablePoin
 		if(e.getClass() == PluginError.class){
 			//TODO
 		}
+	}
+	
+	private void writeObject(ObjectOutputStream oos) throws IOException{
+		this.removeAll();
+		System.out.println(this.getComponentCount());
+		oos.defaultWriteObject();
+		this.initView();
+	}
+	
+	private void readObject(ObjectInputStream ois) throws ClassNotFoundException, IOException{
+		ois.defaultReadObject();
+		this.module.addPluginStateChangedListener(this);
+		System.out.println(this.getComponentCount());
+		this.removeAll();
+		this.initView();
 	}
 }

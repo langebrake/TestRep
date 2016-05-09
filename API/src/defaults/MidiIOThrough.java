@@ -115,5 +115,9 @@ public class MidiIOThrough implements MidiIO,Serializable{
 		this.listeners.remove(listener);
 	}
 	
+	private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException{
+		in.defaultReadObject();
+	}
+	
 
 }

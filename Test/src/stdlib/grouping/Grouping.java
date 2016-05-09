@@ -1,6 +1,8 @@
 package stdlib.grouping;
 
 import java.awt.Component;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -42,7 +44,6 @@ public class Grouping extends Plugin {
 	private static final String NAME = "GROUP";
 	private String msg = "group";
 	private DefaultView view;
-	private HashMap<MidiIO,MidiIO> ioMap;
 	private InteractiveController controller;
 	private InteractiveModule groupInput,groupOutput;
 	private boolean block;
@@ -387,15 +388,13 @@ public class Grouping extends Plugin {
 	
 	@Override
 	public boolean close() {
-
-		return true;
-
+		return this.controller.close();
 	}
 
 	@Override
 	public boolean reOpen() {
 		
-		return true;
+		return this.controller.reOpen();
 
 	}
 	
@@ -509,7 +508,9 @@ public class Grouping extends Plugin {
 		public boolean reOpen() {
 			return true;
 		}
-		
+		private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException{
+			in.defaultReadObject();
+		}
 	}
 	
 	private class GroupOutput extends Plugin {
@@ -614,7 +615,14 @@ public class Grouping extends Plugin {
 			
 			return true;
 		}
-		
+		private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException{
+			in.defaultReadObject();
+		}
+	}
+	
+	private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException{
+		in.defaultReadObject();
+		//just reads the MIDIGraph, needs to be populated TODO
 	}
 
 }

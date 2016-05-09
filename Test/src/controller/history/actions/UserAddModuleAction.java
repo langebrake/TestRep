@@ -59,11 +59,7 @@ public class UserAddModuleAction extends UserAction {
 	
 	@Override
 	public void undo() {
-		//TODO: Opening and closing Plugins necessary for System Ressources!
-		// disconnecting Connections not necessary, cause a newly added module has none!
-//		if(interactiveModule.close()){
-//			interactiveModule.getController().getPane().remove(interactiveModule);
-//		}
+
 		interactiveModule.close();
 		interactiveModule.getController().getPane().remove(interactiveModule);
 
@@ -73,9 +69,7 @@ public class UserAddModuleAction extends UserAction {
 	private boolean firsttime;
 	@Override
 	public void execute() {
-//		if(interactiveModule.reopen()){
-//			interactiveModule.getController().getPane().add(interactiveModule);
-//		}
+
 		if(!firsttime){
 			interactiveModule.reopen();
 			System.out.println("REOPEN");

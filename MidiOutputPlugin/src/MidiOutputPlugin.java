@@ -150,7 +150,8 @@ public class MidiOutputPlugin extends Plugin implements MidiListener {
 
 	@Override
 	public void listen(MidiIO source,MidiMessage msg, long timestamp) {
-		this.outputreceiver.send(msg, timestamp);
+		if(this.outputdevice.isOpen())
+			this.outputreceiver.send(msg, timestamp);
 		
 	}
 	

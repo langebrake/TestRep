@@ -167,7 +167,6 @@ public abstract class InteractiveComponent extends JPanel implements Interactive
 	
 	private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException {
 		in.defaultReadObject();
-		//Necessary due to bug in java: mouselisteners cannot persistently be removed
 		//TODO: further debugging
 
 

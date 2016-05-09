@@ -31,7 +31,7 @@ public abstract class PluginHost implements Serializable{
 	private LinkedList<MidiIOThrough> inputs,outputs;
 	private transient Plugin plugin;
 	private transient MidiEngine engine;
-	private PluginStateChangedListener stateChangedListeners;
+	private transient PluginStateChangedListener stateChangedListeners;
 	private String name;
 	
 	public PluginHost() throws MidiUnavailableException{
@@ -710,17 +710,21 @@ public abstract class PluginHost implements Serializable{
 	private void writeObject(ObjectOutputStream out) throws IOException {
 		out.defaultWriteObject();
 		out.writeObject(this.plugin);
+		
+		
 	}
 	
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-		in.defaultReadObject();
 		try {
 			this.engine = Engine.load();
 		} catch (MidiUnavailableException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		in.defaultReadObject();
 		this.plugin = (Plugin) in.readObject();
+		
+		
 	}
 	
 }

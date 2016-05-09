@@ -22,19 +22,18 @@ public class UserUngroupAction extends UserAction {
 
 	@Override
 	public void undo() {
-		if(groupModule.reopen()){
+			groupModule.reopen();
 			this.grouping.group(groupModule, groupThis);
 			controller.getPane().add(groupModule);
-		}
 
 	}
 
 	@Override
 	public void execute() {
-		if(groupModule.close()){
 			this.grouping.ungroup(groupModule);
+			groupModule.close();
 			controller.getPane().remove(groupModule);
-		}
+			
 
 	}
 
