@@ -71,7 +71,6 @@ public abstract class InteractiveComponent extends JPanel implements Interactive
 			}
 			if (l instanceof MouseWheelListener){
 				this.removeMouseWheelListener((MouseWheelListener) l);
-				System.out.println("RemovedListener: "+l);
 			}
 		}
 		

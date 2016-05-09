@@ -43,7 +43,7 @@ public class UserAddGroupAction extends UserAction {
 			e.printStackTrace();
 		}
 		this.groupModule = new InteractiveModule(this.originVector, module, controller);
-		((Grouping) module.getPlugin()).getController().setGrouping(grouping);
+		
 		if(this.name!=null){
 			this.groupModule.setName(this.name);
 		}

@@ -45,8 +45,9 @@ public class Grouping extends Plugin {
 	private transient String msg = "group";
 	private transient DefaultView view;
 	private InteractiveController controller;
-	private InteractiveModule groupInput,groupOutput;
-	private boolean block;
+	private transient InteractiveModule groupOutput;
+	private transient InteractiveModule groupInput;
+	private transient boolean block;
 	
 	public static Grouping getInstance(PluginHost host){
 		return new Grouping(host);
@@ -173,7 +174,6 @@ public class Grouping extends Plugin {
 		this.controller.add(groupInput);
 		this.controller.add(groupOutput);
 		
-		
 	}
 	
 	public void group(InteractiveModule groupModule, LinkedList<InteractiveComponent> groupThis){
@@ -298,7 +298,6 @@ public class Grouping extends Plugin {
 										CablePoint externalOutput = groupModule.getCablePoint(CablePointType.OUTPUT, otherEnd.getIndex());
 										if(externalOutput.isConnected()){
 											// p must be connected to externalOutputs other End
-											System.out.println("ExternalOutCable");
 											InteractiveCable externalCable = externalOutput.getCable();
 											newPane.remove(externalCable);
 											CablePoint externalEndpoint = externalCable.getSource() == externalOutput ? externalCable.getDestination():externalCable.getSource();
@@ -307,7 +306,6 @@ public class Grouping extends Plugin {
 											p.setCable(cable);
 											externalEndpoint.setCable(cable);
 											externalOutput.disconnect();
-											System.out.println(externalEndpoint.getXOnScreen()+ " " + cable.getDestination().getXOnScreen());
 											newPane.add(cable);
 										} else {
 											// remove unused connection
@@ -413,7 +411,7 @@ public class Grouping extends Plugin {
 	}
 	
 	
-	private class GroupInput extends Plugin {
+	private static class GroupInput extends Plugin {
 		private final int MAXINPUTS = 0;
 		private final int MAXOUTPUTS = -1;
 		private final int MININPUTS = 0;
@@ -421,8 +419,8 @@ public class Grouping extends Plugin {
 		private final String NAME = "Group Input";
 		private String msg = "groupinput";
 		private DefaultView view;
-		private boolean block;
-		private Grouping grouping;
+		private transient boolean block;
+		private transient Grouping grouping;
 	
 		public GroupInput(PluginHost host, Grouping grouping) {
 			super(host);
@@ -518,7 +516,7 @@ public class Grouping extends Plugin {
 		}
 	}
 	
-	private class GroupOutput extends Plugin {
+	private static class GroupOutput extends Plugin {
 		private final int MAXINPUTS = -1;
 		private final int MAXOUTPUTS = 0;
 		private final int MININPUTS = 0;
@@ -526,8 +524,8 @@ public class Grouping extends Plugin {
 		private final String NAME = "Group Output";
 		private String msg = "groupoutput";
 		private DefaultView view;
-		private boolean block;
-		private Grouping grouping;
+		private transient boolean block;
+		private transient Grouping grouping;
 		
 		public GroupOutput(PluginHost host, Grouping grouping) {
 			super(host);
@@ -627,6 +625,17 @@ public class Grouping extends Plugin {
 	
 	private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException{
 		in.defaultReadObject();
+		for(Component c: this.controller.getPane().getComponents()){
+			
+			if(((InteractiveModule) c).getModule().getPlugin() instanceof GroupInput){
+				this.groupInput = (InteractiveModule) c;
+				((GroupInput)this.groupInput.getModule().getPlugin()).grouping = this;
+			} 
+			if (((InteractiveModule) c).getModule().getPlugin() instanceof GroupOutput){
+				this.groupOutput = (InteractiveModule) c;
+				((GroupOutput)this.groupOutput.getModule().getPlugin()).grouping = this;
+			}
+		}
 		//just reads the MIDIGraph, needs to be populated TODO
 	}
 

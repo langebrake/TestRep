@@ -74,7 +74,10 @@ public class InteractiveCable implements InteractiveShape{
 	
 	@Override
 	public boolean contains(Point2D arg0) {
-		return this.cable.contains(arg0);
+		if(cable!=null)
+			return this.cable.contains(arg0);
+		else
+			return false;
 	}
 
 	@Override

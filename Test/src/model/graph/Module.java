@@ -1,5 +1,7 @@
 package model.graph;
 
+import gui.interactivepane.Vector;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 
@@ -14,9 +16,10 @@ import pluginhost.PluginHost;
 import pluginhost.exceptions.*;
 
 public class Module extends PluginHost {
-
+	public Vector origin;
 	public Module() throws MidiUnavailableException {
 		super();
+		origin = new Vector();
 		// TODO Auto-generated constructor stub
 	}
 	

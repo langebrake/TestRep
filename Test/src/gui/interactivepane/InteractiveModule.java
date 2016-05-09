@@ -62,10 +62,8 @@ public class InteractiveModule extends InteractiveComponent implements CablePoin
 		this.setBorder(BorderFactory.createEmptyBorder(1,1,1,1));
 		super.setLayout(new GridBagLayout());
 		
-		
-		
-		
 		this.module = module;
+		this.module.origin = origin;
 		this.initView();
 		inputPopupConnector = new CablePointSimple(CablePointType.INPUT);
 		outputPopupConnector = new CablePointSimple(CablePointType.OUTPUT);
@@ -361,6 +359,7 @@ public class InteractiveModule extends InteractiveComponent implements CablePoin
 	@Override
 	public void translateOriginLocation(Vector translation){
 		super.translateOriginLocation(translation);
+		this.module.origin = super.getOriginLocation();
 		if(!this.inputPopout.isSelected())
 			this.inputPopout.translateOriginLocation(translation);
 		if(!this.outputPopout.isSelected())

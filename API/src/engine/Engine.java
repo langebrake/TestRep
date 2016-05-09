@@ -42,10 +42,8 @@ public class Engine implements MidiEngine, Serializable {
 	}
 	
 	public MidiDevice getInputDevice(String name){
-		System.out.println(name);
 		for(MidiDevice m : inputDevices){
 			if(m.getDeviceInfo().getName().equals(name)){
-				System.out.println(m);
 				return m;
 			}
 		}
@@ -53,10 +51,8 @@ public class Engine implements MidiEngine, Serializable {
 	}
 	
 	public MidiDevice getOutputDevice(String name){
-		System.out.println(name);
 		for(MidiDevice m : outputDevices){
 			if(m.getDeviceInfo().getName().equals(name)){
-				System.out.println(m);
 				return m;
 			}
 		}

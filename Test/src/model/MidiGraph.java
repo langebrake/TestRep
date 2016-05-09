@@ -1,16 +1,20 @@
 package model;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 
 import model.graph.Module;
 
 public class MidiGraph implements Serializable,Iterable<Module>{
-	private HashSet<Module> nodes;
+	private transient LinkedList<Module> nodes;
 	
 	public MidiGraph(){
-		this.nodes = new HashSet<Module>();
+		this.nodes = new LinkedList<Module>();
 	}
 	
 	public void add(Module m){
@@ -30,6 +34,22 @@ public class MidiGraph implements Serializable,Iterable<Module>{
 		return nodes.iterator();
 	}
 	
+	private void writeObject(ObjectOutputStream out) throws IOException{
+		out.writeInt(nodes.size());
+		for(Module m:nodes){
+			out.writeObject(m);
+			System.out.println(m + " "+m.getPlugin());
+		}
+	}
+	
+	private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException{
+		int max = in.readInt();
+		nodes = new LinkedList<Module>();
+		for(int i = 0;i<max;i++){
+			nodes.add((Module) in.readObject());
+			System.out.println(nodes.get(i)+" "+nodes.get(i).getPlugin());
+		}
+	}
 
 	
 }

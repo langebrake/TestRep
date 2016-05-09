@@ -31,6 +31,7 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowStateListener;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 import javax.swing.AbstractAction;
@@ -51,6 +52,7 @@ import controller.shortcut.DeleteAction;
 import controller.shortcut.RedoAction;
 import controller.shortcut.UndoAction;
 import model.MidiGraph;
+import model.graph.Module;
 
 public class InteractiveController implements MouseInputListener,WindowStateListener, Serializable {
 	private transient InteractivePane pane;
@@ -58,7 +60,6 @@ public class InteractiveController implements MouseInputListener,WindowStateList
 	private transient UserActionManager actionManager;
 	private transient Vector lastMousePaneLocation,
 					lastMouseGridLocation;
-	private transient Grouping group;
 	private transient ModuleListener moduleListener;
 	private transient PopupMenuListener popupMenuListener;
 	private transient ShapeListener shapeListener;
@@ -155,13 +156,7 @@ public class InteractiveController implements MouseInputListener,WindowStateList
 		return this.actionManager;
 	}
 	
-	public Grouping getGrouping(){
-		return this.group;
-	}
-	
-	public void setGrouping(Grouping g){
-		this.group = g;
-	}
+
 	
 	@Override
 	public void mouseClicked(MouseEvent arg0) {
@@ -328,6 +323,10 @@ public class InteractiveController implements MouseInputListener,WindowStateList
 		this.pane = this.initPane(new InteractivePane());
 		Populator.populateWith(this,this.graph);
 	}
+	
+	private void writeObject(ObjectOutputStream out) throws IOException{
+		out.defaultWriteObject();
+	}
 	public void setCableAddProcessSource(CablePointHost source) {
 		this.cableAddProcessSource = source;
 		
@@ -345,6 +344,11 @@ public class InteractiveController implements MouseInputListener,WindowStateList
 		return true;
 	}
 	public boolean reOpen() {
+		for(Component c:this.pane.getComponents()){
+			if(c instanceof InteractiveModule){
+				((InteractiveComponent) c).reopen();
+			}
+		}
 		return true;
 		
 	}
