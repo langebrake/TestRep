@@ -5,6 +5,7 @@ import java.awt.Container;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.NotSerializableException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
@@ -33,6 +34,7 @@ public abstract class PluginHost implements Serializable{
 	private transient MidiEngine engine;
 	private transient PluginStateChangedListener stateChangedListeners;
 	private String name;
+	//TODO: this must be managed over retrieving the class from the plugins name over a static manager!!!!!
 	private Class<? extends Plugin> pluginClass;
 	
 	public PluginHost() throws MidiUnavailableException{
@@ -682,11 +684,23 @@ public abstract class PluginHost implements Serializable{
 	}
 	
 	public boolean close(){
-		return this.plugin.close();
+		boolean res = true;
+		try{
+			res = this.plugin.close();
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+		return res;
 	}
 	
 	public boolean reOpen(){
-		return this.plugin.reOpen();
+		boolean res = true;
+		try{
+			res = this.plugin.reOpen();
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+		return res;
 	}
 	
 
@@ -717,12 +731,14 @@ public abstract class PluginHost implements Serializable{
 		try{
 			oos.writeObject(this.plugin);
 			plugin = bos.toByteArray();
-		} catch (Exception e){
-			e.printStackTrace();
+		} catch (NotSerializableException e){
+			//e.printStackTrace();
 			plugin = new byte[0];
+			System.out.println("error saving "+ this.plugin.getDisplayName());
 		}
 		
 		out.writeObject(plugin);
+		System.out.println("SAVED");
 		
 		
 	}
@@ -735,11 +751,11 @@ public abstract class PluginHost implements Serializable{
 			e.printStackTrace();
 		}
 		in.defaultReadObject();
-		byte[] b = (byte[]) in.readObject();
-		ByteArrayInputStream bos = new ByteArrayInputStream(b);
-		ObjectInputStream oos = new ObjectInputStream(bos);
 		Plugin.waiter = this;
 		try{
+			byte[] b = (byte[]) in.readObject();
+			ByteArrayInputStream bos = new ByteArrayInputStream(b);
+			ObjectInputStream oos = new ObjectInputStream(bos);
 			this.plugin = (Plugin) oos.readObject();
 		} catch (Exception e){
 			e.printStackTrace();

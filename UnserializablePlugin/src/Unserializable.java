@@ -1,6 +1,7 @@
 
 import guiinterface.SizeableComponent;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -9,6 +10,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.Random;
 
 import javax.sound.midi.MidiMessage;
 import javax.sound.midi.Receiver;
@@ -16,6 +18,7 @@ import javax.sound.midi.Transmitter;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 import plugin.Plugin;
 import plugin.events.NewInputRequestEvent;
@@ -38,6 +41,9 @@ public class Unserializable extends Plugin implements MidiListener{
 	private String msg = "DummyPlugin";
 	private DefaultView view;
 	private Method m = null;
+	private static final Random rn = new Random();
+	private int s = rn.nextInt(1000)+rn.nextInt(3545)+rn.nextInt(4546);
+	private Color c= new Color(rn.nextInt(255),rn.nextInt(255),rn.nextInt(255));
 	
 	
 	public static Plugin getInstance(PluginHost host){
@@ -57,7 +63,9 @@ public class Unserializable extends Plugin implements MidiListener{
 	}
 	@Override
 	public JComponent getMinimizedView() {
-		return view;
+		JPanel p = new JPanel();
+		p.setBackground(c);
+		return p;
 	}
 	@Override
 	public Component getFullView() {
@@ -93,11 +101,6 @@ public class Unserializable extends Plugin implements MidiListener{
 	}
 	@Override
 	public boolean close() {
-		PluginHost host = this.getPluginHost();
-		MidiIOThrough input = host.getInput(0);
-		MidiIOThrough output = host.getOuput(0);
-		input.disconnectOutput();
-		output.disconnectInput();
 		return true;
 		
 	}
