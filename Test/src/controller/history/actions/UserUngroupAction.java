@@ -24,7 +24,7 @@ public class UserUngroupAction extends UserAction {
 	public void undo() {
 			groupModule.reopen();
 			this.grouping.group(groupModule, groupThis);
-			controller.getPane().add(groupModule);
+			controller.add(groupModule);
 
 	}
 
@@ -32,7 +32,7 @@ public class UserUngroupAction extends UserAction {
 	public void execute() {
 			this.grouping.ungroup(groupModule);
 			groupModule.close();
-			controller.getPane().remove(groupModule);
+			controller.remove(groupModule);
 			
 
 	}

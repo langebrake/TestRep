@@ -90,6 +90,7 @@ public class InteractiveModule extends InteractiveComponent implements CablePoin
 	private void initView(){
 		if(module.getPlugin()!=null){
 		this.contentPane = module.getPlugin().getMinimizedView();
+		
 		this.setOriginDimension(new Dimension(200,100));
 		this.displayHeader = new InteractiveModuleHeader(this);
 		GridBagConstraints c = new GridBagConstraints();
@@ -102,12 +103,13 @@ public class InteractiveModule extends InteractiveComponent implements CablePoin
 		displayHeader.setPreferredSize(new Dimension(0,0));
 		displayHeader.setBackground(Color.CYAN);
 		this.add(displayHeader , c);
-	
-		c.gridy = 1;
-		c.weighty = 2;
-		contentPane.setMinimumSize(new Dimension(0,0));
-		contentPane.setPreferredSize(new Dimension(0,0));
-		this.add(contentPane , c);
+		if(contentPane!=null){
+			c.gridy = 1;
+			c.weighty = 2;
+			contentPane.setMinimumSize(new Dimension(0,0));
+			contentPane.setPreferredSize(new Dimension(0,0));
+			this.add(contentPane , c);
+		}
 		this.displayHeader.setText(this.getName());
 		}
 	}

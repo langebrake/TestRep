@@ -52,7 +52,7 @@ public class UserAddGroupAction extends UserAction {
 	public void undo() {
 		if(groupModule.close()){
 			grouping.ungroup(groupModule);
-			controller.getPane().remove(groupModule);
+			controller.remove(groupModule);
 //			this.originVector = groupModule.getOriginLocation();
 //			this.name = groupModule.getName();
 		}
@@ -64,7 +64,7 @@ public class UserAddGroupAction extends UserAction {
 //			generateGroup();
 		if(groupModule.reopen()){
 			grouping.group(groupModule, groupThis);
-			controller.getPane().add(groupModule);
+			controller.add(groupModule);
 		}
 
 	}

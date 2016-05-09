@@ -101,10 +101,12 @@ public class MidiInputPlugin extends Plugin implements Serializable, ActionListe
 	}
 	
 	private void setInputID(int id) throws MidiUnavailableException{
-		if(this.midiDeviceName!=null){
+		if(this.midiDeviceName!=null && inputMap.containsKey(midiDeviceName)){
 			inputMap.get(midiDeviceName).unregister(output);
 		}
+		
 		this.midiDeviceName = devices.get(id).getDeviceInfo().getName();
+		
 		if(!inputMap.containsKey(midiDeviceName)){
 			InputReceiver firstReceiver = new InputReceiver(devices.get(id));
 			inputMap.put(midiDeviceName, firstReceiver);
@@ -224,7 +226,6 @@ public class MidiInputPlugin extends Plugin implements Serializable, ActionListe
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		Object o = e.getSource();
-		System.out.println(o);
 		if(o instanceof JComboBox){
 			try {
 				this.setInputID(((JComboBox) o).getSelectedIndex());

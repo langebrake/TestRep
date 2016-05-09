@@ -55,11 +55,11 @@ public class UserDeleteAction extends UserAction {
 					}
 				}
 				}
-				if(!c.getController().getPane().isAncestorOf(c))
-					c.getController().getPane().add(c);
 				
-				if(c instanceof InteractiveModule)
-					c.getController().getGraph().add(((InteractiveModule) c).getModule());
+				// TODO: handlin error classcastexception
+				if(!c.getController().getPane().isAncestorOf(c))
+					c.getController().add((InteractiveModule) c);
+				
 			}
 		}
 		
@@ -100,10 +100,10 @@ public class UserDeleteAction extends UserAction {
 						
 					}
 				}
-				c.getController().getPane().remove(c);
-				if(c instanceof InteractiveModule){
-					c.getController().getGraph().remove(((InteractiveModule) c).getModule());
-				}
+					
+					//TODO: handle Class Cast Exception
+				c.getController().remove((InteractiveModule) c);
+
 			}
 		}
 		for(InteractiveShape c:shapes){

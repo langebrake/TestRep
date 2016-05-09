@@ -42,8 +42,8 @@ public class Grouping extends Plugin {
 	private static final int MININPUTS = 0;
 	private static final int MINOUTPUTS = 0;
 	private static final String NAME = "GROUP";
-	private String msg = "group";
-	private DefaultView view;
+	private transient String msg = "group";
+	private transient DefaultView view;
 	private InteractiveController controller;
 	private InteractiveModule groupInput,groupOutput;
 	private boolean block;
@@ -170,10 +170,8 @@ public class Grouping extends Plugin {
 			e.printStackTrace();
 		}
 		
-		this.controller.getPane().add(groupInput);
-		this.controller.getGraph().add(groupInput.getModule());
-		this.controller.getPane().add(groupOutput);
-		this.controller.getGraph().add(groupOutput.getModule());
+		this.controller.add(groupInput);
+		this.controller.add(groupOutput);
 		
 		
 	}
@@ -181,6 +179,8 @@ public class Grouping extends Plugin {
 	public void group(InteractiveModule groupModule, LinkedList<InteractiveComponent> groupThis){
 
 		this.controller.setUserActionManager(groupModule.getController().getActionManager());
+		InteractiveController oldController = groupModule.getController();
+		InteractiveController newController = this.controller;
 		InteractivePane oldPane = groupModule.getController().getPane();
 		InteractivePane newPane = this.controller.getPane();
 		Vector resetTranslation = groupModule.getOriginLocation().scaleVector(-1);
@@ -257,9 +257,10 @@ public class Grouping extends Plugin {
 					//handle external Connections
 					
 				}
-				oldPane.remove(c);
+				//TODO: ClassCastExceptions!!
+				oldController.remove((InteractiveModule) c);
 				if(!newPane.isAncestorOf(c))
-					newPane.add(c);
+					newController.add((InteractiveModule) c);
 			}
 		}
 		newPane.updateView();
@@ -271,6 +272,8 @@ public class Grouping extends Plugin {
 		
 		InteractivePane oldPane = this.controller.getPane();
 		InteractivePane newPane = groupModule.getController().getPane();
+		InteractiveController newController = groupModule.getController();
+		InteractiveController oldController = this.controller;
 		oldPane.clearSelection();
 		Vector restoreTranslation = groupModule.getOriginLocation();
 		for(Component comp:this.controller.getPane().getComponents()){
@@ -345,9 +348,9 @@ public class Grouping extends Plugin {
 				}
 				
 				
-				oldPane.remove(c);
+				oldController.remove((InteractiveModule) c);
 				if(!newPane.isAncestorOf(c))
-					newPane.add(c);
+					newController.add((InteractiveModule) c);
 				}
 			
 			
