@@ -36,7 +36,7 @@ public class MidiOutputPlugin extends Plugin implements ActionListener, Serializ
 	private transient static ConcurrentHashMap<String,OutputTransmitter> outputMap;
 	private String midiDeviceName;
 	private transient MidiIO input;
-	private transient LinkedList<MidiDevice> devices;
+	protected transient LinkedList<MidiDevice> devices;
 	
 	static{
 		outputMap = new ConcurrentHashMap<String,OutputTransmitter>();
@@ -110,6 +110,7 @@ public class MidiOutputPlugin extends Plugin implements ActionListener, Serializ
 		
 		if(!outputMap.containsKey(midiDeviceName)){
 			OutputTransmitter lastTransmitter = new OutputTransmitter(devices.get(id));
+			System.out.println(lastTransmitter.outputDevice.getDeviceInfo());
 			outputMap.put(midiDeviceName, lastTransmitter);
 			outputMap.get(midiDeviceName).register(input);
 		}else {
@@ -153,8 +154,9 @@ public class MidiOutputPlugin extends Plugin implements ActionListener, Serializ
 
 	
 	private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException {
-		this.devices = this.getPluginHost().getEngine().getOutputDevices();
 		in.defaultReadObject();
+		this.setPluginHost(Plugin.waitForHost());
+		this.devices = this.getPluginHost().getEngine().getOutputDevices();
 		this.input = this.getPluginHost().getInput(0);
 		if(this.midiDeviceName != null && outputMap.containsKey(this.midiDeviceName)){
 			try {
@@ -179,7 +181,9 @@ public class MidiOutputPlugin extends Plugin implements ActionListener, Serializ
 		
 		public void close() {
 			this.outputDevice.close();
-			this.outputReceiver.close();
+			if(outputReceiver!=null){
+				this.outputReceiver.close();
+			}
 			this.outputReceiver = null;
 		}
 		

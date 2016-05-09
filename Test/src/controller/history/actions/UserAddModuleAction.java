@@ -34,7 +34,7 @@ public class UserAddModuleAction extends UserAction {
 		
 		try {
 			plugin = p.getInstance(module);
-			module.setPlugin(plugin);
+			module.setPlugin(plugin,p.getPluginClass());
 		} catch (IllegalArgumentException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

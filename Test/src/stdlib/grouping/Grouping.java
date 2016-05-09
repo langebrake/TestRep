@@ -3,6 +3,7 @@ package stdlib.grouping;
 import java.awt.Component;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -142,7 +143,7 @@ public class Grouping extends Plugin {
 		try {
 			Module m = new Module();
 			Plugin p = new GroupInput(m,this);
-			m.setPlugin(p);
+			m.setPlugin(p, GroupInput.class);
 			groupInput = new InteractiveModule(new Vector(0,0), m, controller);
 		} catch (SecurityException e) {
 			// TODO Auto-generated catch block
@@ -158,7 +159,7 @@ public class Grouping extends Plugin {
 		try {
 			Module m = new Module();
 			Plugin p = new GroupOutput(m,this);
-			m.setPlugin(p);
+			m.setPlugin(p,GroupOutput.class);
 			groupOutput = new InteractiveModule(new Vector(0,500), m, controller);
 		} catch (SecurityException e) {
 			// TODO Auto-generated catch block

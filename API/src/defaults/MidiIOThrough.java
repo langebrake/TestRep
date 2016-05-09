@@ -21,22 +21,23 @@ public class MidiIOThrough implements MidiIO,Serializable{
 	private MidiIO input;
 	private transient LinkedList<MidiListener> listeners;
 	
-	public MidiIOThrough(){
-		this(null);
-	}
+
 	public MidiIOThrough(PluginHost host){
 		this.host=host;
 		this.listeners = new LinkedList<MidiListener>();
 	}
 
 	public void send(MidiMessage message, long timeStamp) {
-		if(this.hasOutput()){
-			this.output.send(message, timeStamp);
+		try{
+			if(this.hasOutput()){
+				this.output.send(message, timeStamp);
+			}
+			for(MidiListener l:listeners){
+				l.listen(this, message, timeStamp);
+			}
+		}catch (Exception e){
+			e.printStackTrace();
 		}
-		for(MidiListener l:listeners){
-			l.listen(this, message, timeStamp);
-		}
-		
 		
 	}
 

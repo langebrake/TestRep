@@ -19,8 +19,8 @@ import pluginhost.PluginHost;
 
 public abstract class Plugin implements Serializable{
 	
-	private PluginHost host;
-	
+	private transient PluginHost host;
+	public static transient Object lock = new Object();
 	public Plugin(PluginHost host){
 		this.host = host;
 	}
@@ -31,6 +31,15 @@ public abstract class Plugin implements Serializable{
 	
 	public void setPluginHost(PluginHost host){
 		this.host = host;
+	}
+	
+	public static PluginHost waiter = null;
+	public static PluginHost waitForHost(){
+		while(waiter == null){
+		}
+		PluginHost tmp = waiter;
+		waiter = null;
+		return tmp;
 	}
 	/**
 	 * This method returns the plugins name
@@ -53,6 +62,7 @@ public abstract class Plugin implements Serializable{
 	public abstract void load();
 	public abstract boolean close();
 	public abstract boolean reOpen();
+	
 	
 	
 }

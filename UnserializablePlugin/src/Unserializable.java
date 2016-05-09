@@ -1,10 +1,11 @@
-package defaultplugin;
+
 import guiinterface.SizeableComponent;
 
 import java.awt.Component;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -28,22 +29,23 @@ import defaults.MidiListener;
 
 
 
-public class DefaultPlugin extends Plugin implements MidiListener{
+public class Unserializable extends Plugin implements MidiListener{
 	private static final int MAXINPUTS = -1;
 	private static final int MAXOUTPUTS = -1;
 	private static final int MININPUTS = 1;
 	private static final int MINOUTPUTS = 1;
-	private static final String NAME = "DummyPlugin";
+	private static final String NAME = "ThisIsNotSerializable!";
 	private String msg = "DummyPlugin";
 	private DefaultView view;
-	private transient HashMap<MidiIO,MidiIO> ioMap;
+	private Method m = null;
+	
 	
 	public static Plugin getInstance(PluginHost host){
-		return new DefaultPlugin(host);
+		return new Unserializable(host);
 	}
-	public DefaultPlugin(PluginHost host){
+	public Unserializable(PluginHost host){
 		super(host);
-		this.ioMap = new HashMap<MidiIO,MidiIO>();
+	
 		
 	}
 	private boolean block;
@@ -51,29 +53,7 @@ public class DefaultPlugin extends Plugin implements MidiListener{
 	
 	@Override
 	public void notify(HostEvent e) {
-		if(!block){
-			block = true;
-			if(e.getClass() == NewInputEvent.class){
-				if(!ioMap.containsKey(((NewInputEvent)e).getNewInput())){
-					NewOutputRequestEvent event = new NewOutputRequestEvent();
-					this.getPluginHost().notify(event);
-					if(event.io != null){
-						this.ioMap.put(((NewInputEvent)e).getNewInput(), event.io);
-						((NewInputEvent)e).getNewInput().addMidiListener(this);
-					}
-				}
-			} else if(e.getClass() == NewOutputEvent.class){
-				if(!ioMap.containsValue(((NewOutputEvent)e).getNewOutput())){
-					NewInputRequestEvent event = new NewInputRequestEvent();
-					this.getPluginHost().notify(event);
-					if(event.io != null){
-						this.ioMap.put(event.io,((NewOutputEvent)e).getNewOutput());
-						(event.io).addMidiListener(this);
-					}
-				}
-			}
-		}
-		block = false;
+	
 	}
 	@Override
 	public JComponent getMinimizedView() {
@@ -81,7 +61,7 @@ public class DefaultPlugin extends Plugin implements MidiListener{
 	}
 	@Override
 	public Component getFullView() {
-		return new DefaultView("DEFAULT PLUGIN INTERFACE");
+		return new DefaultView("You can't save this plugins state!");
 	}
 	
 	public  String getPluginName() {
@@ -100,8 +80,13 @@ public class DefaultPlugin extends Plugin implements MidiListener{
 	public void load() {
 		this.view = new DefaultView(msg);
 		PluginHost host = this.getPluginHost();
-		this.ioMap.put(host.getInput(0), host.getOuput(0));
 		host.getInput(0).addMidiListener(this);
+		try {
+			this.m   = Plugin.class.getMethod("getInstance", PluginHost.class);
+		} catch (NoSuchMethodException | SecurityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		
 		
@@ -140,8 +125,6 @@ public class DefaultPlugin extends Plugin implements MidiListener{
 	@Override
 	public void listen(MidiIO source, MidiMessage msg, long timestamp) {
 		
-		ioMap.get(source).send(msg, timestamp);
-		
 	}
 	@Override
 	public boolean reOpen() {
@@ -149,16 +132,6 @@ public class DefaultPlugin extends Plugin implements MidiListener{
 		
 	}
 	
-	private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException{
-		in.defaultReadObject();
-		this.setPluginHost(Plugin.waitForHost());
-		this.ioMap = new HashMap<MidiIO,MidiIO>();
-		int i = 0;
-		for(MidiIO m:this.getPluginHost().getInputs()){
-			m.addMidiListener(this);
-			ioMap.put(m, this.getPluginHost().getOuput(i++));
-		}
-	}
 	
 
 }

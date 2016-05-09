@@ -66,7 +66,7 @@ public class PluginManager {
 				    Class<?> c = cl.loadClass(className);
 				    if(c.getSuperclass() == Plugin.class){
 				    	Method m = c.getMethod("getInstance",PluginHost.class);
-				    	appendList.add(new Loadable(m,jar.getManifest().getMainAttributes()));
+				    	appendList.add(new Loadable((Class<? extends Plugin>) c,jar.getManifest().getMainAttributes()));
 				    	
 				    }else{
 				    	

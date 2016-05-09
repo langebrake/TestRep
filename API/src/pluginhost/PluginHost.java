@@ -33,6 +33,7 @@ public abstract class PluginHost implements Serializable{
 	private transient MidiEngine engine;
 	private transient PluginStateChangedListener stateChangedListeners;
 	private String name;
+	private Class<? extends Plugin> pluginClass;
 	
 	public PluginHost() throws MidiUnavailableException{
 		this.inputs = new LinkedList<MidiIOThrough>();
@@ -45,7 +46,8 @@ public abstract class PluginHost implements Serializable{
 		return this.plugin;
 	}
 	
-	public void setPlugin(Plugin p) throws PluginMaxOutputsExceededException{
+	public void setPlugin(Plugin p, Class m) throws PluginMaxOutputsExceededException{
+		this.pluginClass = m;
 		if(this.plugin!= null){
 			this.plugin.close();
 		}
@@ -709,7 +711,18 @@ public abstract class PluginHost implements Serializable{
 	
 	private void writeObject(ObjectOutputStream out) throws IOException {
 		out.defaultWriteObject();
-		out.writeObject(this.plugin);
+		ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		ObjectOutputStream oos = new ObjectOutputStream(bos);
+		byte[] plugin = null;
+		try{
+			oos.writeObject(this.plugin);
+			plugin = bos.toByteArray();
+		} catch (Exception e){
+			e.printStackTrace();
+			plugin = new byte[0];
+		}
+		
+		out.writeObject(plugin);
 		
 		
 	}
@@ -722,7 +735,25 @@ public abstract class PluginHost implements Serializable{
 			e.printStackTrace();
 		}
 		in.defaultReadObject();
-		this.plugin = (Plugin) in.readObject();
+		byte[] b = (byte[]) in.readObject();
+		ByteArrayInputStream bos = new ByteArrayInputStream(b);
+		ObjectInputStream oos = new ObjectInputStream(bos);
+		Plugin.waiter = this;
+		try{
+			this.plugin = (Plugin) oos.readObject();
+		} catch (Exception e){
+			e.printStackTrace();
+			//TODO: Error Handling!!
+			try {
+				Method getInstance = pluginClass.getDeclaredMethod("getInstance", PluginHost.class);
+				this.plugin = (Plugin) getInstance.invoke(null, this);
+			} catch (IllegalAccessException | IllegalArgumentException
+					| InvocationTargetException | NoSuchMethodException | SecurityException e1) {
+				e1.printStackTrace();
+				// TODO:Error Handling
+			}
+		}
+		
 		
 		
 	}

@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Name: Unserializable
+Description: you can't save this plugin's inner state
+Version: 0.1
+Vendor: Hendrik Langebrake
+Web: hl-soundtracks.de
+Type: MidiOutputPlugin
+PluginInterfaceVersion: 0.1a

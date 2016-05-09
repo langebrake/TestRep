@@ -4,10 +4,12 @@ import gui.interactivepane.InteractiveComponent;
 import gui.interactivepane.InteractiveModule;
 import gui.interactivepane.Vector;
 
+import java.lang.reflect.Method;
 import java.util.LinkedList;
 
 import javax.sound.midi.MidiUnavailableException;
 
+import pluginhost.PluginHost;
 import pluginhost.exceptions.PluginMaxOutputsExceededException;
 import stdlib.grouping.Grouping;
 import model.graph.Module;
@@ -34,11 +36,14 @@ public class UserAddGroupAction extends UserAction {
 		try {
 			module = new Module();
 			grouping = new Grouping(module);
-			module.setPlugin(grouping);
+			module.setPlugin(grouping,Grouping.class);
 		} catch (MidiUnavailableException e) {
 			// TODO unexpected Error Handling + log
 			e.printStackTrace();
 		} catch (PluginMaxOutputsExceededException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SecurityException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
