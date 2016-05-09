@@ -61,6 +61,7 @@ public class UserAddModuleAction extends UserAction {
 	public void undo() {
 
 		interactiveModule.close();
+		interactiveModule.getController().getGraph().remove(interactiveModule.getModule());
 		interactiveModule.getController().getPane().remove(interactiveModule);
 
 
@@ -77,6 +78,7 @@ public class UserAddModuleAction extends UserAction {
 		} else {
 			firsttime = false;
 		}
+		interactiveModule.getController().getGraph().add(interactiveModule.getModule());
 		interactiveModule.getController().getPane().add(interactiveModule);
 
 	}

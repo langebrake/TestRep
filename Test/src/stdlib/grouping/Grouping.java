@@ -171,7 +171,9 @@ public class Grouping extends Plugin {
 		}
 		
 		this.controller.getPane().add(groupInput);
+		this.controller.getGraph().add(groupInput.getModule());
 		this.controller.getPane().add(groupOutput);
+		this.controller.getGraph().add(groupOutput.getModule());
 		
 		
 	}

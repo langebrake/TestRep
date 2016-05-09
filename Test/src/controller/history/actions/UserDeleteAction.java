@@ -5,6 +5,7 @@ import gui.interactivepane.CablePointHost;
 import gui.interactivepane.CablePointPanel;
 import gui.interactivepane.InteractiveCable;
 import gui.interactivepane.InteractiveComponent;
+import gui.interactivepane.InteractiveModule;
 import gui.interactivepane.InteractivePane;
 import gui.interactivepane.InteractiveShape;
 
@@ -33,8 +34,7 @@ public class UserDeleteAction extends UserAction {
 		//Implement Connecting etc. of modules
 		for(InteractiveComponent c: components){
 			if(c.reopen()){
-				if(!c.getController().getPane().isAncestorOf(c))
-					c.getController().getPane().add(c);
+				
 				LinkedList<CablePointHost> cablePointHosts = getRecursive(c,CablePointHost.class);
 				for(CablePointHost cablePointHost: cablePointHosts){
 					for(CablePoint cablePoint:cablePointHost.getCablePoints()){
@@ -55,6 +55,11 @@ public class UserDeleteAction extends UserAction {
 					}
 				}
 				}
+				if(!c.getController().getPane().isAncestorOf(c))
+					c.getController().getPane().add(c);
+				
+				if(c instanceof InteractiveModule)
+					c.getController().getGraph().add(((InteractiveModule) c).getModule());
 			}
 		}
 		
@@ -96,6 +101,9 @@ public class UserDeleteAction extends UserAction {
 					}
 				}
 				c.getController().getPane().remove(c);
+				if(c instanceof InteractiveModule){
+					c.getController().getGraph().remove(((InteractiveModule) c).getModule());
+				}
 			}
 		}
 		for(InteractiveShape c:shapes){

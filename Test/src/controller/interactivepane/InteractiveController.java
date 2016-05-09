@@ -53,42 +53,49 @@ import controller.shortcut.UndoAction;
 import model.MidiGraph;
 
 public class InteractiveController implements MouseInputListener,WindowStateListener, Serializable {
-	private InteractivePane pane;
+	private transient InteractivePane pane;
 	private MidiGraph graph;
 	private transient UserActionManager actionManager;
-	private Vector lastMousePaneLocation,
+	private transient Vector lastMousePaneLocation,
 					lastMouseGridLocation;
-	private Grouping group;
+	private transient Grouping group;
 	private transient ModuleListener moduleListener;
 	private transient PopupMenuListener popupMenuListener;
 	private transient ShapeListener shapeListener;
 	private transient CableCreationListener cableCreationListener;
 	private transient boolean componentAndViewDrag;
 	private transient boolean cableAddProcess;
-	private CablePointHost cableAddProcessSource;
+	private transient CablePointHost cableAddProcessSource;
 	
 	public InteractiveController(){
 		this(new InteractivePane(), new MidiGraph(), new UserActionManager());
 	}
 	public InteractiveController(InteractivePane pane, MidiGraph graph, UserActionManager actionManager){
-		this.pane = pane;
 		this.graph = graph;
 		this.actionManager = actionManager;
 		this.actionManager.setController(this);
-
-		this.pane.addMouseListener(this);
-		this.pane.addMouseMotionListener(this);
-		this.pane.addMouseWheelListener(this);
-		
 		this.moduleListener = new ModuleListener(this);
 		this.popupMenuListener = new PopupMenuListener(this);
 		this.shapeListener = new ShapeListener(this);
 		this.cableCreationListener = new CableCreationListener(this);
-		this.pane.addMouseListener(this.cableCreationListener);
-		this.pane.addMouseMotionListener(this.cableCreationListener);
+		this.pane = this.initPane(pane);
+				
+				
+				
+
+				
+		
+	}
+	
+	private InteractivePane initPane(InteractivePane pane){
+		pane.addMouseListener(this);
+		pane.addMouseMotionListener(this);
+		pane.addMouseWheelListener(this);
+		pane.addMouseListener(this.cableCreationListener);
+		pane.addMouseMotionListener(this.cableCreationListener);
 		// TODO: Shortcut handling should be done by other class
-				InputMap inputMap = this.pane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
-				ActionMap actionMap = this.pane.getActionMap();
+				InputMap inputMap = pane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+				ActionMap actionMap = pane.getActionMap();
 				
 				//undo/redo shortcuts
 				KeyStroke undoCode = KeyStroke.getKeyStroke(KeyEvent.VK_Z,InputEvent.CTRL_DOWN_MASK);
@@ -104,53 +111,18 @@ public class InteractiveController implements MouseInputListener,WindowStateList
 				inputMap.put(deleteCode, "deletePerformed");
 				AbstractAction deleteAction = new DeleteAction(this);
 				actionMap.put("deletePerformed", deleteAction);
-				
-				
-				
-				
-//				//TODO: remove this cable debug thing
-//				CablePointPanel p1 = new CablePointPanel(new CablePointSimple(CablePointType.INPUT));
-//				CablePointPanel p2 = new CablePointPanel(new CablePointSimple(CablePointType.OUTPUT));
-//				CablePointPanel p3 = new CablePointPanel(new CablePointSimple(CablePointType.OUTPUT));
-//				CablePointPanel p4 = new CablePointPanel(new CablePointSimple(CablePointType.INPUT));
-//				p1.setSize(50, 50);
-//				p2.setSize(50, 50);
-//				p3.setSize(50, 50);
-//				p4.setSize(50, 50);
-//				p1.setBackground(Color.LIGHT_GRAY);
-//				p2.setBackground(Color.LIGHT_GRAY);
-//				p3.setBackground(Color.LIGHT_GRAY);
-//				p4.setBackground(Color.LIGHT_GRAY);
-//				
-//				InteractiveComponent src = new InteractiveDisplay(this,new Vector(0,0), p1);
-//				InteractiveComponent src2 = new InteractiveDisplay(this,new Vector(500,900), p2);
-//				InteractiveComponent src3 = new InteractiveDisplay(this,new Vector(24,789), p3);
-//				InteractiveComponent src4 = new InteractiveDisplay(this,new Vector(654,345), p4);
-//
-//				
-//				src.addListeners(this.moduleListener,this.popupMenuListener,this.shapeListener,this.cableCreationListener);
-//				src2.addListeners(this.moduleListener,this.popupMenuListener,this.shapeListener,this.cableCreationListener);
-//				src3.addListeners(this.moduleListener,this.popupMenuListener,this.shapeListener,this.cableCreationListener);
-//				src4.addListeners(this.moduleListener,this.popupMenuListener,this.shapeListener,this.cableCreationListener);
-//				this.pane.add(src);
-//				this.pane.add(src2);
-//				this.pane.add(src3);
-//				this.pane.add(src4);
-//				InteractiveShapeComponent s = new InteractiveShapeComponent(this, new Vector(0,0));
-//				s.addListeners(this.moduleListener,this.popupMenuListener, this.shapeListener, this.cableCreationListener);
-//				this.pane.add(s);
-				// a few graphical bugs come with the introduction of interactive cable components
-//				InteractiveCableComponent icc = new InteractiveCableComponent(p1,p2,this.pane);
-//				this.pane.add(icc);
-				// TODO: think about adding Cables as CableComponents instead of paint graphic shapes
-				ShapeListener sl = new ShapeListener(this);
-				this.pane.addMouseListener(sl);
-				this.pane.addMouseMotionListener(sl);
-				this.pane.addMouseWheelListener(sl);
-				this.pane.addMouseListener(this.popupMenuListener);
-
-				
+		// TODO: think about adding Cables as CableComponents instead of paint graphic shapes
+		ShapeListener sl = new ShapeListener(this);
+		pane.addMouseListener(sl);
+		pane.addMouseMotionListener(sl);
+		pane.addMouseWheelListener(sl);
+		pane.addMouseListener(this.popupMenuListener);
 		
+		return pane;
+	}
+	
+	public MidiGraph getGraph(){
+		return this.graph;
 	}
 	
 	public void setUserActionManager(UserActionManager manager){
@@ -343,6 +315,8 @@ public class InteractiveController implements MouseInputListener,WindowStateList
 		this.componentAndViewDrag = false;
 		this.actionManager = new UserActionManager();
 		this.actionManager.setController(this);
+		this.pane = this.initPane(new InteractivePane());
+		Populator.populateWith(this,this.graph);
 	}
 	public void setCableAddProcessSource(CablePointHost source) {
 		this.cableAddProcessSource = source;
