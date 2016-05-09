@@ -1,35 +1,46 @@
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.Scanner;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.sound.midi.MidiDevice;
 import javax.sound.midi.MidiMessage;
 import javax.sound.midi.MidiUnavailableException;
 import javax.sound.midi.Receiver;
 import javax.sound.midi.Transmitter;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 
 import midiengine.MidiEngine;
 import defaults.DefaultView;
 import defaults.MidiIO;
+import defaults.MidiIOThrough;
 import defaults.MidiListener;
 import plugin.Plugin;
 import pluginhost.PluginHost;
 import pluginhost.events.HostEvent;
 
 
-public class MidiOutputPlugin extends Plugin implements MidiListener {
+public class MidiOutputPlugin extends Plugin implements ActionListener, Serializable {
 
 	private static final int MAXINPUTS = 1;
 	private static final int MAXOUTPUTS = 0;
 	private static final int MININPUTS = 1;
 	private static final int MINOUTPUTS = 0;
 	private static final String NAME = "MidiOutputPlugin";
-	private transient MidiDevice outputdevice;
-	private transient Receiver outputreceiver;
-	private String mididDeviceName;
+	private transient static ConcurrentHashMap<String,OutputTransmitter> outputMap;
+	private String midiDeviceName;
+	private transient MidiIO input;
+	private transient LinkedList<MidiDevice> devices;
+	
+	static{
+		outputMap = new ConcurrentHashMap<String,OutputTransmitter>();
+	}
 	
 	public static MidiOutputPlugin getInstance(PluginHost host){
 		return new MidiOutputPlugin(host);
@@ -41,7 +52,7 @@ public class MidiOutputPlugin extends Plugin implements MidiListener {
 
 	@Override
 	public JComponent getMinimizedView() {
-		return new DefaultView("MIDIOUTPUT");
+		return new MiniView(this.getPluginHost().getEngine().getOutputDevices(),this,this.midiDeviceName);
 	}
 
 	@Override
@@ -85,54 +96,46 @@ public class MidiOutputPlugin extends Plugin implements MidiListener {
 
 	@Override
 	public void load() {
-		MidiEngine engine = this.getPluginHost().getEngine();
-		LinkedList<MidiDevice> outputs = engine.getOutputDevices();
-		for(int i = 0; i<outputs.size();i++){
-			System.out.println(i+": "+outputs.get(i).getDeviceInfo());
-		}
-		
-		try{
-			System.out.println("Output Device Index: ");
-			Scanner s = new Scanner(System.in);
-			int i = Integer.parseInt(s.nextLine());
-			outputdevice = outputs.get(i);
-			outputdevice.open();
-			outputreceiver = outputdevice.getReceiver();
-			this.mididDeviceName = outputdevice.getDeviceInfo().getName();
-			
-		} catch (MidiUnavailableException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		if(outputreceiver == null) {
-			System.err.println("No Input Transmitter obtained!");
-		} else{
-			this.getPluginHost().getInput(0).addMidiListener(this);
-		}
-		
+		this.input = this.getPluginHost().getInput(0);
+		this.devices = this.getPluginHost().getEngine().getOutputDevices();
 		
 	}
 
+	private void setOutputID(int id) throws MidiUnavailableException{
+		if(this.midiDeviceName!=null && outputMap.containsKey(midiDeviceName)){
+			outputMap.get(midiDeviceName).unregister(input);
+		}
+		
+		this.midiDeviceName = devices.get(id).getDeviceInfo().getName();
+		
+		if(!outputMap.containsKey(midiDeviceName)){
+			OutputTransmitter lastTransmitter = new OutputTransmitter(devices.get(id));
+			outputMap.put(midiDeviceName, lastTransmitter);
+			outputMap.get(midiDeviceName).register(input);
+		}else {
+			outputMap.get(midiDeviceName).register(this.input);
+		}
+		
+	}
+	
 	@Override
 	public boolean close() {
-		if(outputdevice != null)
-			outputdevice.close();
-		
+		if(midiDeviceName!=null && outputMap.containsKey(midiDeviceName)){
+			outputMap.get(midiDeviceName).unregister(input);
+		}
 		return true;
 	}
 	
 	@Override
 	public boolean reOpen(){
-		if(outputdevice != null)
-			try {
-				outputdevice.open();
-				this.outputreceiver = outputdevice.getReceiver();
-				
-			} catch (MidiUnavailableException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+		try {
+			if(this.midiDeviceName != null && outputMap.get(this.midiDeviceName) != null){
+				outputMap.get(this.midiDeviceName).register(input);
 			}
+		} catch (MidiUnavailableException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		return true;
 	}
@@ -148,23 +151,87 @@ public class MidiOutputPlugin extends Plugin implements MidiListener {
 		
 	}
 
-	@Override
-	public void listen(MidiIO source,MidiMessage msg, long timestamp) {
-		if(this.outputdevice.isOpen())
-			this.outputreceiver.send(msg, timestamp);
-		
-	}
 	
 	private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException {
+		this.devices = this.getPluginHost().getEngine().getOutputDevices();
 		in.defaultReadObject();
-		this.outputdevice = this.getPluginHost().getEngine().getOutputDevice(mididDeviceName);
-		try {
-			this.outputdevice.open();
-			this.outputreceiver = this.outputdevice.getReceiver();
-		} catch (MidiUnavailableException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		this.input = this.getPluginHost().getInput(0);
+		if(this.midiDeviceName != null && outputMap.containsKey(this.midiDeviceName)){
+			try {
+				outputMap.get(midiDeviceName).register(input);
+			} catch (MidiUnavailableException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 
+	private class OutputTransmitter implements MidiListener {
+		private LinkedList<MidiIO> inputs;
+		private MidiDevice outputDevice;
+		private Receiver outputReceiver;
+		
+		public OutputTransmitter(MidiDevice m){
+			this.inputs = new LinkedList<MidiIO>();
+			this.outputDevice = m;
+		}
+		
+		
+		public void close() {
+			this.outputDevice.close();
+			this.outputReceiver.close();
+			this.outputReceiver = null;
+		}
+		
+		public void open() throws MidiUnavailableException{
+			if(!outputDevice.isOpen()){
+				this.outputDevice.open();
+				this.outputReceiver = this.outputDevice.getReceiver();
+			}
+		}
+
+		public int inputCount(){
+			return this.inputs.size();
+		}
+		
+		public void register(MidiIO m) throws MidiUnavailableException{
+			if(this.inputCount() <= 0){
+				this.open();
+			}
+			if(!this.inputs.contains(m)){
+				m.addMidiListener(this);
+				this.inputs.add(m);
+			}
+		}
+		
+		public void unregister(MidiIO m){
+			this.inputs.remove(m);
+			m.removeMidiListener(this);
+			if(this.inputCount() <= 0){
+				this.close();
+			}
+		}
+		
+		@Override
+		public void listen(MidiIO source, MidiMessage msg, long timestamp) {
+			if(outputReceiver != null){
+				outputReceiver.send(msg, timestamp);
+			}
+		}
+		
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent arg0) {
+		Object o = arg0.getSource();
+		if(o instanceof JComboBox){
+			try {
+				this.setOutputID(((JComboBox) o).getSelectedIndex());
+			} catch (MidiUnavailableException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+		
+	}
 }

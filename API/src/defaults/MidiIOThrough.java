@@ -19,7 +19,7 @@ public class MidiIOThrough implements MidiIO,Serializable{
 	private PluginHost host;
 	private MidiIO output;
 	private MidiIO input;
-	private LinkedList<MidiListener> listeners;
+	private transient LinkedList<MidiListener> listeners;
 	
 	public MidiIOThrough(){
 		this(null);
@@ -116,6 +116,7 @@ public class MidiIOThrough implements MidiIO,Serializable{
 	}
 	
 	private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException{
+		this.listeners = new LinkedList<MidiListener>();
 		in.defaultReadObject();
 	}
 	

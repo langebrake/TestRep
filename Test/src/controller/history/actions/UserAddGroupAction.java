@@ -50,22 +50,29 @@ public class UserAddGroupAction extends UserAction {
 	}
 	@Override
 	public void undo() {
-		if(groupModule.close()){
+		
 			grouping.ungroup(groupModule);
+			grouping.close();
 			controller.remove(groupModule);
 //			this.originVector = groupModule.getOriginLocation();
 //			this.name = groupModule.getName();
-		}
+		
 
 	}
 
+	private boolean firsttime = true;
 	@Override
 	public void execute() {
 //			generateGroup();
-		if(groupModule.reopen()){
+		
 			grouping.group(groupModule, groupThis);
+			if(firsttime){
+				firsttime = false;
+			}else {
+				grouping.reOpen();
+			}
 			controller.add(groupModule);
-		}
+		
 
 	}
 

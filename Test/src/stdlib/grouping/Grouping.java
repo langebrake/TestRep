@@ -259,8 +259,10 @@ public class Grouping extends Plugin {
 				}
 				//TODO: ClassCastExceptions!!
 				oldController.remove((InteractiveModule) c);
-				if(!newPane.isAncestorOf(c))
+				if(!newPane.isAncestorOf(c)){
 					newController.add((InteractiveModule) c);
+					
+				}
 			}
 		}
 		newPane.updateView();
@@ -347,8 +349,10 @@ public class Grouping extends Plugin {
 				
 				
 				oldController.remove((InteractiveModule) c);
-				if(!newPane.isAncestorOf(c))
+				if(!newPane.isAncestorOf(c)){
 					newController.add((InteractiveModule) c);
+					newPane.setComponentSelected(c, true);
+				}
 				}
 			
 			

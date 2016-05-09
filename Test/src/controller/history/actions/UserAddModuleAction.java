@@ -72,11 +72,11 @@ public class UserAddModuleAction extends UserAction {
 
 		if(!firsttime){
 			interactiveModule.reopen();
-			System.out.println("REOPEN");
 			
 		} else {
 			firsttime = false;
 		}
+		interactiveModule.reopen();
 		interactiveModule.getController().add(interactiveModule);
 
 	}

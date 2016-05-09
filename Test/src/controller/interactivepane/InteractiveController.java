@@ -343,6 +343,7 @@ public class InteractiveController implements MouseInputListener,WindowStateList
 		}
 		return true;
 	}
+	
 	public boolean reOpen() {
 		for(Component c:this.pane.getComponents()){
 			if(c instanceof InteractiveModule){
