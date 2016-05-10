@@ -22,8 +22,8 @@ public class GraphTest {
 //			Plugin outputPlugin = new MidiOutputPlugin(outputModule);
 //			outputModule.setPlugin(outputPlugin);
 			
-			defaultModule.connectInput(inputModule.getOuput(0));
-			outputModule.connectInput(defaultModule.getOuput(0));
+//			defaultModule.connectInput(inputModule.getOuput(0));
+//			outputModule.connectInput(defaultModule.getOuput(0));
 			
 			Scanner s = new Scanner(System.in);
 			s.nextLine();

@@ -32,6 +32,7 @@ public class Populator {
 		InteractiveModule iMod = modMap.get(mod);
 		if(iMod == null){
 			iMod = new InteractiveModule(mod.origin, mod, c);
+			
 			modMap.put(mod, iMod);
 			pane.add(iMod);
 			for(CablePoint p:iMod.getCablePoints(CablePointType.OUTPUT)){

@@ -23,9 +23,6 @@ public class Module extends PluginHost {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public void ConnectNewInput(MidiIOThrough toConnect) throws PluginMaxInputsExceededException{
-		super.connectNewInput(toConnect);
-		}
 
 	
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {

@@ -9,6 +9,7 @@ import javax.sound.midi.MidiMessage;
 import javax.sound.midi.Receiver;
 import javax.sound.midi.Transmitter;
 
+import plugin.events.PluginMidiProcessingError;
 import pluginhost.PluginHost;
 
 
@@ -16,6 +17,7 @@ public class MidiIOThrough implements MidiIO,Serializable{
 /**
  * Connecting MidiIO:
  */
+	//TODO: host transient? maybe less disk space, but longer loading times
 	private PluginHost host;
 	private MidiIO output;
 	private MidiIO input;
@@ -36,7 +38,7 @@ public class MidiIOThrough implements MidiIO,Serializable{
 				l.listen(this, message, timeStamp);
 			}
 		}catch (Exception e){
-			e.printStackTrace();
+			this.host.notifyPluginStateChangedListener(new PluginMidiProcessingError(e.getMessage(),this.host));
 		}
 		
 	}
@@ -107,7 +109,7 @@ public class MidiIOThrough implements MidiIO,Serializable{
 	@Override
 	public void addMidiListener(MidiListener listener) {
 		if(!listeners.contains(listener))
-		this.listeners.add(listener);
+			this.listeners.add(listener);
 		
 	}
 	

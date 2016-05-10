@@ -30,6 +30,9 @@ import plugin.events.NewInputRequestEvent;
 import plugin.events.NewOutputRequestEvent;
 import plugin.events.PluginError;
 import plugin.events.PluginEvent;
+import plugin.events.PluginLoadingError;
+import plugin.events.PluginMidiProcessingError;
+import plugin.events.PluginSavingError;
 import pluginhost.PluginStateChangedListener;
 import pluginhost.events.HostEvent;
 import pluginhost.events.NewInputEvent;
@@ -79,7 +82,7 @@ public class InteractiveModule extends InteractiveComponent implements CablePoin
 		outputPopoutCable = new InteractiveCable(outputPopout.connector, outputPopupConnector, 2, Color.MAGENTA, controller);
 	
 		this.fullViewShowing = false;
-		this.module.addPluginStateChangedListener(this);
+		this.module.setPluginStateChangedListener(this);
 		this.updateIO();
 		this.updateView();
 		
@@ -784,10 +787,23 @@ public class InteractiveModule extends InteractiveComponent implements CablePoin
 	@Override
 	public void listen(PluginEvent e) {
 		if(e instanceof NewInputRequestEvent || e instanceof NewOutputRequestEvent){
+			//normal event
 			this.updateIO();
-		}
-		if(e.getClass() == PluginError.class){
-			//TODO
+		}else {
+			// error
+			if(e.getClass() == PluginLoadingError.class){
+				
+			}else
+			if(e.getClass() == PluginSavingError.class){
+				
+			}else
+			if(e.getClass() == PluginMidiProcessingError.class){
+				
+			}else
+			if(e.getClass() == PluginError.class){
+				
+			}
+			// this.controller.addPluginError(this, e)
 		}
 	}
 	
@@ -800,7 +816,7 @@ public class InteractiveModule extends InteractiveComponent implements CablePoin
 	
 	private void readObject(ObjectInputStream ois) throws ClassNotFoundException, IOException{
 		ois.defaultReadObject();
-		this.module.addPluginStateChangedListener(this);
+		this.module.setPluginStateChangedListener(this);
 		System.out.println(this.getComponentCount());
 		this.removeAll();
 		this.initView();
