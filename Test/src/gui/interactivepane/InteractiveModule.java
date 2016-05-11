@@ -804,6 +804,7 @@ public class InteractiveModule extends InteractiveComponent implements CablePoin
 				
 			}
 			// this.controller.addPluginError(this, e)
+			System.out.println("ERROR" + e);
 		}
 	}
 	

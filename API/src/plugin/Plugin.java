@@ -35,8 +35,6 @@ public abstract class Plugin implements Serializable{
 	
 	public static PluginHost waiter = null;
 	public static PluginHost waitForHost(){
-		while(waiter == null){
-		}
 		PluginHost tmp = waiter;
 		waiter = null;
 		return tmp;

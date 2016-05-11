@@ -655,6 +655,8 @@ public class Grouping extends Plugin {
 	}
 	
 	private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException{
+		this.setPluginHost(Plugin.waitForHost());
+		System.out.println("PluginHost: "+this.getPluginHost());
 		in.defaultReadObject();
 		for(Component c: this.controller.getPane().getComponents()){
 			
