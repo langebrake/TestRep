@@ -540,6 +540,7 @@ public class Grouping extends Plugin {
 		}
 		private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException{
 			in.defaultReadObject();
+			this.pointlessConnections = new LinkedList<InteractiveCable>();
 		}
 		private void writeObject(ObjectOutputStream out) throws IOException{
 			out.defaultWriteObject();
@@ -651,6 +652,7 @@ public class Grouping extends Plugin {
 		}
 		private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException{
 			in.defaultReadObject();
+			this.pointlessConnections = new LinkedList<InteractiveCable>();
 		}
 	}
 	
@@ -677,6 +679,7 @@ public class Grouping extends Plugin {
 				}
 			}
 		}
+		this.pointlessConnections = new LinkedList<InteractiveCable>();
 	}
 	
 	private void writeObject(ObjectOutputStream out) throws IOException {
