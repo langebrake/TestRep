@@ -49,6 +49,7 @@ public class Grouping extends Plugin {
 	private transient InteractiveModule groupOutput;
 	private transient InteractiveModule groupInput;
 	private transient boolean block;
+	private transient LinkedList<InteractiveCable> pointlessConnections = new LinkedList<InteractiveCable>();
 	
 	public static Grouping getInstance(PluginHost host){
 		return new Grouping(host);
@@ -139,7 +140,6 @@ public class Grouping extends Plugin {
 	public void load() {
 		controller = new InteractiveController();
 		view = new DefaultView(this.msg);
-		
 		try {
 			Module m = new Module();
 			Plugin p = new GroupInput(m,this);
@@ -258,6 +258,7 @@ public class Grouping extends Plugin {
 					//handle external Connections
 					
 				}
+				
 				//TODO: ClassCastExceptions!!
 				oldController.remove((InteractiveModule) c);
 				if(!newPane.isAncestorOf(c)){
@@ -266,9 +267,28 @@ public class Grouping extends Plugin {
 				}
 			}
 		}
+		
+		addPointlessConnections(oldController, this.pointlessConnections);
+		addPointlessConnections(newController, ((GroupInput)this.groupInput.getModule().getPlugin()).pointlessConnections);
+		addPointlessConnections(newController, ((GroupOutput)this.groupOutput.getModule().getPlugin()).pointlessConnections);
+		
 		newPane.updateView();
 		//TODO: mind the translation: the modules in the new pane need to be translated relative to their old position! best: 
 		// where left-click for grouping was detected is the new (0|0)
+	}
+	
+	private void addPointlessConnections(InteractiveController newController, LinkedList<InteractiveCable> connections){
+		InteractivePane pane = newController.getPane();
+		for(InteractiveCable c:connections){
+			c.setController(newController);
+			for(CablePoint p:c.getCablePoints()){
+				p.setCable(c);
+			}
+			if(!pane.getShapes().contains(c)){
+				pane.add(c);
+			}
+			connections.remove(c);
+		}
 	}
 	
 	public void ungroup(InteractiveModule groupModule){
@@ -280,6 +300,7 @@ public class Grouping extends Plugin {
 		oldPane.clearSelection();
 		Vector restoreTranslation = groupModule.getOriginLocation();
 		for(Component comp:this.controller.getPane().getComponents()){
+		
 			if(comp instanceof InteractiveComponent && comp instanceof Groupable && ungroupable((InteractiveComponent) comp)){
 				InteractiveComponent c = (InteractiveComponent) comp;
 				c.setController(groupModule.getController());
@@ -291,7 +312,7 @@ public class Grouping extends Plugin {
 							InteractiveCable cable = p.getCable();
 							if(cable.getController() != groupModule.getController()){
 								oldPane.remove(cable);
-								cable.setController(groupModule.getController());
+								cable.setController(newController);
 								CablePoint otherEnd = (cable.getSource() == p) ? cable.getDestination():cable.getSource();
 								
 								//TODO: better codemanagement possible, these cases are very similar
@@ -312,6 +333,8 @@ public class Grouping extends Plugin {
 											newPane.add(cable);
 										} else {
 											// remove unused connection
+											
+											((GroupOutput)groupOutput.getModule().getPlugin()).pointlessConnections.add(cable);
 											p.disconnect();
 											otherEnd.disconnect();
 										}
@@ -332,6 +355,8 @@ public class Grouping extends Plugin {
 											newPane.add(cable);
 										} else {
 											// remove unused connection
+											
+											((GroupInput)groupInput.getModule().getPlugin()).pointlessConnections.add(cable);
 											p.disconnect();
 											otherEnd.disconnect();
 										}
@@ -362,6 +387,7 @@ public class Grouping extends Plugin {
 		for(CablePoint p: groupModule.getCablePoints()){
 			if(p.isConnected()){
 				InteractiveCable tmp = p.getCable();
+				this.pointlessConnections.add(tmp);
 				tmp.getSource().disconnect();
 				tmp.getDestination().disconnect();
 				newPane.remove(tmp);
@@ -426,7 +452,8 @@ public class Grouping extends Plugin {
 		private DefaultView view;
 		private transient boolean block;
 		private transient Grouping grouping;
-	
+		private transient LinkedList<InteractiveCable> pointlessConnections = new LinkedList<InteractiveCable>();
+		
 		public GroupInput(PluginHost host, Grouping grouping) {
 			super(host);
 			this.grouping = grouping;
@@ -531,6 +558,7 @@ public class Grouping extends Plugin {
 		private DefaultView view;
 		private transient boolean block;
 		private transient Grouping grouping;
+		private transient LinkedList<InteractiveCable> pointlessConnections = new LinkedList<InteractiveCable>();
 		
 		public GroupOutput(PluginHost host, Grouping grouping) {
 			super(host);
