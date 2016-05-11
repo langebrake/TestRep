@@ -340,6 +340,10 @@ public class InteractivePane extends JLayeredPane {
 		return this.scaleFactor;
 	}
 	
+	/**
+	 * returns the grid-based translation of the viewport
+	 * @return
+	 */
 	public Vector getViewportTranslation(){
 		return this.viewportTranslation;
 	}

@@ -110,7 +110,6 @@ public class MidiOutputPlugin extends Plugin implements ActionListener, Serializ
 		
 		if(!outputMap.containsKey(midiDeviceName)){
 			OutputTransmitter lastTransmitter = new OutputTransmitter(devices.get(id));
-			System.out.println(lastTransmitter.outputDevice.getDeviceInfo());
 			outputMap.put(midiDeviceName, lastTransmitter);
 			outputMap.get(midiDeviceName).register(input);
 		}else {

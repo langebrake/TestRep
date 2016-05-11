@@ -8,7 +8,6 @@ import model.graph.Module;
 
 public class GraphTest {
 	public static void main(String[] args) {
-		System.out.println("WELCOME!");
 		try {
 			Module inputModule = new Module();
 			Module defaultModule= new Module();

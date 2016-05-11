@@ -23,8 +23,11 @@ import model.pluginmanager.PluginHierarchyElement;
 import model.pluginmanager.PluginManager;
 import model.pluginmanager.Subgroup;
 import controller.pluginmanager.PluginAddAction;
+import controller.shortcut.CopyAction;
+import controller.shortcut.CutAction;
 import controller.shortcut.DeleteAction;
 import controller.shortcut.GroupingAction;
+import controller.shortcut.PasteAction;
 import controller.shortcut.RenameAction;
 import controller.shortcut.UngroupAction;
 
@@ -72,13 +75,25 @@ public class PopupMenuListener extends MouseAdapter implements Serializable {
 	}
 	
 	private void addStandardMenu(JPopupMenu p, MouseEvent e){
-		JMenuItem item = new JMenuItem(new DeleteAction(this.controller));
+		JMenuItem item =  new JMenuItem(new CopyAction(this.controller));
+		item.setEnabled(this.controller.getPane().getComponentSelection().size()!=0);
+		p.add(item);
+		
+		item = new JMenuItem(new CutAction(this.controller));
+		item.setEnabled(this.controller.getPane().getComponentSelection().size()!=0);	
+		p.add(item);
+		
+		item = new JMenuItem(new PasteAction(this.controller));
+		item.setEnabled(this.controller.getClipboard().hasClipboard());
+		p.add(item);
+		
+		
+		item = new JMenuItem(new DeleteAction(this.controller));
 		item.setEnabled(controller.getPane().hasSelected());
 		p.add(item);
 		Object source = e.getSource();
 
 		item = new JMenuItem(new RenameAction(e.getSource()));
-		System.out.println(e.getSource());
 		p.add(item);
 		item.setEnabled(source instanceof InteractiveModule);
 

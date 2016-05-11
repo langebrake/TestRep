@@ -62,7 +62,6 @@ public class PluginManager {
 				    
 				    String className = je.getName().substring(0,je.getName().length()-6);
 				    className = className.replace('/', '.');
-				    //System.out.println(className);
 				    Class<?> c = cl.loadClass(className);
 				    if(c.getSuperclass() == Plugin.class){
 				    	Method m = c.getMethod("getInstance",PluginHost.class);

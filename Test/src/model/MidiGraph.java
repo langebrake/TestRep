@@ -38,7 +38,6 @@ public class MidiGraph implements Serializable,Iterable<Module>{
 		out.writeInt(nodes.size());
 		for(Module m:nodes){
 			out.writeObject(m);
-			System.out.println(m + " "+m.getPlugin());
 		}
 	}
 	
@@ -47,7 +46,6 @@ public class MidiGraph implements Serializable,Iterable<Module>{
 		nodes = new LinkedList<Module>();
 		for(int i = 0;i<max;i++){
 			nodes.add((Module) in.readObject());
-			System.out.println(nodes.get(i)+" "+nodes.get(i).getPlugin());
 		}
 	}
 

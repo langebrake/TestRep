@@ -42,7 +42,7 @@ import controller.interactivepane.FullViewClosingListener;
 import controller.interactivepane.InteractiveController;
 import model.graph.Module;
 
-public class InteractiveModule extends InteractiveComponent implements CablePointHost, PluginStateChangedListener, Groupable {
+public class InteractiveModule extends InteractiveComponent implements CablePointHost, PluginStateChangedListener, Groupable, Cloneable{
 	
 	
 	private Module module;
@@ -166,7 +166,6 @@ public class InteractiveModule extends InteractiveComponent implements CablePoin
 		boolean newPoint = false;
 		for(MidiIOThrough m:inputs){
 			if(!inputMap.containsValue(m)){
-				System.out.println(m);
 				CablePointSimple cps = new CablePointSimple(CablePointType.INPUT);
 				cps.setHost(this);
 				cps.setIndex(inputs.indexOf(m));
@@ -184,7 +183,6 @@ public class InteractiveModule extends InteractiveComponent implements CablePoin
 		boolean newPoint = false;
 		for(MidiIOThrough m:outputs){
 			if(!outputMap.containsValue(m)){
-				System.out.println(m);
 				CablePointSimple cps = new CablePointSimple(CablePointType.OUTPUT);
 				cps.setHost(this);
 				cps.setIndex(outputs.indexOf(m));
@@ -810,9 +808,20 @@ public class InteractiveModule extends InteractiveComponent implements CablePoin
 		}
 	}
 	
+	public InteractiveModule clone(){
+		return cloneTo(this.getOriginLocation(), this.getController());
+		
+	}
+	
+	public InteractiveModule cloneTo(Vector offset, InteractiveController controller){
+		Module m = this.module.clone();
+		InteractiveModule tmp = new InteractiveModule(this.getOriginLocation().addVector(offset), m, controller);
+		return tmp;
+
+	}
+	
 	private void writeObject(ObjectOutputStream oos) throws IOException{
 		this.removeAll();
-		System.out.println(this.getComponentCount());
 		oos.defaultWriteObject();
 		this.initView();
 	}
@@ -820,7 +829,6 @@ public class InteractiveModule extends InteractiveComponent implements CablePoin
 	private void readObject(ObjectInputStream ois) throws ClassNotFoundException, IOException{
 		ois.defaultReadObject();
 		this.module.setPluginStateChangedListener(this);
-		System.out.println(this.getComponentCount());
 		this.removeAll();
 		this.initView();
 	}

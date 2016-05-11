@@ -4,6 +4,7 @@ import java.awt.Component;
 import java.awt.Container;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.NotSerializableException;
 import java.io.ObjectInputStream;
@@ -11,6 +12,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Iterator;
 import java.util.LinkedList;
 
 import javax.sound.midi.MidiUnavailableException;
@@ -23,6 +25,7 @@ import engine.Engine;
 import plugin.Plugin;
 import plugin.events.NewInputRequestEvent;
 import plugin.events.NewOutputRequestEvent;
+import plugin.events.PluginCopyError;
 import plugin.events.PluginError;
 import plugin.events.PluginEvent;
 import plugin.events.PluginLoadingError;
@@ -31,7 +34,7 @@ import pluginhost.exceptions.*;
 import pluginhost.events.*;
 
 
-public abstract class PluginHost implements Serializable{
+public abstract class PluginHost implements Serializable, Cloneable{
 	
 	private LinkedList<MidiIOThrough> inputs,outputs;
 	private transient Plugin plugin;
@@ -776,12 +779,17 @@ public abstract class PluginHost implements Serializable{
 	private void writeObject(ObjectOutputStream out) throws IOException {
 		
 		//Remove all References to inner Plugin on the MidiIO endpoints
+		LinkedList<MidiIO> oldInputForward = new LinkedList<MidiIO>(),
+							oldOutputForward = new LinkedList<MidiIO>();
 		for(MidiIO m:this.inputs){
+			oldInputForward.add(m.getOutput());
 			m.disconnectOutput();
 		}
 		for(MidiIO m:this.outputs){
+			oldOutputForward.add(m.getInput());
 			m.disconnectInput();
 		}
+		
 		out.defaultWriteObject();
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		ObjectOutputStream oos = new ObjectOutputStream(bos);
@@ -796,6 +804,16 @@ public abstract class PluginHost implements Serializable{
 		}
 		
 		out.writeObject(plugin);
+		
+		//restore inner References
+		Iterator<MidiIOThrough> inputIterator = this.inputs.iterator();
+		Iterator<MidiIOThrough> outputIterator = this.outputs.iterator();
+		for(MidiIO m:oldInputForward){
+			inputIterator.next().setOutput(m);
+		}
+		for(MidiIO m:oldOutputForward){
+			outputIterator.next().setInput(m);
+		}
 		
 		
 	}
@@ -825,17 +843,64 @@ public abstract class PluginHost implements Serializable{
 			
 			try {
 				Method getInstance = pluginClass.getDeclaredMethod("getInstance", PluginHost.class);
-				this.plugin = (Plugin) getInstance.invoke(null, this);
+				this.setPlugin((Plugin) getInstance.invoke(null, this),this.pluginClass);
 				this.stateChangedListeners.listen(new PluginLoadingError(e,this));
 			} catch (IllegalAccessException | IllegalArgumentException
 					| InvocationTargetException | NoSuchMethodException | SecurityException e1) {
 				this.stateChangedListeners.listen(new PluginLoadingError(e,this));
 				
+			} catch (PluginMaxOutputsExceededException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
 			}
 		}
 		
 		
 		
 	}
+	
+	/**
+	 * returns null if no valid copy can be obtained
+	 */
+	public PluginHost clone(){
+		// a cloned object does not have the same connections! Connections are not cloneable.
+		LinkedList<MidiIO> oldInputs = new LinkedList<MidiIO>(),
+				oldOutputs = new LinkedList<MidiIO>();
+		for(MidiIO m:this.inputs){
+			oldInputs.add(m.getOutput());
+			m.disconnectInput();
+		}
+		for(MidiIO m:this.outputs){
+			oldOutputs.add(m.getInput());
+			m.disconnectOutput();
+		}
+		
+		PluginHost tmp = null;
+		try{
+			ByteArrayOutputStream bos = new ByteArrayOutputStream();
+			ObjectOutputStream oos = new ObjectOutputStream(bos);
+			oos.writeObject(this);
+			byte[] copy = bos.toByteArray();
+			
+			ByteArrayInputStream bin = new ByteArrayInputStream(copy);
+			ObjectInputStream oin = new ObjectInputStream(bin);
+			tmp = (PluginHost) oin.readObject();
+		} catch (Exception e){
+			this.stateChangedListeners.listen(new PluginCopyError(e, this));
+		}
+		
+		//restore connections
+		Iterator<MidiIOThrough> inputIterator = this.inputs.iterator();
+		Iterator<MidiIOThrough> outputIterator = this.outputs.iterator();
+		for(MidiIO m:oldInputs){
+			inputIterator.next().setInput(m);
+		}
+		for(MidiIO m:oldOutputs){
+			outputIterator.next().setOutput(m);
+		}
+		
+		return tmp;
+	}
+	
 	
 }

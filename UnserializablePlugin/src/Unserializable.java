@@ -39,7 +39,6 @@ public class Unserializable extends Plugin implements MidiListener{
 	private static final int MINOUTPUTS = 1;
 	private static final String NAME = "ThisIsNotSerializable!";
 	private String msg = "DummyPlugin";
-	private DefaultView view;
 	private Method m = null;
 	private static final Random rn = new Random();
 	private int s = rn.nextInt(1000)+rn.nextInt(3545)+rn.nextInt(4546);
@@ -86,7 +85,6 @@ public class Unserializable extends Plugin implements MidiListener{
 	}
 	@Override
 	public void load() {
-		this.view = new DefaultView(msg);
 		PluginHost host = this.getPluginHost();
 		host.getInput(0).addMidiListener(this);
 		try {
@@ -135,6 +133,15 @@ public class Unserializable extends Plugin implements MidiListener{
 		
 	}
 	
+	private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException{
+		in.defaultReadObject();
+		try {
+			this.m   = Plugin.class.getMethod("getInstance", PluginHost.class);
+		} catch (NoSuchMethodException | SecurityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 	
 
 }

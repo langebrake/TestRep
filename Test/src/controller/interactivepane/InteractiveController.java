@@ -46,6 +46,7 @@ import javax.swing.event.ChangeListener;
 import plugin.Plugin;
 import pluginhost.PluginHost;
 import stdlib.grouping.Grouping;
+import controller.clipboard.Clipboard;
 import controller.history.UserAction;
 import controller.history.UserActionManager;
 import controller.shortcut.DeleteAction;
@@ -67,11 +68,14 @@ public class InteractiveController implements MouseInputListener,WindowStateList
 	private transient boolean componentAndViewDrag;
 	private transient boolean cableAddProcess;
 	private transient CablePointHost cableAddProcessSource;
+	private transient Clipboard clipboard;
+	
 	
 	public InteractiveController(){
-		this(new InteractivePane(), new MidiGraph(), new UserActionManager());
+		this(new InteractivePane(), new MidiGraph(), new UserActionManager(), new Clipboard());
 	}
-	public InteractiveController(InteractivePane pane, MidiGraph graph, UserActionManager actionManager){
+	
+	public InteractiveController(InteractivePane pane, MidiGraph graph, UserActionManager actionManager, Clipboard c){
 		this.graph = graph;
 		this.actionManager = actionManager;
 		this.actionManager.setController(this);
@@ -79,14 +83,11 @@ public class InteractiveController implements MouseInputListener,WindowStateList
 		this.popupMenuListener = new PopupMenuListener(this);
 		this.shapeListener = new ShapeListener(this);
 		this.cableCreationListener = new CableCreationListener(this);
-		this.pane = this.initPane(pane);
-				
-				
-				
-
-				
-		
+		this.pane = this.initPane(pane);	
+		this.clipboard = c;
+		this.clipboard.setController(this);
 	}
+	
 	
 	private InteractivePane initPane(InteractivePane pane){
 		pane.addMouseListener(this);
@@ -154,6 +155,14 @@ public class InteractiveController implements MouseInputListener,WindowStateList
 
 	public UserActionManager getActionManager(){
 		return this.actionManager;
+	}
+	
+	public void setClipboard(Clipboard c){
+		this.clipboard = c;
+	}
+	
+	public Clipboard getClipboard(){
+		return this.clipboard;
 	}
 	
 
@@ -305,13 +314,11 @@ public class InteractiveController implements MouseInputListener,WindowStateList
 	public void windowStateChanged(WindowEvent arg0) {
 		this.pane.updateView();
 		this.pane.repaint();
-		System.out.println("WINDOW");
 		
 	}
 
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException{
 		in.defaultReadObject();
-		//just read the MIDI Graph, populate the pane! (transient pane) TODO
 		this.moduleListener = new ModuleListener(this);
 		this.popupMenuListener = new PopupMenuListener(this);
 		this.shapeListener = new ShapeListener(this);
@@ -321,6 +328,8 @@ public class InteractiveController implements MouseInputListener,WindowStateList
 		this.actionManager = new UserActionManager();
 		this.actionManager.setController(this);
 		this.pane = this.initPane(new InteractivePane());
+		this.clipboard = new Clipboard();
+		this.clipboard.setController(this);
 		Populator.populateWith(this,this.graph);
 	}
 	

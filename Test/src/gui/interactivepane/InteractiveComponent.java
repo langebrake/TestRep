@@ -27,7 +27,7 @@ import controller.interactivepane.InteractiveController;
 import controller.interactivepane.ModuleListener;
 import controller.interactivepane.PopupMenuListener;
 
-public abstract class InteractiveComponent extends JPanel implements InteractiveUpdateable {
+public abstract class InteractiveComponent extends JPanel implements InteractiveUpdateable, Cloneable {
 
 	private Vector originLocation;
 	private Dimension originDimension;

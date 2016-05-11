@@ -29,7 +29,6 @@ public class RenameAction extends AbstractAction {
 			Object result = JOptionPane.showInputDialog(d, "New name:");
 			if(result != null && result instanceof String){
 				module.setName((String) result);
-				System.out.println(result);
 			}
 		}
 

@@ -194,7 +194,7 @@ public class Controller implements WindowListener {
 			
 //	        }
 	            this.mainFrame.setVisible(false);
-		System.out.println("Exit");
+
 		System.exit(0);
 	}
 		

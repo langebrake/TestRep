@@ -2,6 +2,7 @@ package model.graph;
 
 import gui.interactivepane.Vector;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 
@@ -15,12 +16,12 @@ import pluginhost.events.*;
 import pluginhost.PluginHost;
 import pluginhost.exceptions.*;
 
-public class Module extends PluginHost {
+public class Module extends PluginHost implements Cloneable {
+	
 	public Vector origin;
 	public Module() throws MidiUnavailableException {
 		super();
 		origin = new Vector();
-		// TODO Auto-generated constructor stub
 	}
 	
 
@@ -29,4 +30,10 @@ public class Module extends PluginHost {
 		in.defaultReadObject();
 	}
 
+	
+	public Module clone(){
+		Module tmp = (Module) super.clone();
+		tmp.origin = new Vector();
+		return tmp;
+	}
 }

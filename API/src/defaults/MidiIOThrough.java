@@ -26,6 +26,8 @@ public class MidiIOThrough implements MidiIO,Serializable{
 
 	public MidiIOThrough(PluginHost host){
 		this.host=host;
+		this.input = null;
+		this.output = null;
 		this.listeners = new LinkedList<MidiListener>();
 	}
 
@@ -124,7 +126,6 @@ public class MidiIOThrough implements MidiIO,Serializable{
 	}
 	
 	private void writeObject(ObjectOutputStream out) throws IOException{
-		System.out.println(this.host.getName());
 		out.defaultWriteObject();
 	}
 	
