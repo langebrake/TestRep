@@ -661,10 +661,18 @@ public class Grouping extends Plugin {
 			if(((InteractiveModule) c).getModule().getPlugin() instanceof GroupInput){
 				this.groupInput = (InteractiveModule) c;
 				((GroupInput)this.groupInput.getModule().getPlugin()).grouping = this;
+				for(int i=0;i<this.getPluginHost().getInputCount();i++){
+					this.getPluginHost().getInput(i).setOutput(groupInput.getModule().getOuput(i));
+					groupInput.getModule().getOuput(i).setInput(this.getPluginHost().getInput(i));
+				}
 			} 
 			if (((InteractiveModule) c).getModule().getPlugin() instanceof GroupOutput){
 				this.groupOutput = (InteractiveModule) c;
 				((GroupOutput)this.groupOutput.getModule().getPlugin()).grouping = this;
+				for(int i=0;i<this.getPluginHost().getOutputCount();i++){
+					this.getPluginHost().getOuput(i).setInput(groupOutput.getModule().getInput(i));
+					groupOutput.getModule().getInput(i).setOutput(this.getPluginHost().getOuput(i));
+				}
 			}
 		}
 	}

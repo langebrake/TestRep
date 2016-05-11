@@ -17,6 +17,7 @@ import javax.sound.midi.MidiUnavailableException;
 
 import midiengine.MidiEngine;
 import defaults.DefaultView;
+import defaults.MidiIO;
 import defaults.MidiIOThrough;
 import engine.Engine;
 import plugin.Plugin;
@@ -766,7 +767,21 @@ public abstract class PluginHost implements Serializable{
 		return tmp;
 	}
 	
+	/**
+	 * All references to inner Plugin are removed from the MidiIO interfaces.
+	 * The Plugin has to take care about the connection.
+	 * @param out
+	 * @throws IOException
+	 */
 	private void writeObject(ObjectOutputStream out) throws IOException {
+		
+		//Remove all References to inner Plugin on the MidiIO endpoints
+		for(MidiIO m:this.inputs){
+			m.disconnectOutput();
+		}
+		for(MidiIO m:this.outputs){
+			m.disconnectInput();
+		}
 		out.defaultWriteObject();
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		ObjectOutputStream oos = new ObjectOutputStream(bos);
@@ -781,7 +796,6 @@ public abstract class PluginHost implements Serializable{
 		}
 		
 		out.writeObject(plugin);
-		System.out.println("SAVED");
 		
 		
 	}
@@ -790,6 +804,7 @@ public abstract class PluginHost implements Serializable{
 		PluginStateChangedListener tmp = (stateListener == null)? new DefaultStateChangedListener() : stateListener;
 		return tmp;
 	}
+	
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		try {
 			this.engine = Engine.load();
