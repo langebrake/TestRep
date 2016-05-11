@@ -9,6 +9,7 @@ import javax.sound.midi.MidiMessage;
 import javax.sound.midi.Receiver;
 import javax.sound.midi.Transmitter;
 
+import engine.Stringer;
 import plugin.events.PluginMidiProcessingError;
 import pluginhost.PluginHost;
 
@@ -18,11 +19,12 @@ public class MidiIOThrough implements MidiIO,Serializable{
  * Connecting MidiIO:
  */
 	//TODO: host transient? maybe less disk space, but longer loading times
-	private PluginHost host;
+	private transient PluginHost host;
 	private MidiIO output;
 	private MidiIO input;
 	private transient LinkedList<MidiListener> listeners;
 	
+	public static PluginHost waiterHost;
 
 	public MidiIOThrough(PluginHost host){
 		this.host=host;
@@ -126,7 +128,17 @@ public class MidiIOThrough implements MidiIO,Serializable{
 	}
 	
 	private void writeObject(ObjectOutputStream out) throws IOException{
+		String stringer = Stringer.getString();
+		System.out.println(stringer+"MIDIIO_START " + this.host.getName());
 		out.defaultWriteObject();
+		System.out.println(stringer+"MIDIIO_END   " + this.host.getName());
+		Stringer.minimize();
+	}
+
+	@Override
+	public void setPluginHost(PluginHost host) {
+		this.host = host;
+		
 	}
 	
 

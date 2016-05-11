@@ -4,12 +4,14 @@ import java.awt.BorderLayout;
 import java.awt.Container;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.LinkedList;
 
 import javax.swing.JPanel;
 
 import controller.interactivepane.InteractiveController;
+import engine.Stringer;
 
 public class Project implements Serializable{
 	private transient Container contentPane;
@@ -40,6 +42,13 @@ public class Project implements Serializable{
 		}
 	}
 	
+	private void writeObject(ObjectOutputStream out) throws IOException{
+		String stringer = Stringer.getString();
+		System.out.println(stringer +"PROJECT_START SAVE");
+		out.defaultWriteObject();
+		System.out.println(stringer +"PROJECT_END SAVE");
+		Stringer.minimize();
+	}
 	private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException{
 		in.defaultReadObject();
 		this.createContentPane();

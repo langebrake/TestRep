@@ -17,6 +17,7 @@ import java.util.LinkedList;
 
 import javax.sound.midi.MidiUnavailableException;
 
+import engine.Stringer;
 import midiengine.MidiEngine;
 import defaults.DefaultView;
 import defaults.MidiIO;
@@ -777,7 +778,8 @@ public abstract class PluginHost implements Serializable, Cloneable{
 	 * @throws IOException
 	 */
 	private void writeObject(ObjectOutputStream out) throws IOException {
-		
+		String stringer = Stringer.getString();
+		System.out.println(stringer+"MODULE_START " + this.getName());
 		//Remove all References to inner Plugin on the MidiIO endpoints
 		LinkedList<MidiIO> oldInputForward = new LinkedList<MidiIO>(),
 							oldOutputForward = new LinkedList<MidiIO>();
@@ -814,7 +816,8 @@ public abstract class PluginHost implements Serializable, Cloneable{
 		for(MidiIO m:oldOutputForward){
 			outputIterator.next().setInput(m);
 		}
-		
+		System.out.println(stringer+"MODULE_END   " + this.getName());
+		Stringer.minimize();
 		
 	}
 	public static PluginStateChangedListener stateListener = null;
@@ -832,6 +835,12 @@ public abstract class PluginHost implements Serializable, Cloneable{
 		}
 		this.stateChangedListeners = getInitStateListener();
 		in.defaultReadObject();
+		for(MidiIO m:this.inputs){
+			m.setPluginHost(this);
+		}
+		for(MidiIO m:this.outputs){
+			m.setPluginHost(this);
+		}
 		Plugin.waiter = this;
 		try{
 			byte[] b = (byte[]) in.readObject();

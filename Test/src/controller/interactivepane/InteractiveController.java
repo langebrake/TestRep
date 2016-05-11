@@ -1,5 +1,6 @@
 package controller.interactivepane;
 
+import engine.Stringer;
 import gui.interactivepane.CablePointHost;
 import gui.interactivepane.CablePointPanel;
 import gui.interactivepane.CablePointSimple;
@@ -334,7 +335,11 @@ public class InteractiveController implements MouseInputListener,WindowStateList
 	}
 	
 	private void writeObject(ObjectOutputStream out) throws IOException{
+		String stringer = Stringer.getString();
+		System.out.println(stringer+"CONTROLLER_START");
 		out.defaultWriteObject();
+		System.out.println(stringer+"CONTROLLER_END");
+		Stringer.minimize();
 	}
 	public void setCableAddProcessSource(CablePointHost source) {
 		this.cableAddProcessSource = source;

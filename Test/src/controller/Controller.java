@@ -28,6 +28,7 @@ import controller.maincontrol.OpenProject;
 import controller.maincontrol.Project;
 import controller.maincontrol.SaveProject;
 import engine.Engine;
+import engine.Stringer;
 
 public class Controller implements WindowListener {
 	
@@ -146,6 +147,7 @@ public class Controller implements WindowListener {
 	
 	public void saveProject(File file){
 		FileOutputStream fos;
+		Stringer.stringer = "";
 		try {
 			fos = new FileOutputStream(file);
 			ObjectOutputStream oos = new ObjectOutputStream(fos);

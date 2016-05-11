@@ -19,4 +19,5 @@ public interface MidiIO {
 	public int getId();
 	public void addMidiListener(MidiListener listener);
 	public void removeMidiListener(MidiListener listener);
+	public void setPluginHost(PluginHost host);
 }

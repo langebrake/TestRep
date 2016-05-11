@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 
+import engine.Stringer;
 import model.graph.Module;
 
 public class MidiGraph implements Serializable,Iterable<Module>{
@@ -35,10 +36,14 @@ public class MidiGraph implements Serializable,Iterable<Module>{
 	}
 	
 	private void writeObject(ObjectOutputStream out) throws IOException{
+		String stringer = Stringer.getString();
+		System.out.println(stringer+"GRAPH_START");
 		out.writeInt(nodes.size());
 		for(Module m:nodes){
 			out.writeObject(m);
 		}
+		System.out.println(stringer+"GRAPH_END");
+		Stringer.minimize();
 	}
 	
 	private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException{
