@@ -123,5 +123,10 @@ public class MidiIOThrough implements MidiIO,Serializable{
 		in.defaultReadObject();
 	}
 	
+	private void writeObject(ObjectOutputStream out) throws IOException{
+		System.out.println(this.host.getName());
+		out.defaultWriteObject();
+	}
+	
 
 }

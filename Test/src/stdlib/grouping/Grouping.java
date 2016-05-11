@@ -3,9 +3,7 @@ package stdlib.grouping;
 import java.awt.Component;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.HashMap;
+import java.io.ObjectOutputStream;
 import java.util.LinkedList;
 
 import gui.interactivepane.CablePoint;
@@ -19,9 +17,7 @@ import gui.interactivepane.Vector;
 
 import javax.sound.midi.MidiUnavailableException;
 import javax.swing.JComponent;
-import javax.swing.JFrame;
 
-import controller.history.actions.UserAddModuleAction;
 import controller.interactivepane.InteractiveController;
 import defaults.DefaultView;
 import defaults.MidiIO;
@@ -31,11 +27,7 @@ import pluginhost.PluginHost;
 import pluginhost.events.HostEvent;
 import pluginhost.events.NewInputEvent;
 import pluginhost.events.NewOutputEvent;
-import pluginhost.exceptions.PluginInputNotFoundException;
 import pluginhost.exceptions.PluginMaxOutputsExceededException;
-import pluginhost.exceptions.PluginMinInputsExceededException;
-import pluginhost.exceptions.PluginMinOutputsExceededException;
-import pluginhost.exceptions.PluginOutputNotFoundException;
 
 public class Grouping extends Plugin {
 	private static final int MAXINPUTS = -1;
@@ -549,6 +541,9 @@ public class Grouping extends Plugin {
 		private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException{
 			in.defaultReadObject();
 		}
+		private void writeObject(ObjectOutputStream out) throws IOException{
+			out.defaultWriteObject();
+		}
 	}
 	
 	private static class GroupOutput extends Plugin {
@@ -672,6 +667,10 @@ public class Grouping extends Plugin {
 				((GroupOutput)this.groupOutput.getModule().getPlugin()).grouping = this;
 			}
 		}
+	}
+	
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.defaultWriteObject();
 	}
 
 }
