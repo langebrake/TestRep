@@ -119,6 +119,10 @@ public class Grouping extends Plugin {
 			} else if (e instanceof NewOutputEvent){
 				((GroupOutput)groupOutput.getModule().getPlugin()).block = true;
 				MidiIO externalOutput = ((NewOutputEvent) e).getNewOutput();
+				System.out.println(groupOutput.getModule());
+				System.out.println(groupOutput.getModule().getPlugin());
+				System.out.println(groupOutput.getModule().getPlugin().getPluginHost());
+				System.out.println(groupOutput.getModule().getPlugin().getPluginHost().newInput());
 				MidiIO internalInput = this.groupOutput.getModule().getPlugin().getPluginHost().newInput();
 				internalInput.setOutput(externalOutput);
 				externalOutput.setInput(internalInput);
@@ -539,6 +543,7 @@ public class Grouping extends Plugin {
 			return true;
 		}
 		private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException{
+			this.setPluginHost(Plugin.waitForHost());
 			in.defaultReadObject();
 			this.pointlessConnections = new LinkedList<InteractiveCable>();
 		}
@@ -651,6 +656,7 @@ public class Grouping extends Plugin {
 			return true;
 		}
 		private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException{
+			this.setPluginHost(Plugin.waitForHost());
 			in.defaultReadObject();
 			this.pointlessConnections = new LinkedList<InteractiveCable>();
 		}

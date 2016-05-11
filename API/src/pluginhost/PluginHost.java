@@ -60,7 +60,7 @@ public abstract class PluginHost implements Serializable{
 			this.plugin.close();
 			} catch (Exception e){
 				//TODO: Handle and tell the exception listener;
-				stateChangedListeners.listen(new PluginError(e.getMessage(),this));
+				stateChangedListeners.listen(new PluginError(e,this));
 			}
 		}
 		this.plugin = p;
@@ -83,12 +83,12 @@ public abstract class PluginHost implements Serializable{
 			}
 		} catch (Exception e){
 			this.name = "";
-			stateChangedListeners.listen(new PluginError(e.getMessage(),this));
+			stateChangedListeners.listen(new PluginError(e,this));
 		}
 		try{
 			p.load();
 		} catch (Exception e){
-			stateChangedListeners.listen(new PluginError(e.getMessage(),this));
+			stateChangedListeners.listen(new PluginError(e,this));
 		}
 	}
 	
@@ -241,7 +241,7 @@ public abstract class PluginHost implements Serializable{
 			try{
 				this.plugin.notify(event);
 			} catch (Exception e){
-				this.stateChangedListeners.listen(new PluginError(e.getMessage(),this));
+				this.stateChangedListeners.listen(new PluginError(e,this));
 				return null;
 			}
 			
@@ -499,7 +499,7 @@ public abstract class PluginHost implements Serializable{
 			try{
 				this.plugin.notify(event);
 			} catch (Exception e){
-				this.stateChangedListeners.listen(new PluginError(e.getMessage(),this));
+				this.stateChangedListeners.listen(new PluginError(e,this));
 				return null;
 			}
 			
@@ -722,7 +722,7 @@ public abstract class PluginHost implements Serializable{
 		try{
 			res = this.plugin.close();
 		}catch (Exception e){
-			this.stateChangedListeners.listen(new PluginError(e.getMessage(),this));
+			this.stateChangedListeners.listen(new PluginError(e,this));
 		}
 		return res;
 	}
@@ -732,7 +732,7 @@ public abstract class PluginHost implements Serializable{
 		try{
 			res = this.plugin.reOpen();
 		}catch (Exception e){
-			this.stateChangedListeners.listen(new PluginError(e.getMessage(),this));
+			this.stateChangedListeners.listen(new PluginError(e,this));
 		}
 		return res;
 	}
@@ -758,7 +758,7 @@ public abstract class PluginHost implements Serializable{
 		try{
 			tmp =this.plugin.getFullView();
 		} catch (Exception e){
-			this.stateChangedListeners.listen(new PluginError(e.getMessage(),this));
+			this.stateChangedListeners.listen(new PluginError(e,this));
 			return new DefaultView(this.getName());
 		}
 		if(tmp == null){
@@ -792,7 +792,7 @@ public abstract class PluginHost implements Serializable{
 		} catch (NotSerializableException e){
 			//e.printStackTrace();
 			plugin = new byte[0];
-			this.stateChangedListeners.listen(new PluginSavingError(e.getMessage(),this));
+			this.stateChangedListeners.listen(new PluginSavingError(e,this));
 		}
 		
 		out.writeObject(plugin);
@@ -826,10 +826,10 @@ public abstract class PluginHost implements Serializable{
 			try {
 				Method getInstance = pluginClass.getDeclaredMethod("getInstance", PluginHost.class);
 				this.plugin = (Plugin) getInstance.invoke(null, this);
-				this.stateChangedListeners.listen(new PluginLoadingError(e.getMessage(),this));
+				this.stateChangedListeners.listen(new PluginLoadingError(e,this));
 			} catch (IllegalAccessException | IllegalArgumentException
 					| InvocationTargetException | NoSuchMethodException | SecurityException e1) {
-				this.stateChangedListeners.listen(new PluginLoadingError(e.getMessage(),this));
+				this.stateChangedListeners.listen(new PluginLoadingError(e,this));
 				
 			}
 		}

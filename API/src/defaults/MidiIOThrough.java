@@ -38,7 +38,7 @@ public class MidiIOThrough implements MidiIO,Serializable{
 				l.listen(this, message, timeStamp);
 			}
 		}catch (Exception e){
-			this.host.notifyPluginStateChangedListener(new PluginMidiProcessingError(e.getMessage(),this.host));
+			this.host.notifyPluginStateChangedListener(new PluginMidiProcessingError(e,this.host));
 		}
 		
 	}

@@ -3,18 +3,17 @@ package plugin.events;
 import pluginhost.PluginHost;
 
 public class PluginError extends PluginEvent {
-	private String msg;
 	private PluginHost sourceHost;
-	public PluginError(String msg, PluginHost sourceHost){
-		this.msg = msg;
+	private Exception exception;
+	public PluginError(Exception exception, PluginHost sourceHost){
 		this.sourceHost = sourceHost;
+		this.exception = exception;
 	}
-	
-	public String getMessage(){
-		return this.msg;
-	}
-	
 	public PluginHost getSourceHost(){
 		return this.sourceHost;
+	}
+	
+	public Exception getException(){
+		return this.exception;
 	}
 }

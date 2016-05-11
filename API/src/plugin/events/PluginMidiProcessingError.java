@@ -4,9 +4,11 @@ import pluginhost.PluginHost;
 
 public class PluginMidiProcessingError extends PluginError {
 
-	public PluginMidiProcessingError(String msg, PluginHost sourceHost) {
-		super(msg, sourceHost);
+	public PluginMidiProcessingError(Exception exception, PluginHost sourceHost) {
+		super(exception, sourceHost);
 		// TODO Auto-generated constructor stub
 	}
+
+
 
 }

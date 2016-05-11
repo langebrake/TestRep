@@ -4,10 +4,12 @@ import pluginhost.PluginHost;
 
 public class PluginSavingError extends PluginError {
 
-	public PluginSavingError(String msg, PluginHost sourceHost) {
-		super(msg, sourceHost);
+	public PluginSavingError(Exception exception, PluginHost sourceHost) {
+		super(exception, sourceHost);
 		// TODO Auto-generated constructor stub
 	}
+
+
 
 
 }
