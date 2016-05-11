@@ -287,8 +287,8 @@ public class Grouping extends Plugin {
 			if(!pane.getShapes().contains(c)){
 				pane.add(c);
 			}
-			connections.remove(c);
 		}
+		connections.clear();
 	}
 	
 	public void ungroup(InteractiveModule groupModule){
@@ -298,9 +298,9 @@ public class Grouping extends Plugin {
 		InteractiveController newController = groupModule.getController();
 		InteractiveController oldController = this.controller;
 		oldPane.clearSelection();
+		newPane.clearSelection();
 		Vector restoreTranslation = groupModule.getOriginLocation();
 		for(Component comp:this.controller.getPane().getComponents()){
-		
 			if(comp instanceof InteractiveComponent && comp instanceof Groupable && ungroupable((InteractiveComponent) comp)){
 				InteractiveComponent c = (InteractiveComponent) comp;
 				c.setController(groupModule.getController());
@@ -409,6 +409,9 @@ public class Grouping extends Plugin {
 	}
 	
 	private boolean ungroupable(InteractiveComponent c){
+		if(c instanceof InteractiveModule && ((InteractiveModule) c).getModule().getPlugin() == this){
+			return false;
+		}
 		return (c!=this.groupInput && c!=this.groupOutput);
 	}
 	
@@ -669,7 +672,6 @@ public class Grouping extends Plugin {
 				((GroupOutput)this.groupOutput.getModule().getPlugin()).grouping = this;
 			}
 		}
-		//just reads the MIDIGraph, needs to be populated TODO
 	}
 
 }
