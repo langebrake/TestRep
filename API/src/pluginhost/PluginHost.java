@@ -870,17 +870,19 @@ public abstract class PluginHost implements Serializable, Cloneable{
 	
 	/**
 	 * returns null if no valid copy can be obtained
+	 * connections are not cloned! this would result in very long loading times
+	 * because MidiIOs are interconnected and the net gets fully serialized.
 	 */
 	public PluginHost clone(){
-		// a cloned object does not have the same connections! Connections are not cloneable.
+		
 		LinkedList<MidiIO> oldInputs = new LinkedList<MidiIO>(),
 				oldOutputs = new LinkedList<MidiIO>();
 		for(MidiIO m:this.inputs){
-			oldInputs.add(m.getOutput());
+			oldInputs.add(m.getInput());
 			m.disconnectInput();
 		}
 		for(MidiIO m:this.outputs){
-			oldOutputs.add(m.getInput());
+			oldOutputs.add(m.getOutput());
 			m.disconnectOutput();
 		}
 		
@@ -897,6 +899,7 @@ public abstract class PluginHost implements Serializable, Cloneable{
 		} catch (Exception e){
 			this.stateChangedListeners.listen(new PluginCopyError(e, this));
 		}
+		
 		
 		//restore connections
 		Iterator<MidiIOThrough> inputIterator = this.inputs.iterator();

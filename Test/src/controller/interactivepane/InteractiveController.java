@@ -128,14 +128,16 @@ public class InteractiveController implements MouseInputListener,WindowStateList
 		return this.graph;
 	}
 	
-	public void add(InteractiveModule m){
-		this.pane.add(m);
-		this.graph.add(m.getModule());
+	public void add(InteractiveComponent c){
+		this.pane.add(c);
+		if(c instanceof InteractiveModule)
+			this.graph.add(((InteractiveModule) c).getModule());
 	}
 	
-	public void remove(InteractiveModule m){
-		this.pane.remove(m);
-		this.graph.remove(m.getModule());
+	public void remove(InteractiveComponent c){
+		this.pane.remove(c);
+		if(c instanceof InteractiveModule)
+			this.graph.remove(((InteractiveModule) c).getModule());
 	}
 	
 	public void setUserActionManager(UserActionManager manager){

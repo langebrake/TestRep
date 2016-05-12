@@ -10,6 +10,7 @@ import java.util.LinkedList;
 
 import javax.swing.AbstractAction;
 
+import controller.history.actions.UserPasteAction;
 import controller.interactivepane.InteractiveController;
 
 public class PasteAction extends AbstractAction {
@@ -28,23 +29,17 @@ public class PasteAction extends AbstractAction {
 	
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		if(this.controller.getClipboard().hasClipboard()){
-			Vector offset = this.controller.getPane()
-					.getViewportTranslation()
-					.diffVector(this.controller
-							.getClipboard()
-							.getCopyGridLocation())
-							.addVector(new Vector(10,10));
-			
-			
-			LinkedList<InteractiveComponent> tmp = this.controller
-					.getClipboard()
-					.getClipboardClone(offset, this.controller);
-			
-			for(InteractiveComponent c: tmp){
-				this.controller.add((InteractiveModule) c);
-			}
-		}
+		Vector offset = this.controller.getPane()
+				.getViewportTranslation()
+				.diffVector(this.controller
+						.getClipboard()
+						.getCopyGridLocation())
+						.addVector(new Vector(10,10));
+		
+		this.controller.executeAction(new UserPasteAction(this.controller,
+				this.controller.getClipboard().getClipboard(),
+				this.controller.getClipboard().getCableClipboard(),
+				offset));
 	}
 
 }
