@@ -5,6 +5,8 @@ import java.awt.event.KeyEvent;
 
 import javax.swing.AbstractAction;
 
+import controller.history.UserAction;
+import controller.history.actions.UserDeleteAction;
 import controller.interactivepane.InteractiveController;
 
 public class CutAction extends AbstractAction {
@@ -19,7 +21,11 @@ public class CutAction extends AbstractAction {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
+		this.controller.getClipboard().setClipboard(controller.getPane().getComponentSelection());
+		controller.getClipboard().setCopyLocation(controller.getPane().getViewportTranslation());
+		UserAction delete = new UserDeleteAction(controller, controller.getPane().getComponentSelection(), controller.getPane().getShapeSelection());
+		controller.executeAction(delete);
+		controller.getPane().clearSelection();
 
 	}
 
