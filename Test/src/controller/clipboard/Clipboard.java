@@ -28,6 +28,7 @@ public class Clipboard {
 	
 	public void setClipboard(LinkedList<InteractiveComponent> clipboard){
 		this.clipboard = clipboard;
+		this.cableClipboard = new LinkedList<InteractiveCable>();
 		for(InteractiveComponent c: this.clipboard){
 			if(c instanceof InteractiveModule){
 				for(CablePoint p:((InteractiveModule) c).getCablePoints()){

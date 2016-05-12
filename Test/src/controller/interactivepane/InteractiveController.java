@@ -50,7 +50,10 @@ import stdlib.grouping.Grouping;
 import controller.clipboard.Clipboard;
 import controller.history.UserAction;
 import controller.history.UserActionManager;
+import controller.shortcut.CopyAction;
+import controller.shortcut.CutAction;
 import controller.shortcut.DeleteAction;
+import controller.shortcut.PasteAction;
 import controller.shortcut.RedoAction;
 import controller.shortcut.UndoAction;
 import model.MidiGraph;
@@ -114,6 +117,19 @@ public class InteractiveController implements MouseInputListener,WindowStateList
 				inputMap.put(deleteCode, "deletePerformed");
 				AbstractAction deleteAction = new DeleteAction(this);
 				actionMap.put("deletePerformed", deleteAction);
+				
+				//Copy Paste Cut shortcuts
+				KeyStroke copyCode = KeyStroke.getKeyStroke(KeyEvent.VK_C,InputEvent.CTRL_DOWN_MASK);
+				inputMap.put(copyCode, "copyPerformed");
+				actionMap.put("copyPerformed", new CopyAction(this));
+				KeyStroke pasteCode = KeyStroke.getKeyStroke(KeyEvent.VK_V,InputEvent.CTRL_DOWN_MASK);
+				inputMap.put(pasteCode, "pastePerformed");
+				actionMap.put("pastePerformed", new PasteAction(this));
+				KeyStroke cutCode = KeyStroke.getKeyStroke(KeyEvent.VK_X,InputEvent.CTRL_DOWN_MASK);
+				inputMap.put(cutCode, "cutPerformed");
+				actionMap.put("cutPerformed", new CutAction(this));
+				
+				
 		// TODO: think about adding Cables as CableComponents instead of paint graphic shapes
 		ShapeListener sl = new ShapeListener(this);
 		pane.addMouseListener(sl);

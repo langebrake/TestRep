@@ -29,6 +29,7 @@ public class PasteAction extends AbstractAction {
 	
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
+		
 		Vector offset = this.controller.getPane()
 				.getViewportTranslation()
 				.diffVector(this.controller
