@@ -17,7 +17,7 @@ import pluginhost.events.*;
 import pluginhost.PluginHost;
 
 
-public abstract class Plugin implements Serializable{
+public abstract class Plugin implements Serializable, Cloneable{
 	
 	private transient PluginHost host;
 	public static transient Object lock = new Object();
@@ -60,7 +60,7 @@ public abstract class Plugin implements Serializable{
 	public abstract void load();
 	public abstract boolean close();
 	public abstract boolean reOpen();
-	
+	public abstract Plugin clone();
 	
 	
 }

@@ -155,6 +155,10 @@ public class MidiOutputPlugin extends Plugin implements ActionListener, Serializ
 	private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException {
 		in.defaultReadObject();
 		this.setPluginHost(Plugin.waitForHost());
+		this.initPlugin();
+	}
+	
+	private void initPlugin(){
 		this.devices = this.getPluginHost().getEngine().getOutputDevices();
 		this.input = this.getPluginHost().getInput(0);
 		if(this.midiDeviceName != null && outputMap.containsKey(this.midiDeviceName)){
@@ -236,5 +240,13 @@ public class MidiOutputPlugin extends Plugin implements ActionListener, Serializ
 			}
 		}
 		
+	}
+
+	@Override
+	public Plugin clone() {
+		MidiOutputPlugin mop = new MidiOutputPlugin(Plugin.waitForHost());
+		mop.midiDeviceName = this.midiDeviceName;
+		mop.initPlugin();
+		return mop;
 	}
 }

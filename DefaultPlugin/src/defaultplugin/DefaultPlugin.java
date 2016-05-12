@@ -152,12 +152,23 @@ public class DefaultPlugin extends Plugin implements MidiListener{
 	private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException{
 		in.defaultReadObject();
 		this.setPluginHost(Plugin.waitForHost());
+		this.initPluging();
+	}
+	
+	private void initPluging(){
 		this.ioMap = new HashMap<MidiIO,MidiIO>();
 		int i = 0;
 		for(MidiIO m:this.getPluginHost().getInputs()){
 			m.addMidiListener(this);
 			ioMap.put(m, this.getPluginHost().getOuput(i++));
 		}
+	}
+	
+	@Override
+	public Plugin clone() {
+		DefaultPlugin dfp = new DefaultPlugin(Plugin.waitForHost());
+		dfp.initPluging();
+		return dfp;
 	}
 	
 

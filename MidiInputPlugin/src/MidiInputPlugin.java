@@ -143,6 +143,10 @@ public class MidiInputPlugin extends Plugin implements Serializable, ActionListe
 		
 		in.defaultReadObject();
 		this.setPluginHost(Plugin.waitForHost());
+		this.initPlugin();
+	}
+	
+	private void initPlugin(){
 		this.devices = this.getPluginHost().getEngine().getInputDevices();
 		this.output = this.getPluginHost().getOuput(0);
 		if(this.midiDeviceName != null && inputMap.containsKey(this.midiDeviceName)){
@@ -153,8 +157,6 @@ public class MidiInputPlugin extends Plugin implements Serializable, ActionListe
 				e.printStackTrace();
 			}
 		}
-		
-
 	}
 
 	@Override
@@ -237,6 +239,14 @@ public class MidiInputPlugin extends Plugin implements Serializable, ActionListe
 			}
 		}
 		
+	}
+
+	@Override
+	public Plugin clone() {
+		MidiInputPlugin mip = new MidiInputPlugin(Plugin.waitForHost());
+		mip.midiDeviceName = this.midiDeviceName;
+		mip.initPlugin();
+		return mip;
 	}
 
 

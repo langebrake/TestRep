@@ -4,14 +4,20 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 
+import defaults.MidiIO;
 import engine.Stringer;
+import gui.interactivepane.CablePoint;
+import gui.interactivepane.CablePointType;
+import gui.interactivepane.InteractiveCable;
+import gui.interactivepane.InteractiveModule;
 import model.graph.Module;
 
-public class MidiGraph implements Serializable,Iterable<Module>{
+public class MidiGraph implements Serializable,Iterable<Module>, Cloneable{
 	private transient LinkedList<Module> nodes;
 	
 	public MidiGraph(){
@@ -52,6 +58,49 @@ public class MidiGraph implements Serializable,Iterable<Module>{
 		for(int i = 0;i<max;i++){
 			nodes.add((Module) in.readObject());
 		}
+	}
+	
+	public MidiGraph clone(){
+		modMap = new HashMap<Module,Module>();
+		MidiGraph mg = new MidiGraph();
+		for(Module m:this.nodes){
+			cloneRecursive(mg,m);
+		}
+		return mg;
+	}
+	
+	private HashMap<Module,Module> modMap;
+	
+	private Module cloneRecursive(MidiGraph cloneIntoThis,Module cloneThis){
+		Module cMod = modMap.get(cloneThis);
+		if(cMod == null){
+			
+
+			cMod = cloneThis.clone();
+			modMap.put(cloneThis, cMod);
+			cloneIntoThis.add(cMod);
+			for(MidiIO mIO:cMod.getOutputs()){
+				if(!mIO.hasOutput()){
+					MidiIO output = cloneThis.getOuput(mIO.getId());
+					if(output.hasOutput()){
+						MidiIO otherEnd = output.getOutput();
+						//TODO: ClassCast Exception handling(should not happen by design)!
+						Module otherParent = (Module) otherEnd.getParent();
+						Module otherModule;
+						otherModule = modMap.get(otherParent);
+						if(otherModule == null){
+							otherModule = cloneRecursive(cloneIntoThis,otherParent);
+						}
+						
+						otherEnd=otherModule.getInput(otherEnd.getId());
+						mIO.setOutput(otherEnd);
+						otherEnd.setInput(mIO);
+					}
+				}
+			}
+		}
+		
+		return cMod;
 	}
 
 	

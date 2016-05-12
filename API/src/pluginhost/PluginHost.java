@@ -875,43 +875,75 @@ public abstract class PluginHost implements Serializable, Cloneable{
 	 */
 	public PluginHost clone(){
 		
-		LinkedList<MidiIO> oldInputs = new LinkedList<MidiIO>(),
-				oldOutputs = new LinkedList<MidiIO>();
-		for(MidiIO m:this.inputs){
-			oldInputs.add(m.getInput());
-			m.disconnectInput();
-		}
-		for(MidiIO m:this.outputs){
-			oldOutputs.add(m.getOutput());
-			m.disconnectOutput();
+		PluginHost newHost = null;
+		try {
+			newHost = (PluginHost) super.clone();
+			newHost.inputs = new LinkedList<MidiIOThrough>();
+			newHost.outputs = new LinkedList<MidiIOThrough>();
+		} catch (CloneNotSupportedException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 		}
 		
-		PluginHost tmp = null;
-		try{
-			ByteArrayOutputStream bos = new ByteArrayOutputStream();
-			ObjectOutputStream oos = new ObjectOutputStream(bos);
-			oos.writeObject(this);
-			byte[] copy = bos.toByteArray();
+		newHost.stateChangedListeners = this.stateChangedListeners ;
+		int max = inputs.size();
+		for(int i=0;i<max;i++){
+			newHost.inputs.add(new MidiIOThrough(newHost));
+		}
+		max = outputs.size();
+		for(int i=0; i<max;i++){
 			
-			ByteArrayInputStream bin = new ByteArrayInputStream(copy);
-			ObjectInputStream oin = new ObjectInputStream(bin);
-			tmp = (PluginHost) oin.readObject();
-		} catch (Exception e){
-			this.stateChangedListeners.listen(new PluginCopyError(e, this));
+			newHost.outputs.add(new MidiIOThrough(newHost));
 		}
 		
 		
-		//restore connections
-		Iterator<MidiIOThrough> inputIterator = this.inputs.iterator();
-		Iterator<MidiIOThrough> outputIterator = this.outputs.iterator();
-		for(MidiIO m:oldInputs){
-			inputIterator.next().setInput(m);
-		}
-		for(MidiIO m:oldOutputs){
-			outputIterator.next().setOutput(m);
-		}
 		
-		return tmp;
+		
+		newHost.setName(this.getName());
+		Plugin.waiter = newHost;
+		newHost.plugin = this.plugin.clone();
+		newHost.pluginClass =  this.pluginClass;
+		
+		
+		return newHost;
+		
+//		LinkedList<MidiIO> oldInputs = new LinkedList<MidiIO>(),
+//				oldOutputs = new LinkedList<MidiIO>();
+//		for(MidiIO m:this.inputs){
+//			oldInputs.add(m.getInput());
+//			m.disconnectInput();
+//		}
+//		for(MidiIO m:this.outputs){
+//			oldOutputs.add(m.getOutput());
+//			m.disconnectOutput();
+//		}
+//		
+//		PluginHost tmp = null;
+//		try{
+//			ByteArrayOutputStream bos = new ByteArrayOutputStream();
+//			ObjectOutputStream oos = new ObjectOutputStream(bos);
+//			oos.writeObject(this);
+//			byte[] copy = bos.toByteArray();
+//			
+//			ByteArrayInputStream bin = new ByteArrayInputStream(copy);
+//			ObjectInputStream oin = new ObjectInputStream(bin);
+//			tmp = (PluginHost) oin.readObject();
+//		} catch (Exception e){
+//			this.stateChangedListeners.listen(new PluginCopyError(e, this));
+//		}
+//		
+//		
+//		//restore connections
+//		Iterator<MidiIOThrough> inputIterator = this.inputs.iterator();
+//		Iterator<MidiIOThrough> outputIterator = this.outputs.iterator();
+//		for(MidiIO m:oldInputs){
+//			inputIterator.next().setInput(m);
+//		}
+//		for(MidiIO m:oldOutputs){
+//			outputIterator.next().setOutput(m);
+//		}
+//		
+//		return tmp;
 	}
 	
 	

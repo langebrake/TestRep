@@ -24,6 +24,7 @@ public class Populator {
 			
 			addRecursive(mod);
 		}
+		modMap.clear();
 		return pane;
 	}
 	

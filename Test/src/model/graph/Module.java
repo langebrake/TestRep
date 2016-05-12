@@ -16,7 +16,7 @@ import pluginhost.events.*;
 import pluginhost.PluginHost;
 import pluginhost.exceptions.*;
 
-public class Module extends PluginHost implements Cloneable {
+public class Module extends PluginHost {
 	
 	public Vector origin;
 	public Module() throws MidiUnavailableException {
@@ -33,7 +33,7 @@ public class Module extends PluginHost implements Cloneable {
 	
 	public Module clone(){
 		Module tmp = (Module) super.clone();
-		tmp.origin = new Vector();
+		tmp.origin = this.origin;
 		return tmp;
 	}
 }

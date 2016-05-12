@@ -59,7 +59,7 @@ import controller.shortcut.UndoAction;
 import model.MidiGraph;
 import model.graph.Module;
 
-public class InteractiveController implements MouseInputListener,WindowStateListener, Serializable {
+public class InteractiveController implements MouseInputListener,WindowStateListener, Serializable, Cloneable {
 	private transient InteractivePane pane;
 	private MidiGraph graph;
 	private transient UserActionManager actionManager;
@@ -384,6 +384,14 @@ public class InteractiveController implements MouseInputListener,WindowStateList
 		}
 		return true;
 		
+	}
+	
+	public InteractiveController clone(){
+		MidiGraph mg = this.graph.clone();
+		InteractivePane ip = new InteractivePane();
+		InteractiveController ic = new InteractiveController(ip,mg , this.actionManager, this.clipboard);
+		Populator.populateWith(ic, mg);
+		return ic;
 	}
 
 	

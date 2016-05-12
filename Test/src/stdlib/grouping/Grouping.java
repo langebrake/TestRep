@@ -547,6 +547,14 @@ public class Grouping extends Plugin {
 		private void writeObject(ObjectOutputStream out) throws IOException{
 			out.defaultWriteObject();
 		}
+
+
+		@Override
+		public Plugin clone() {
+			GroupInput gip = new GroupInput(Plugin.waitForHost(), grouping);
+			this.pointlessConnections = new LinkedList<InteractiveCable>();
+			return gip;
+		}
 	}
 	
 	private static class GroupOutput extends Plugin {
@@ -657,12 +665,24 @@ public class Grouping extends Plugin {
 			in.defaultReadObject();
 			this.pointlessConnections = new LinkedList<InteractiveCable>();
 		}
+
+
+		@Override
+		public Plugin clone() {
+			GroupOutput gop = new GroupOutput(Plugin.waitForHost(), grouping);
+			this.pointlessConnections = new LinkedList<InteractiveCable>();
+			return gop;
+		}
 	}
 	
 	private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException{
 		this.setPluginHost(Plugin.waitForHost());
 		in.defaultReadObject();
-		for(Component c: this.controller.getPane().getComponents()){
+		this.initPlugin();
+	}
+	
+	private void initPlugin(){
+			for(Component c: this.controller.getPane().getComponents()){
 			
 			if(((InteractiveModule) c).getModule().getPlugin() instanceof GroupInput){
 				this.groupInput = (InteractiveModule) c;
@@ -686,6 +706,17 @@ public class Grouping extends Plugin {
 	
 	private void writeObject(ObjectOutputStream out) throws IOException {
 		out.defaultWriteObject();
+	}
+
+	@Override
+	public Plugin clone() {
+		Grouping g = new Grouping(Plugin.waitForHost());
+		g.load();
+		g.controller = this.controller.clone();
+		g.initPlugin();
+		((GroupInput)g.groupInput.getModule().getPlugin()).grouping = g;
+		((GroupOutput)g.groupOutput.getModule().getPlugin()).grouping = g;
+		return g;
 	}
 
 }
