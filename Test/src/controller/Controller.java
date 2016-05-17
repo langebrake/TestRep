@@ -153,6 +153,7 @@ public class Controller implements WindowListener {
 			ObjectOutputStream oos = new ObjectOutputStream(fos);
 			oos.writeObject(this.getProject());
 			this.currentProject = file;
+			this.mainFrame.setTitle(this.programName + " - "+ file.getName());
 		} catch (FileNotFoundException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
