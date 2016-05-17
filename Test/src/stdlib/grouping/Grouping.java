@@ -681,6 +681,12 @@ public class Grouping extends Plugin {
 		this.initPlugin();
 	}
 	
+	public void setParentController(InteractiveController c){
+		this.controller.setUserActionManager(c.getActionManager());
+		this.controller.setClipboard(c.getClipboard());
+	}
+	
+	
 	private void initPlugin(){
 			for(Component c: this.controller.getPane().getComponents()){
 			

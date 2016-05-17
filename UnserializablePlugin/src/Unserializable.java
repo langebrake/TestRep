@@ -142,6 +142,11 @@ public class Unserializable extends Plugin implements MidiListener{
 			e.printStackTrace();
 		}
 	}
+	@Override
+	public Plugin clone() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 
 }

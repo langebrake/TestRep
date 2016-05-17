@@ -3,6 +3,7 @@ package controller.interactivepane;
 import java.util.HashMap;
 
 import pluginhost.PluginHost;
+import stdlib.grouping.Grouping;
 import defaults.MidiIO;
 import gui.interactivepane.CablePoint;
 import gui.interactivepane.CablePointType;
@@ -33,7 +34,9 @@ public class Populator {
 		InteractiveModule iMod = modMap.get(mod);
 		if(iMod == null){
 			iMod = new InteractiveModule(mod.origin, mod, c);
-			
+			if(mod.getPlugin() instanceof Grouping){
+				((Grouping)mod.getPlugin()).setParentController(c);
+			}
 			modMap.put(mod, iMod);
 			pane.add(iMod);
 			for(CablePoint p:iMod.getCablePoints(CablePointType.OUTPUT)){
