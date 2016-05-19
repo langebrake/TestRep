@@ -98,14 +98,9 @@ public class DefaultPlugin extends Plugin implements MidiListener{
 	}
 	@Override
 	public void load() {
-		this.view = new DefaultView(msg);
-		PluginHost host = this.getPluginHost();
-		this.ioMap.put(host.getInput(0), host.getOuput(0));
-		host.getInput(0).addMidiListener(this);
-		
-		
-		
+		this.initPluging();
 	}
+	
 	@Override
 	public boolean close() {
 		PluginHost host = this.getPluginHost();
@@ -156,6 +151,7 @@ public class DefaultPlugin extends Plugin implements MidiListener{
 	}
 	
 	private void initPluging(){
+		this.view = new DefaultView(msg);
 		this.ioMap = new HashMap<MidiIO,MidiIO>();
 		int i = 0;
 		for(MidiIO m:this.getPluginHost().getInputs()){
@@ -168,6 +164,7 @@ public class DefaultPlugin extends Plugin implements MidiListener{
 	public Plugin clone() {
 		DefaultPlugin dfp = new DefaultPlugin(Plugin.waitForHost());
 		dfp.initPluging();
+		
 		return dfp;
 	}
 	

@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Name: Analyzer Plugin
+Description: analyzes the midi input and functions as a midi through
+Version: 1.0
+Vendor: Hendrik Langebrake
+Web: hl-soundtracks.de
+Type: MidiThruPlugin
+PluginInterfaceVersion: 0.1a
