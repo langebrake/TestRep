@@ -65,6 +65,7 @@ import model.graph.Module;
 public class InteractiveController implements MouseInputListener,WindowStateListener, Serializable, Cloneable {
 	private transient InteractivePane pane;
 	private MidiGraph graph;
+	private String title;
 	private transient UserActionManager actionManager;
 	private transient Vector lastMousePaneLocation,
 					lastMouseGridLocation;
@@ -78,9 +79,9 @@ public class InteractiveController implements MouseInputListener,WindowStateList
 	private transient Clipboard clipboard;
 	private transient Project project;
 	
-	public static UserActionManager managerControl;
-	public static Clipboard clipboardControl;
-	public static Project projectControl;
+	public static transient UserActionManager managerControl;
+	public static transient Clipboard clipboardControl;
+	public static transient Project projectControl;
 	
 	public InteractiveController(){
 		this(new InteractivePane(), new MidiGraph(), new UserActionManager(), new Clipboard(), null);
@@ -97,6 +98,7 @@ public class InteractiveController implements MouseInputListener,WindowStateList
 		this.pane = this.initPane(pane);	
 		this.clipboard = c;
 		this.project = p;
+		this.title = "untitled";
 	}
 	
 	public void setProject(Project p){
@@ -380,9 +382,8 @@ public class InteractiveController implements MouseInputListener,WindowStateList
 	
 	private void writeObject(ObjectOutputStream out) throws IOException{
 		String stringer = Stringer.getString();
-		System.out.println(stringer+"CONTROLLER_START");
+
 		out.defaultWriteObject();
-		System.out.println(stringer+"CONTROLLER_END");
 		Stringer.minimize();
 	}
 	public void setCableAddProcessSource(CablePointHost source) {
@@ -419,7 +420,7 @@ public class InteractiveController implements MouseInputListener,WindowStateList
 		Populator.populateWith(ic, mg);
 		return ic;
 	}
-	DefaultMutableTreeNode tmp;
+	private transient DefaultMutableTreeNode tmp;
 	public DefaultMutableTreeNode treeView(){
 		tmp.removeAllChildren();
 		for(Component m:this.pane.getComponents()){
@@ -444,6 +445,10 @@ public class InteractiveController implements MouseInputListener,WindowStateList
 	
 	public void rename(InteractiveModule module, String result) {
 		module.setName(result);
+		if(module.getModule().getPlugin() instanceof Grouping){
+			((Grouping) module.getModule().getPlugin()).getController().setTitle((String) result);
+			
+		}
 		this.project.updateTree();
 		
 	}
@@ -454,6 +459,24 @@ public class InteractiveController implements MouseInputListener,WindowStateList
 		}
 		
 	}
+
+	public void focusComponent(InteractiveModule mod) {
+		
+		this.project.registerTab(this);
+		this.pane.focus(mod);
+	}
+
+	
+	public String getTitle(){
+		return this.title;
+	}
+	
+	public void setTitle(String title){
+		
+		this.title = title;
+		this.project.changeTabTitle(this);
+	}
+	
 
 	
 

@@ -129,9 +129,7 @@ public class MidiIOThrough implements MidiIO,Serializable{
 	
 	private void writeObject(ObjectOutputStream out) throws IOException{
 		String stringer = Stringer.getString();
-		System.out.println(stringer+"MIDIIO_START " + this.host.getName());
 		out.defaultWriteObject();
-		System.out.println(stringer+"MIDIIO_END   " + this.host.getName());
 		Stringer.minimize();
 	}
 

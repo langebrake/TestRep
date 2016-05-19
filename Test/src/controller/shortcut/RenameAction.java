@@ -11,6 +11,8 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
+import stdlib.grouping.Grouping;
+
 public class RenameAction extends AbstractAction {
 	InteractiveModule module;
 	public RenameAction(Object m){

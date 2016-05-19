@@ -779,7 +779,6 @@ public abstract class PluginHost implements Serializable, Cloneable{
 	 */
 	private void writeObject(ObjectOutputStream out) throws IOException {
 		String stringer = Stringer.getString();
-		System.out.println(stringer+"MODULE_START " + this.getName());
 		//Remove all References to inner Plugin on the MidiIO endpoints
 		LinkedList<MidiIO> oldInputForward = new LinkedList<MidiIO>(),
 							oldOutputForward = new LinkedList<MidiIO>();
@@ -816,7 +815,6 @@ public abstract class PluginHost implements Serializable, Cloneable{
 		for(MidiIO m:oldOutputForward){
 			outputIterator.next().setInput(m);
 		}
-		System.out.println(stringer+"MODULE_END   " + this.getName());
 		Stringer.minimize();
 		
 	}

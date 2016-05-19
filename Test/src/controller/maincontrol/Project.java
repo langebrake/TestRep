@@ -26,6 +26,7 @@ import controller.interactivepane.InteractiveController;
 import controller.projectree.ProjectTreeListener;
 import engine.Stringer;
 import gui.interactivepane.InteractiveModule;
+import gui.interactivepane.InteractivePane;
 
 public class Project implements Serializable{
 	private transient Container contentPane;
@@ -74,12 +75,18 @@ public class Project implements Serializable{
 		this.contentPane.add(leftCenterSplit, BorderLayout.CENTER);
 	}
 	
-	public void registerTab(InteractiveModule module){
+	public void registerTab(InteractiveController c){
+			
+		if(!tabbedPane.isAncestorOf(c.getPane()))
+			tabbedPane.add(c.getTitle(), c.getPane());
+			tabbedPane.setSelectedComponent(c.getPane());
 		
+	}
+	
+	public void unregisterTab(InteractiveModule module){
 		if(module.getModule().getPlugin() instanceof Grouping){
 			Grouping g = (Grouping) module.getModule().getPlugin();
-			tabbedPane.add(module.getName(), g.getController().getPane());
-			tabbedPane.setSelectedComponent(g.getController().getPane());
+			tabbedPane.remove(g.getController().getPane());
 		}
 	}
 	
@@ -95,9 +102,7 @@ public class Project implements Serializable{
 	
 	private void writeObject(ObjectOutputStream out) throws IOException{
 		String stringer = Stringer.getString();
-		System.out.println(stringer +"PROJECT_START SAVE");
 		out.defaultWriteObject();
-		System.out.println(stringer +"PROJECT_END SAVE");
 		Stringer.minimize();
 	}
 	
@@ -124,7 +129,9 @@ public class Project implements Serializable{
 		root = interactivePanes.get(0).treeView();
 		TreeSorter.sortTree(root);
 		tree = new JTree(root);
-		tree.addTreeSelectionListener(new ProjectTreeListener(this));
+		ProjectTreeListener ptl = new ProjectTreeListener(this);
+		tree.addTreeSelectionListener(ptl);
+		tree.addMouseListener(ptl);
 		JScrollPane treePane = new JScrollPane(tree);
 		leftCenterSplit.setTopComponent(treePane);
 		leftCenterSplit.revalidate();
@@ -134,6 +141,7 @@ public class Project implements Serializable{
 			}
 		}
 		tree.setSelectionPaths((TreePath[]) selectedNodes.toArray(new TreePath[selectedNodes.size()]));
+		
 	}
 	
 	public JTree getTree(){
@@ -154,6 +162,15 @@ public class Project implements Serializable{
 	public void clearTreeSelection() {
 		selectedNodes.clear();
 		tree.clearSelection();
+		
+	}
+
+	public void changeTabTitle(InteractiveController interactiveController) {
+		int index = tabbedPane.indexOfComponent(interactiveController.getPane());
+		if(index >= 0){
+			tabbedPane.setTitleAt(index, interactiveController.getTitle());
+
+		}
 		
 	}
 

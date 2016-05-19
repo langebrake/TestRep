@@ -375,5 +375,12 @@ public class InteractivePane extends JLayeredPane {
 		}
 		
 	}
+
+
+	public void focus(InteractiveComponent mod) {
+		this.viewportTranslation = mod.getOriginLocation().scaleVector(-1);
+		this.scaleFactor = 1;
+		this.updateView();
+	}
 	
 }

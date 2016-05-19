@@ -331,7 +331,7 @@ public class InteractiveModule extends InteractiveComponent implements CablePoin
 	
 	public void openFullView(){
 		if(this.module.getPlugin() instanceof Grouping){
-			this.controller.getProject().registerTab(this);
+			this.controller.getProject().registerTab(((Grouping) this.module.getPlugin()).getController());
 			
 		}else {
 			if(this.fullView == null){
@@ -350,10 +350,15 @@ public class InteractiveModule extends InteractiveComponent implements CablePoin
 	}
 	
 	public void closeFullView(){
-		if(this.fullView != null){
-			this.fullView.setVisible(false);
+		if(this.module.getPlugin() instanceof Grouping){
+			this.controller.getProject().unregisterTab(this);
+			
+		} else {
+			if(this.fullView != null){
+				this.fullView.setVisible(false);
+			}
+			this.fullViewShowing = false;
 		}
-		this.fullViewShowing = false;
 	}
 	
 	public String getName(){
@@ -366,6 +371,7 @@ public class InteractiveModule extends InteractiveComponent implements CablePoin
 		if(this.fullView != null){
 			this.fullView.setTitle(this.getName());
 		}
+		
 		this.tree.setUserObject(this);
 	}
 	

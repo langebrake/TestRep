@@ -62,7 +62,6 @@ public class TreeSorter {
 			  parent.removeAllChildren();
 			  for (MutableTreeNode node: children) {
 			    parent.add(node);
-			    System.out.println(((DefaultMutableTreeNode) node).getUserObject());
 			    
 			  }
 			}
