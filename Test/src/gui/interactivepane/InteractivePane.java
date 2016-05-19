@@ -14,6 +14,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 
+import controller.interactivepane.InteractiveController;
 import stdlib.grouping.Grouping;
 
 
@@ -267,7 +268,7 @@ public class InteractivePane extends JLayeredPane {
 	 * @param lowerRight
 	 * @param additive
 	 */
-	public void selectionArea(Vector vec1, Vector vec2, boolean additive){
+	public void selectionArea(Vector vec1, Vector vec2, boolean additive, InteractiveController controller){
 		int xpos,ypos,height,width;
 		xpos = Math.min(vec1.getX(), vec2.getX());
 		ypos = Math.min(vec1.getY(), vec2.getY());
@@ -288,12 +289,14 @@ public class InteractivePane extends JLayeredPane {
 				if(((InteractiveComponent)c).intersects(selectionRect)){
 					if(!((InteractiveComponent) c).isSelected()){
 						((InteractiveComponent) c).setSelected(true);
+						controller.tmpSelectComponent((InteractiveComponent)c ,true);
 						this.tmpSelectedComponents.add((InteractiveComponent) c);
 					}
 					
 				} else {
 					if(!this.selectedComponents.contains(((InteractiveComponent) c))){
 						((InteractiveComponent) c).setSelected(false);
+						controller.tmpSelectComponent((InteractiveComponent)c ,false);
 						this.tmpSelectedComponents.remove(c);
 					}
 				}

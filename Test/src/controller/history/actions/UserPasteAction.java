@@ -53,7 +53,7 @@ public class UserPasteAction extends UserAction {
 
 	@Override
 	public void execute() {
-		this.controller.getPane().clearSelection();
+		this.controller.clearSelection();
 		for(InteractiveComponent c:components){
 			if(firstTime){
 				firstTime = false;
@@ -61,7 +61,7 @@ public class UserPasteAction extends UserAction {
 				c.reopen();
 			}
 			controller.add(c);
-			controller.getPane().setComponentSelected(c, true);
+			controller.selectComponent(c, true);
 		}
 		for(InteractiveCable c:cables){
 			controller.getPane().add(c);

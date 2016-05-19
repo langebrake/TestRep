@@ -8,24 +8,19 @@ import java.util.Stack;
 import javax.swing.AbstractAction;
 
 import controller.interactivepane.InteractiveController;
+import controller.maincontrol.Project;
 
 public class UserActionManager implements Serializable{
 	private Stack<UserAction> undo;
 	private Stack<UserAction> redo;
-	private InteractiveController controller;
+	private Project project;
 	
 	public UserActionManager(){
 		this.undo = new Stack<UserAction>();
 		this.redo = new Stack<UserAction>();
 	}
 	
-	public void setController(InteractiveController controller){
-		this.controller = controller;
-	}
-	
-	public InteractiveController getController(){
-		return this.controller;
-	}
+
 	
 	public void addEvent(UserAction e){
 		this.redo.clear();
@@ -38,12 +33,13 @@ public class UserActionManager implements Serializable{
 	 */
 	public boolean undo(){
 		try{
-		UserAction e = this.undo.pop();
-		e.undo();
-		this.redo.push(e);
+			UserAction e = this.undo.pop();
+			e.undo();
+			this.redo.push(e);
 		} catch (EmptyStackException e){
 			return false;
 		}
+		this.project.updateTree();
 		return true;
 	}
 	
@@ -55,7 +51,24 @@ public class UserActionManager implements Serializable{
 		} catch (EmptyStackException e){
 			return false;
 		}
+		this.project.updateTree();
 		return true;
+	}
+	
+	public void execute() {
+		try{
+			this.undo.peek().execute();
+		} catch (EmptyStackException e){
+			//TODO: nothing to do.
+		}
+		this.project.updateTree();
+	}
+
+
+
+	public void setProject(Project project) {
+		this.project = project;
+		
 	}
 
 

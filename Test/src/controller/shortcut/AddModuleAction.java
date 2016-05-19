@@ -22,7 +22,7 @@ public class AddModuleAction extends AbstractAction {
 	public void actionPerformed(ActionEvent arg0) {
 		UserAction delete = new UserDeleteAction(controller, controller.getPane().getComponentSelection(), controller.getPane().getShapeSelection());
 		controller.executeAction(delete);
-		controller.getPane().clearSelection();
+		controller.clearSelection();
 		
 	}
 

@@ -28,7 +28,8 @@ public class RenameAction extends AbstractAction {
 			JDialog d = new JDialog();
 			Object result = JOptionPane.showInputDialog(d, "New name:");
 			if(result != null && result instanceof String){
-				module.setName((String) result);
+				
+				module.getController().rename(module,(String) result);
 			}
 		}
 

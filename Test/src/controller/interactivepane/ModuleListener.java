@@ -49,10 +49,10 @@ public class ModuleListener extends ControllerListenerAdapter {
 				
 				if(!((InteractiveComponent) source).isSelected()){
 					if( !arg0.isShiftDown()){
-						controller.getPane().clearSelection();
+						controller.clearSelection();
 						
 					}
-					controller.getPane().setComponentSelected((InteractiveComponent) source,true);
+					controller.selectComponent((InteractiveComponent) source,true);
 				}
 				
 	
@@ -100,22 +100,22 @@ public class ModuleListener extends ControllerListenerAdapter {
 			boolean paneHasMultiSelection = controller.getPane().hasMultiSelected();
 			if(userMultiSelect){
 				if(componentWasSelected){
-					controller.getPane().setComponentSelected((InteractiveComponent)source,false);
+					controller.selectComponent((InteractiveComponent)source,false);
 				} else {
-					controller.getPane().setComponentSelected((InteractiveComponent)source,true);
+					controller.selectComponent((InteractiveComponent)source,true);
 				}
 			} else  {
 				if(paneHasSelection){
-					controller.getPane().clearSelection();
+					controller.clearSelection();
 				}
 				if(componentWasSelected){
 					if(paneHasMultiSelection){
-						controller.getPane().setComponentSelected((InteractiveComponent)source,true);
+						controller.selectComponent((InteractiveComponent)source,true);
 					}else{
-						controller.getPane().setComponentSelected((InteractiveComponent)source,false);
+						controller.selectComponent((InteractiveComponent)source,false);
 					}
 				} else {
-					controller.getPane().setComponentSelected((InteractiveComponent)source,true);
+					controller.selectComponent((InteractiveComponent)source,true);
 				}
 			}
 		} else {

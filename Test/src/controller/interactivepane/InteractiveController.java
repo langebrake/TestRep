@@ -34,6 +34,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.LinkedList;
 
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
@@ -43,6 +44,7 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.tree.DefaultMutableTreeNode;
 
 import plugin.Plugin;
 import pluginhost.PluginHost;
@@ -50,6 +52,7 @@ import stdlib.grouping.Grouping;
 import controller.clipboard.Clipboard;
 import controller.history.UserAction;
 import controller.history.UserActionManager;
+import controller.maincontrol.Project;
 import controller.shortcut.CopyAction;
 import controller.shortcut.CutAction;
 import controller.shortcut.DeleteAction;
@@ -73,25 +76,36 @@ public class InteractiveController implements MouseInputListener,WindowStateList
 	private transient boolean cableAddProcess;
 	private transient CablePointHost cableAddProcessSource;
 	private transient Clipboard clipboard;
+	private transient Project project;
 	
+	public static UserActionManager managerControl;
+	public static Clipboard clipboardControl;
+	public static Project projectControl;
 	
 	public InteractiveController(){
-		this(new InteractivePane(), new MidiGraph(), new UserActionManager(), new Clipboard());
+		this(new InteractivePane(), new MidiGraph(), new UserActionManager(), new Clipboard(), null);
 	}
 	
-	public InteractiveController(InteractivePane pane, MidiGraph graph, UserActionManager actionManager, Clipboard c){
+	public InteractiveController(InteractivePane pane, MidiGraph graph, UserActionManager actionManager, Clipboard c, Project p){
 		this.graph = graph;
 		this.actionManager = actionManager;
-		this.actionManager.setController(this);
 		this.moduleListener = new ModuleListener(this);
 		this.popupMenuListener = new PopupMenuListener(this);
 		this.shapeListener = new ShapeListener(this);
 		this.cableCreationListener = new CableCreationListener(this);
+		tmp = new DefaultMutableTreeNode();
 		this.pane = this.initPane(pane);	
 		this.clipboard = c;
-		this.clipboard.setController(this);
+		this.project = p;
 	}
 	
+	public void setProject(Project p){
+		this.project = p;
+	}
+	
+	public Project getProject(){
+		return this.project;
+	}
 	
 	private InteractivePane initPane(InteractivePane pane){
 		pane.addMouseListener(this);
@@ -161,7 +175,7 @@ public class InteractiveController implements MouseInputListener,WindowStateList
 	}
 	public void executeAction(UserAction a){
 		this.actionManager.addEvent(a);
-		a.execute();
+		this.actionManager.execute();
 	}
 	
 	public void undoAction(){
@@ -209,7 +223,7 @@ public class InteractiveController implements MouseInputListener,WindowStateList
 					&& !SwingUtilities.isRightMouseButton(arg0)
 					&&! arg0.isControlDown()){
 
-				this.pane.clearSelection();
+				this.clearSelection();
 				this.pane.repaint();
 				
 			}	 
@@ -250,7 +264,7 @@ public class InteractiveController implements MouseInputListener,WindowStateList
 					
 					
 				} else if(SwingUtilities.isLeftMouseButton(arg0) ){
-					this.pane.selectionArea(this.lastMousePaneLocation, this.relativeToPane(arg0), true);	
+					this.pane.selectionArea(this.lastMousePaneLocation, this.relativeToPane(arg0), true,this);	
 						
 				}
 			}
@@ -344,11 +358,23 @@ public class InteractiveController implements MouseInputListener,WindowStateList
 		this.cableCreationListener = new CableCreationListener(this);
 		this.cableAddProcess = false;
 		this.componentAndViewDrag = false;
-		this.actionManager = new UserActionManager();
-		this.actionManager.setController(this);
+		tmp = new DefaultMutableTreeNode();
+		if(managerControl != null){
+			this.actionManager = managerControl;
+		}else {
+			this.actionManager = new UserActionManager();
+		}
 		this.pane = this.initPane(new InteractivePane());
-		this.clipboard = new Clipboard();
-		this.clipboard.setController(this);
+		if(clipboardControl != null){
+			this.clipboard = clipboardControl;
+		}else {
+			this.clipboard = new Clipboard();
+		}
+		if(projectControl != null){
+			this.project = projectControl;
+		}else {
+			//TODO: Error
+		}
 		Populator.populateWith(this,this.graph);
 	}
 	
@@ -389,9 +415,44 @@ public class InteractiveController implements MouseInputListener,WindowStateList
 	public InteractiveController clone(){
 		MidiGraph mg = this.graph.clone();
 		InteractivePane ip = new InteractivePane();
-		InteractiveController ic = new InteractiveController(ip,mg , this.actionManager, this.clipboard);
+		InteractiveController ic = new InteractiveController(ip,mg , this.actionManager, this.clipboard,this.project);
 		Populator.populateWith(ic, mg);
 		return ic;
+	}
+	DefaultMutableTreeNode tmp;
+	public DefaultMutableTreeNode treeView(){
+		tmp.removeAllChildren();
+		for(Component m:this.pane.getComponents()){
+			if(m instanceof InteractiveModule){
+				tmp.add(((InteractiveModule) m).treeView());
+			}
+		}
+		return tmp;
+	}
+	
+	public void selectComponent(InteractiveComponent c, boolean selection){
+		this.pane.setComponentSelected(c, selection);
+		if(c instanceof InteractiveModule){
+			this.project.setTreeNodeSelection(((InteractiveModule) c).treePath(), selection);
+		}
+	}
+	
+	public void clearSelection(){
+		this.pane.clearSelection();
+		this.project.clearTreeSelection();
+	}
+	
+	public void rename(InteractiveModule module, String result) {
+		module.setName(result);
+		this.project.updateTree();
+		
+	}
+
+	public void tmpSelectComponent(InteractiveComponent c, boolean b) {
+		if(c instanceof InteractiveModule){
+			this.project.setTreeNodeSelection(((InteractiveModule) c).treePath(), b);
+		}
+		
 	}
 
 	

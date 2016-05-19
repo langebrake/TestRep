@@ -9,21 +9,23 @@ import gui.interactivepane.Vector;
 import java.util.LinkedList;
 
 import controller.interactivepane.InteractiveController;
+import controller.maincontrol.Project;
 
 public class Clipboard {
 	
 	private LinkedList<InteractiveComponent> clipboard;
 	private LinkedList<InteractiveCable> cableClipboard;
-	private InteractiveController controller;
 	private Vector copyGridLocation;
+	private Project project;
 	
 	public Clipboard(){
 		this.clipboard = new LinkedList<InteractiveComponent>();
 		this.cableClipboard = new LinkedList<InteractiveCable>();
 	}
 	
-	public void setController(InteractiveController c){
-		this.controller = c;
+	
+	public void setProject(Project project){
+		this.project = project;
 	}
 	
 	public void setClipboard(LinkedList<InteractiveComponent> clipboard){

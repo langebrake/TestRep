@@ -53,13 +53,13 @@ public class PopupMenuListener extends MouseAdapter implements Serializable {
 		if (e.isPopupTrigger()) {
 			Object source = e.getSource();
 				if (source instanceof InteractiveComponent && !((InteractiveComponent) source).isSelected()){
-					controller.getPane().clearSelection();
-					controller.getPane().setComponentSelected((InteractiveComponent) source, true);
+					controller.clearSelection();
+					controller.selectComponent((InteractiveComponent) source, true);
 				}
 				Point pointOnPane = controller.getLastMousePaneLocation().toPoint();
 				for(InteractiveShape s:controller.getPane().getShapes()){
 					if(s.contains(pointOnPane) && !s.isSelected()){
-						controller.getPane().clearSelection();
+						controller.clearSelection();
 						controller.getPane().setShapeSelected(s, true);
 					}
 				}

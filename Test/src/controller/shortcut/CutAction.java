@@ -25,7 +25,7 @@ public class CutAction extends AbstractAction {
 		controller.getClipboard().setCopyLocation(controller.getPane().getViewportTranslation());
 		UserAction delete = new UserDeleteAction(controller, controller.getPane().getComponentSelection(), controller.getPane().getShapeSelection());
 		controller.executeAction(delete);
-		controller.getPane().clearSelection();
+		controller.clearSelection();
 
 	}
 

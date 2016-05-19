@@ -23,8 +23,11 @@ import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.JTree;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreePath;
 
 import plugin.events.NewInputRequestEvent;
 import plugin.events.NewOutputRequestEvent;
@@ -38,6 +41,7 @@ import pluginhost.events.HostEvent;
 import pluginhost.events.NewInputEvent;
 import pluginhost.events.NewOutputEvent;
 import stdlib.grouping.Groupable;
+import stdlib.grouping.Grouping;
 import controller.interactivepane.FullViewClosingListener;
 import controller.interactivepane.InteractiveController;
 import model.graph.Module;
@@ -59,6 +63,7 @@ public class InteractiveModule extends InteractiveComponent implements CablePoin
 	private ConcurrentSkipListMap<CablePointSimple,MidiIOThrough> inputMap;
 	private ConcurrentSkipListMap<CablePointSimple,MidiIOThrough> outputMap;
 	private transient TimerTask t;
+	private transient DefaultMutableTreeNode tree;
 	
 	public InteractiveModule(Vector origin, Module module,InteractiveController controller) {
 		super(controller, origin);
@@ -83,6 +88,12 @@ public class InteractiveModule extends InteractiveComponent implements CablePoin
 	
 		this.fullViewShowing = false;
 		this.module.setPluginStateChangedListener(this);
+		
+		this.tree = new DefaultMutableTreeNode(this);
+		if(this.module.getPlugin() instanceof Grouping){
+			for(DefaultMutableTreeNode n:((Grouping)this.module.getPlugin()).treeView())
+				tree.add(n);
+		}
 		this.updateIO();
 		this.updateView();
 		
@@ -319,18 +330,23 @@ public class InteractiveModule extends InteractiveComponent implements CablePoin
 	}
 	
 	public void openFullView(){
-		if(this.fullView == null){
-			JFrame frame = new JFrame();
-			frame.setTitle(this.getName());
-			frame.add(this.module.getPlugin().getFullView());
-			frame.pack();
-			frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-			frame.addWindowListener(new FullViewClosingListener(this));
-			this.fullView = frame;
+		if(this.module.getPlugin() instanceof Grouping){
+			this.controller.getProject().registerTab(this);
 			
+		}else {
+			if(this.fullView == null){
+				JFrame frame = new JFrame();
+				frame.setTitle(this.getName());
+				frame.add(this.module.getPlugin().getFullView());
+				frame.pack();
+				frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+				frame.addWindowListener(new FullViewClosingListener(this));
+				this.fullView = frame;
+				
+			}
+			this.fullView.setVisible(true);
+			this.fullViewShowing = true;
 		}
-		this.fullView.setVisible(true);
-		this.fullViewShowing = true;
 	}
 	
 	public void closeFullView(){
@@ -350,6 +366,7 @@ public class InteractiveModule extends InteractiveComponent implements CablePoin
 		if(this.fullView != null){
 			this.fullView.setTitle(this.getName());
 		}
+		this.tree.setUserObject(this);
 	}
 	
 	@Override
@@ -831,5 +848,21 @@ public class InteractiveModule extends InteractiveComponent implements CablePoin
 		this.module.setPluginStateChangedListener(this);
 		this.removeAll();
 		this.initView();
+	}
+	
+	public DefaultMutableTreeNode treeView(){
+		if(this.module.getPlugin() instanceof Grouping){
+			this.tree.removeAllChildren();
+			for(DefaultMutableTreeNode n:((Grouping)this.module.getPlugin()).treeView())
+				tree.add(n);
+		}
+		return this.tree;
+	}
+	
+	public TreePath treePath(){
+		return new TreePath(this.tree.getPath());
+	}
+	public String toString(){
+		return this.module.getName();
 	}
 }

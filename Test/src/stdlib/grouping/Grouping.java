@@ -17,6 +17,7 @@ import gui.interactivepane.Vector;
 
 import javax.sound.midi.MidiUnavailableException;
 import javax.swing.JComponent;
+import javax.swing.tree.DefaultMutableTreeNode;
 
 import controller.interactivepane.InteractiveController;
 import defaults.DefaultView;
@@ -173,12 +174,13 @@ public class Grouping extends Plugin {
 
 		this.controller.setUserActionManager(groupModule.getController().getActionManager());
 		this.controller.setClipboard(groupModule.getController().getClipboard());
+		this.controller.setProject(groupModule.getController().getProject());
 		InteractiveController oldController = groupModule.getController();
 		InteractiveController newController = this.controller;
 		InteractivePane oldPane = groupModule.getController().getPane();
 		InteractivePane newPane = this.controller.getPane();
 		Vector resetTranslation = groupModule.getOriginLocation().scaleVector(-1);
-		oldPane.clearSelection();
+		oldController.clearSelection();
 		int inputCounter = 0, outputCounter = 0;
 		for(InteractiveComponent c:groupThis){
 			if(c instanceof Groupable){
@@ -290,8 +292,8 @@ public class Grouping extends Plugin {
 		InteractivePane newPane = groupModule.getController().getPane();
 		InteractiveController newController = groupModule.getController();
 		InteractiveController oldController = this.controller;
-		oldPane.clearSelection();
-		newPane.clearSelection();
+		oldController.clearSelection();
+		newController.clearSelection();
 		Vector restoreTranslation = groupModule.getOriginLocation();
 		for(Component comp:this.controller.getPane().getComponents()){
 			if(comp instanceof InteractiveComponent && comp instanceof Groupable && ungroupable((InteractiveComponent) comp)){
@@ -370,7 +372,8 @@ public class Grouping extends Plugin {
 				oldController.remove((InteractiveModule) c);
 				if(!newPane.isAncestorOf(c)){
 					newController.add((InteractiveModule) c);
-					newPane.setComponentSelected(c, true);
+					newController.selectComponent(c, true);
+//					newPane.setComponentSelected(c, true);
 				}
 				}
 			
@@ -438,7 +441,7 @@ public class Grouping extends Plugin {
 	}
 	
 	
-	private static class GroupInput extends Plugin {
+	public static class GroupInput extends Plugin {
 		private final int MAXINPUTS = 0;
 		private final int MAXOUTPUTS = -1;
 		private final int MININPUTS = 0;
@@ -557,7 +560,7 @@ public class Grouping extends Plugin {
 		}
 	}
 	
-	private static class GroupOutput extends Plugin {
+	public static class GroupOutput extends Plugin {
 		private final int MAXINPUTS = -1;
 		private final int MAXOUTPUTS = 0;
 		private final int MININPUTS = 0;
@@ -684,6 +687,7 @@ public class Grouping extends Plugin {
 	public void setParentController(InteractiveController c){
 		this.controller.setUserActionManager(c.getActionManager());
 		this.controller.setClipboard(c.getClipboard());
+		this.controller.setProject(c.getProject());
 	}
 	
 	
@@ -723,6 +727,16 @@ public class Grouping extends Plugin {
 		((GroupInput)g.groupInput.getModule().getPlugin()).grouping = g;
 		((GroupOutput)g.groupOutput.getModule().getPlugin()).grouping = g;
 		return g;
+	}
+
+	public LinkedList<DefaultMutableTreeNode> treeView() {
+		LinkedList<DefaultMutableTreeNode> tmp = new LinkedList<DefaultMutableTreeNode>();
+		for(Component m:this.controller.getPane().getComponents()){
+			if(m instanceof InteractiveModule){
+				tmp.add(((InteractiveModule) m).treeView());
+			}
+		}
+		return tmp;
 	}
 
 }
