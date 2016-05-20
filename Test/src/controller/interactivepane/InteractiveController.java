@@ -204,7 +204,7 @@ public class InteractiveController implements MouseInputListener,WindowStateList
 	
 	@Override
 	public void mouseClicked(MouseEvent arg0) {
-
+		this.pane.requestFocus();
 	}
 	@Override
 	public void mouseEntered(MouseEvent arg0) {

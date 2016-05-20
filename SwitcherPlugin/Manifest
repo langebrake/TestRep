@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Name: Switcher Plugin
+Description: switch inputs to outputs according to custom rules
+Version: 1.0
+Vendor: Hendrik Langebrake
+Web: hl-soundtracks.de
+Type: MidiThruPlugin
+PluginInterfaceVersion: 0.1a

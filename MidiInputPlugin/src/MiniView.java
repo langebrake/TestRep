@@ -34,6 +34,7 @@ public class MiniView extends JPanel {
 		for(String m:list){
 			cbox.addItem(m);
 		}
+		
 		if(this.getComponentCount() != 0){
 			this.remove(this.getComponent(0));
 		}
