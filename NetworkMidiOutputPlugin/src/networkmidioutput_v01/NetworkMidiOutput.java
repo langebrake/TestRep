@@ -1,15 +1,23 @@
 package networkmidioutput_v01;
 
 import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.net.Socket;
 
+import javax.sound.midi.MidiMessage;
 import javax.swing.JComponent;
 
+import defaults.MidiIO;
+import defaults.MidiListener;
 import plugin.Plugin;
 import pluginhost.PluginHost;
 import pluginhost.events.HostEvent;
 
-public class NetworkMidiOutput extends Plugin {
+public class NetworkMidiOutput extends Plugin implements MidiListener,ActionListener{
 
 	private static final int MAXINPUTS = 1;
 	private static final int MAXOUTPUTS = 0;
@@ -18,9 +26,10 @@ public class NetworkMidiOutput extends Plugin {
 	private static final String NAME = "Network Output";
 	private transient FullView fullView;
 	private transient MinView minView;
-	private int port;
-	private String name;
+	int port;
+	String name;
 	private transient Socket client;
+	private transient DataOutputStream dout;
 	
 	public NetworkMidiOutput(PluginHost host) {
 		super(host,NAME,MININPUTS,MAXINPUTS,MINOUTPUTS,MAXOUTPUTS);
@@ -47,7 +56,9 @@ public class NetworkMidiOutput extends Plugin {
 
 	@Override
 	public void load() {
-
+		this.port = -1;
+		this.name = "";
+		this.initPlugin();
 	}
 
 	@Override
@@ -63,6 +74,65 @@ public class NetworkMidiOutput extends Plugin {
 	@Override
 	public Plugin clone(PluginHost host) {
 		return null;
+	}
+	
+	private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException{
+		in.defaultReadObject();
+		this.initPlugin();
+	}
+	
+	private void initPlugin(){
+		this.fullView = new FullView();
+		this.minView = new MinView(this);
+		this.getPluginHost().getInput(0).addMidiListener(this);
+		createClient();
+		
+	}
+	
+	private void createClient(){
+		if(name!="" && port!=-1){
+			try {
+				this.client = new Socket(name,port);
+				this.dout = new DataOutputStream(client.getOutputStream());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+
+	@Override
+	public void listen(MidiIO source, MidiMessage msg, long timestamp) {
+		if(client != null && dout!=null && !client.isClosed()){
+			try {
+				dout.writeInt(msg.getLength());
+				dout.write(msg.getMessage());
+				dout.writeLong(timestamp);
+				dout.flush();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent arg0) {
+		this.name = minView.getServerName();
+		this.port = minView.getServerPort();
+		if(this.client != null && !this.client.isClosed() && this.dout!=null){
+			try {
+				dout.close();
+				client.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
+		this.initPlugin();
+		
 	}
 
 }

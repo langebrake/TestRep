@@ -27,7 +27,7 @@ public class NetworkMidiInput extends Plugin implements ActionListener {
 	private static final String NAME = "Network Input";
 	private transient FullView fullView;
 	private transient MinView minView;
-	private int port;
+	int port;
 	private transient ServerSocket server;
 	private transient Socket client;
 	
@@ -71,7 +71,6 @@ public class NetworkMidiInput extends Plugin implements ActionListener {
 	
 	@Override
 	public boolean close() {
-		
 		return true;
 	}
 
@@ -103,6 +102,7 @@ public class NetworkMidiInput extends Plugin implements ActionListener {
 	public void actionPerformed(ActionEvent arg0) {
 		if(this.server != null){
 			try {
+				this.client.close();
 				this.server.close();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block

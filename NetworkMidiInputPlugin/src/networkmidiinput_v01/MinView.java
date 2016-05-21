@@ -21,6 +21,9 @@ public class MinView extends JPanel {
 		port = new JTextField();
 		JButton setup = new JButton("create");
 		setup.addActionListener(nmi);
+		port.setText(Integer.toString(nmi.port));
+		this.add(port, BorderLayout.CENTER);
+		this.add(setup, BorderLayout.EAST);
 	}
 	
 	public int getPort() {
