@@ -110,8 +110,7 @@ public class SwitcherPlugin extends Plugin implements ActionListener {
 		SwitcherPlugin tmp = new SwitcherPlugin(Plugin.waitForHost());
 		LinkedList<Routing> rClone = new LinkedList<Routing>();
 		for(Routing r:this.routings){
-			Routing clone = r.clone();
-			clone.setSwitcher(this);
+			Routing clone = r.clone(this);
 			rClone.add(clone);
 		}
 		tmp.routings = rClone;
@@ -138,7 +137,9 @@ public class SwitcherPlugin extends Plugin implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		this.routings.add(new Routing(this));
+		Routing r = new Routing(this);
+		r.init();
+		this.routings.add(r);
 		this.fullView.updateView();
 		
 	}

@@ -54,14 +54,17 @@ public class RoutingView extends JPanel {
 		JLabel lbl = new JLabel("Status:");
 		top.add(lbl);
 		status = new JTextField(4);
+		status.setText(Integer.toBinaryString(routing.statusFilter));//.substring(Integer.SIZE-Byte.SIZE+4));
 		top.add(status);
 		lbl = new JLabel("Low Value:");
 		top.add(lbl);
 		low = new JTextField(3);
+		low.setText(Integer.toString(routing.lowValue));
 		top.add(low);
 		lbl = new JLabel("High Value:");
 		top.add(lbl);
 		high=new JTextField(3);
+		high.setText(Integer.toString(routing.highValue));
 		top.add(high);
 		JButton confirm = new JButton("set");
 		confirm.setActionCommand("CONFIRMED");

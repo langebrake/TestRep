@@ -19,16 +19,15 @@ public class Routing implements Serializable, MidiListener,Cloneable,ActionListe
 	protected int inputNr, outputNr;
 	private boolean active;
 	protected transient RoutingView routingView;
-	private byte statusFilter;
-	private byte lowValue;
-	private byte highValue;
+	protected byte statusFilter;
+	protected byte lowValue;
+	protected byte highValue;
 	public boolean block;
 	public Routing(SwitcherPlugin switcher){
 		this.switcher = switcher;
 		this.inputNr = 0;
 		this.outputNr = 0;
 		this.active = false;
-		this.init();
 	}
 	
 	public void setSwitcher(SwitcherPlugin s){
@@ -36,7 +35,7 @@ public class Routing implements Serializable, MidiListener,Cloneable,ActionListe
 	}
 	public void init(){
 		this.routingView = new RoutingView(this);
-		this.updateInput(0);
+		this.updateInput(this.inputNr);
 	}
 	
 	private void updateInput(int oldInput){
@@ -69,11 +68,14 @@ public class Routing implements Serializable, MidiListener,Cloneable,ActionListe
 		return routingView;
 	}
 	
-	public Routing clone(){
-		Routing tmp = new Routing(this.switcher);
+	public Routing clone(SwitcherPlugin switcherPlugin){
+		Routing tmp = new Routing(switcherPlugin);
 		tmp.inputNr = this.inputNr;
 		tmp.outputNr = this.outputNr;
 		tmp.active = this.active;
+		tmp.statusFilter = this.statusFilter;
+		tmp.lowValue = this.lowValue;
+		tmp.highValue = this.highValue;
 		return tmp;
 		
 	}
