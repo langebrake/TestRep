@@ -113,11 +113,8 @@ public class DefaultPlugin extends Plugin implements MidiListener{
 	}
 	
 	private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException{
-		System.out.println("SUBCLASS_START");
 		in.defaultReadObject();
-		this.setPluginHost(Plugin.waitForHost());
 		this.initPluging();
-		System.out.println("SUBCLASS_END");
 	}
 	
 	private void initPluging(){

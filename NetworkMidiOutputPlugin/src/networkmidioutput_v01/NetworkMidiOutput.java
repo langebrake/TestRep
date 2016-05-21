@@ -61,7 +61,7 @@ public class NetworkMidiOutput extends Plugin {
 	}
 
 	@Override
-	public Plugin clone() {
+	public Plugin clone(PluginHost host) {
 		return null;
 	}
 

@@ -113,9 +113,8 @@ public class Unserializable extends Plugin implements MidiListener{
 		}
 	}
 	@Override
-	public Plugin clone() {
-		// TODO Auto-generated method stub
-		return null;
+	public Plugin clone(PluginHost host) {
+		return new Unserializable(host);
 	}
 	
 

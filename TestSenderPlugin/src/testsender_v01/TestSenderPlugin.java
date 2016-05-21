@@ -64,15 +64,14 @@ public class TestSenderPlugin extends Plugin {
 	}
 
 	@Override
-	public Plugin clone() {
-		TestSenderPlugin t = new TestSenderPlugin(Plugin.waitForHost());
+	public Plugin clone(PluginHost host) {
+		TestSenderPlugin t = new TestSenderPlugin(host);
 		t.initPlugin();
 		return t;
 	}
 	
 	private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException{
 		in.defaultReadObject();
-		this.setPluginHost(Plugin.waitForHost());
 		this.initPlugin();
 	}
 	

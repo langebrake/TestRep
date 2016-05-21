@@ -105,9 +105,7 @@ public class MidiInputPlugin extends Plugin implements Serializable, ActionListe
 	
 	
 	private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException{
-		
 		in.defaultReadObject();
-		this.setPluginHost(Plugin.waitForHost());
 		this.initPlugin();
 	}
 	
@@ -207,8 +205,8 @@ public class MidiInputPlugin extends Plugin implements Serializable, ActionListe
 	}
 
 	@Override
-	public Plugin clone() {
-		MidiInputPlugin mip = new MidiInputPlugin(Plugin.waitForHost());
+	public Plugin clone(PluginHost host) {
+		MidiInputPlugin mip = new MidiInputPlugin(host);
 		mip.midiDeviceName = this.midiDeviceName;
 		mip.initPlugin();
 		return mip;

@@ -88,7 +88,6 @@ public class Analyzer extends Plugin implements MidiListener {
 	
 	private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException{
 		in.defaultReadObject();
-		this.setPluginHost(Plugin.waitForHost());
 		this.initPlugin();
 	}
 	

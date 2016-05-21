@@ -72,8 +72,8 @@ public class SwitcherPlugin extends Plugin implements ActionListener {
 	}
 
 	@Override
-	public Plugin clone() {
-		SwitcherPlugin tmp = new SwitcherPlugin(Plugin.waitForHost());
+	public Plugin clone(PluginHost host) {
+		SwitcherPlugin tmp = new SwitcherPlugin(host);
 		LinkedList<Routing> rClone = new LinkedList<Routing>();
 		for(Routing r:this.routings){
 			Routing clone = r.clone(this);
@@ -85,7 +85,6 @@ public class SwitcherPlugin extends Plugin implements ActionListener {
 	}
 	
 	private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException{
-		this.setPluginHost(Plugin.waitForHost());
 		in.defaultReadObject();
 		this.initPlugin();
 	}

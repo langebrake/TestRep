@@ -462,7 +462,6 @@ public class Grouping extends Plugin {
 			return true;
 		}
 		private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException{
-			this.setPluginHost(Plugin.waitForHost());
 			in.defaultReadObject();
 			this.pointlessConnections = new LinkedList<InteractiveCable>();
 		}
@@ -472,8 +471,8 @@ public class Grouping extends Plugin {
 
 
 		@Override
-		public Plugin clone() {
-			GroupInput gip = new GroupInput(Plugin.waitForHost(), grouping);
+		public Plugin clone(PluginHost host) {
+			GroupInput gip = new GroupInput(host, grouping);
 			this.pointlessConnections = new LinkedList<InteractiveCable>();
 			return gip;
 		}
@@ -544,22 +543,20 @@ public class Grouping extends Plugin {
 			return true;
 		}
 		private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException{
-			this.setPluginHost(Plugin.waitForHost());
 			in.defaultReadObject();
 			this.pointlessConnections = new LinkedList<InteractiveCable>();
 		}
 
 
 		@Override
-		public Plugin clone() {
-			GroupOutput gop = new GroupOutput(Plugin.waitForHost(), grouping);
+		public Plugin clone(PluginHost host) {
+			GroupOutput gop = new GroupOutput(host, grouping);
 			this.pointlessConnections = new LinkedList<InteractiveCable>();
 			return gop;
 		}
 	}
 	
 	private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException{
-		this.setPluginHost(Plugin.waitForHost());
 		in.defaultReadObject();
 		this.initPlugin();
 	}
@@ -599,8 +596,8 @@ public class Grouping extends Plugin {
 	}
 
 	@Override
-	public Plugin clone() {
-		Grouping g = new Grouping(Plugin.waitForHost());
+	public Plugin clone(PluginHost host) {
+		Grouping g = new Grouping(host);
 		g.load();
 		g.controller = this.controller.clone();
 		g.initPlugin();

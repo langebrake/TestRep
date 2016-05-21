@@ -81,14 +81,13 @@ public class NetworkMidiInput extends Plugin implements ActionListener {
 	}
 
 	@Override
-	public Plugin clone() {
-		NetworkMidiInput tmp = new NetworkMidiInput(Plugin.waitForHost());
+	public Plugin clone(PluginHost host) {
+		NetworkMidiInput tmp = new NetworkMidiInput(host);
 		tmp.load();
 		return tmp;
 	}
 	
 	private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException{
-		this.setPluginHost(Plugin.waitForHost());
 		in.defaultReadObject();
 		this.initPlugin();
 	}
