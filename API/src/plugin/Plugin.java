@@ -21,7 +21,15 @@ public abstract class Plugin implements Serializable, Cloneable{
 	
 	private transient PluginHost host;
 	public static transient Object lock = new Object();
-	public Plugin(PluginHost host){
+	private final int minInputs, maxInputs,
+						minOutputs, maxOutputs;
+	private final String name;
+	public Plugin(PluginHost host, String name, int minInputs, int maxInputs, int minOutputs, int maxOutputs){
+		this.minInputs = minInputs;
+		this.minOutputs = minOutputs;
+		this.maxInputs = maxInputs;
+		this.maxOutputs = maxOutputs;
+		this.name = name;
 		this.host = host;
 	}
 	
@@ -29,7 +37,7 @@ public abstract class Plugin implements Serializable, Cloneable{
 		return null;
 	}
 	
-	public void setPluginHost(PluginHost host){
+	public final void setPluginHost(PluginHost host){
 		this.host = host;
 	}
 	
@@ -39,28 +47,42 @@ public abstract class Plugin implements Serializable, Cloneable{
 		waiter = null;
 		return tmp;
 	}
-	/**
-	 * This method returns the plugins name
-	 * @return static String as name
-	 */
-	public abstract String getPluginName();
-	public abstract JComponent getMinimizedView();
-	public abstract Component getFullView();
-
-	public abstract String getDisplayName();
-	public abstract void setDisplayName();
-	public PluginHost getPluginHost(){
+	
+	public final PluginHost getPluginHost(){
 		return this.host;
 	}
-	public abstract int getMaxInputs();
-	public abstract int getMaxOutputs();
-	public abstract int getMinInputs();
-	public abstract int getMinOutputs();
+	
+
+	public final int getMaxInputs(){
+		return this.maxInputs;
+	}
+	public final int getMaxOutputs(){
+		return this.maxOutputs;
+	}
+	public final int getMinInputs(){
+		return this.minInputs;
+	}
+	public final int getMinOutputs(){
+		return this.minOutputs;
+	}
+	
+	public final String getPluginName(){
+		return this.name;
+	}
+	public abstract JComponent getMinimizedView();
+	public abstract JComponent getFullView();
+
 	public abstract void notify(HostEvent e);
 	public abstract void load();
 	public abstract boolean close();
 	public abstract boolean reOpen();
-	public abstract Plugin clone();
-	
+	public final Plugin clone(){
+		return this.clone(Plugin.waitForHost());
+	}
+	public abstract Plugin clone(PluginHost newHost);
+	private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException{
+		this.host = Plugin.waitForHost();
+		in.defaultReadObject();
+	}
 	
 }

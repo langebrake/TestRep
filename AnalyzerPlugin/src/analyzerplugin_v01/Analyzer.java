@@ -28,13 +28,7 @@ public class Analyzer extends Plugin implements MidiListener {
 	}
 	
 	public Analyzer(PluginHost host) {
-		super(host);
-	}
-
-	@Override
-	public String getPluginName() {
-		// TODO Auto-generated method stub
-		return NAME;
+		super(host,NAME, MININPUTS, MAXINPUTS, MINOUTPUTS, MAXOUTPUTS);
 	}
 
 	@Override
@@ -43,50 +37,14 @@ public class Analyzer extends Plugin implements MidiListener {
 	}
 
 	@Override
-	public Component getFullView() {
+	public JComponent getFullView() {
 
 		return this.fullView;
 	}
 
-	@Override
-	public String getDisplayName() {
-		// TODO Auto-generated method stub
-		return NAME;
-	}
-
-	@Override
-	public void setDisplayName() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public int getMaxInputs() {
-		// TODO Auto-generated method stub
-		return MAXINPUTS;
-	}
-
-	@Override
-	public int getMaxOutputs() {
-		// TODO Auto-generated method stub
-		return MAXOUTPUTS;
-	}
-
-	@Override
-	public int getMinInputs() {
-		// TODO Auto-generated method stub
-		return MININPUTS;
-	}
-
-	@Override
-	public int getMinOutputs() {
-		// TODO Auto-generated method stub
-		return MINOUTPUTS;
-	}
 
 	@Override
 	public void notify(HostEvent e) {
-		// TODO Auto-generated method stub
 		
 	}
 
@@ -108,11 +66,12 @@ public class Analyzer extends Plugin implements MidiListener {
 	}
 
 	@Override
-	public Plugin clone() {
-		Analyzer a = new Analyzer(Plugin.waitForHost());
+	public Plugin clone(PluginHost newHost) {
+		Analyzer a = new Analyzer(newHost);
 		a.initPlugin();
 		return a;
 	}
+	
 
 	@Override
 	public void listen(MidiIO source, MidiMessage msg, long timestamp) {

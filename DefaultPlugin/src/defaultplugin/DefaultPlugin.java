@@ -42,7 +42,7 @@ public class DefaultPlugin extends Plugin implements MidiListener{
 		return new DefaultPlugin(host);
 	}
 	public DefaultPlugin(PluginHost host){
-		super(host);
+		super(host,NAME,MININPUTS,MAXINPUTS,MINOUTPUTS,MAXOUTPUTS);
 		this.ioMap = new HashMap<MidiIO,MidiIO>();
 		
 	}
@@ -80,22 +80,10 @@ public class DefaultPlugin extends Plugin implements MidiListener{
 		return view;
 	}
 	@Override
-	public Component getFullView() {
+	public JComponent getFullView() {
 		return new DefaultView("DEFAULT PLUGIN INTERFACE");
 	}
 	
-	public  String getPluginName() {
-		return NAME;
-	}
-	
-	@Override
-	public int getMaxInputs() {
-		return MAXINPUTS;
-	}
-	@Override
-	public int getMaxOutputs() {
-		return MAXOUTPUTS;
-	}
 	@Override
 	public void load() {
 		this.initPluging();
@@ -113,26 +101,6 @@ public class DefaultPlugin extends Plugin implements MidiListener{
 	}
 	
 	@Override
-	public int getMinInputs() {
-		return MININPUTS;
-	}
-	
-	@Override
-	public int getMinOutputs() {
-		return MINOUTPUTS;
-	}
-	
-	@Override
-	public String getDisplayName() {
-		return NAME;
-	}
-	
-	@Override
-	public void setDisplayName() {
-	
-		
-	}
-	@Override
 	public void listen(MidiIO source, MidiMessage msg, long timestamp) {
 		
 		ioMap.get(source).send(msg, timestamp);
@@ -145,9 +113,11 @@ public class DefaultPlugin extends Plugin implements MidiListener{
 	}
 	
 	private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException{
+		System.out.println("SUBCLASS_START");
 		in.defaultReadObject();
 		this.setPluginHost(Plugin.waitForHost());
 		this.initPluging();
+		System.out.println("SUBCLASS_END");
 	}
 	
 	private void initPluging(){
@@ -161,8 +131,8 @@ public class DefaultPlugin extends Plugin implements MidiListener{
 	}
 	
 	@Override
-	public Plugin clone() {
-		DefaultPlugin dfp = new DefaultPlugin(Plugin.waitForHost());
+	public Plugin clone(PluginHost host) {
+		DefaultPlugin dfp = new DefaultPlugin(host);
 		dfp.initPluging();
 		
 		return dfp;

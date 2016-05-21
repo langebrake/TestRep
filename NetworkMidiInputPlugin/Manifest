@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Name: Network Input
+Description: setup a server port to receive input messages
+Version: 1.0
+Vendor: Hendrik Langebrake
+Web: hl-soundtracks.de
+Type: MidiThruPlugin
+PluginInterfaceVersion: 0.1a

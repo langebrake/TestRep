@@ -47,7 +47,7 @@ public class MidiOutputPlugin extends Plugin implements ActionListener, Serializ
 	}
 	
 	public MidiOutputPlugin(PluginHost host) {
-		super(host);
+		super(host,NAME,MININPUTS,MAXINPUTS,MINOUTPUTS,MAXOUTPUTS);
 	}
 
 	@Override
@@ -56,38 +56,12 @@ public class MidiOutputPlugin extends Plugin implements ActionListener, Serializ
 	}
 
 	@Override
-	public JFrame getFullView() {
-		JFrame frame = new JFrame("MIDIOUTPUT");
-		
-		frame.add(new DefaultView("MIDIOUTPUT"));
-		frame.pack();
-		return frame;
+	public JComponent getFullView() {
+		return new DefaultView("MIDIOUTPUT");
 	}
 
 	
-	public  String getPluginName() {
-		return NAME;
-	}
-
-	@Override
-	public int getMaxInputs() {
-		return MAXINPUTS;
-	}
-
-	@Override
-	public int getMaxOutputs() {
-		return MAXOUTPUTS;
-	}
-
-	@Override
-	public int getMinInputs() {
-		return MININPUTS;
-	}
-
-	@Override
-	public int getMinOutputs() {
-		return MINOUTPUTS;
-	}
+	
 
 	@Override
 	public void notify(HostEvent e) {
@@ -138,17 +112,6 @@ public class MidiOutputPlugin extends Plugin implements ActionListener, Serializ
 		}
 		
 		return true;
-	}
-
-	@Override
-	public String getDisplayName() {
-		return NAME;
-	}
-
-	@Override
-	public void setDisplayName() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	

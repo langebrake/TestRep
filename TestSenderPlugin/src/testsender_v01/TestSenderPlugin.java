@@ -29,13 +29,9 @@ public class TestSenderPlugin extends Plugin {
 	}
 	
 	public TestSenderPlugin(PluginHost host) {
-		super(host);
+		super(host,NAME,MININPUTS,MAXINPUTS,MINOUTPUTS,MAXOUTPUTS);
 	}
 
-	@Override
-	public String getPluginName() {
-		return NAME;
-	}
 
 	@Override
 	public JComponent getMinimizedView() {
@@ -43,38 +39,8 @@ public class TestSenderPlugin extends Plugin {
 	}
 
 	@Override
-	public Component getFullView() {
+	public JComponent getFullView() {
 		return this.fullView;
-	}
-
-	@Override
-	public String getDisplayName() {
-		return NAME;
-	}
-
-	@Override
-	public void setDisplayName() {
-
-	}
-
-	@Override
-	public int getMaxInputs() {
-		return MAXINPUTS;
-	}
-
-	@Override
-	public int getMaxOutputs() {
-		return MAXOUTPUTS;
-	}
-
-	@Override
-	public int getMinInputs() {
-		return MININPUTS;
-	}
-
-	@Override
-	public int getMinOutputs() {
-		return MINOUTPUTS;
 	}
 
 	@Override

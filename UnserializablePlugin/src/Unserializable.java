@@ -49,7 +49,7 @@ public class Unserializable extends Plugin implements MidiListener{
 		return new Unserializable(host);
 	}
 	public Unserializable(PluginHost host){
-		super(host);
+		super(host,NAME,MININPUTS,MAXINPUTS,MINOUTPUTS,MAXOUTPUTS);
 	
 		
 	}
@@ -67,22 +67,11 @@ public class Unserializable extends Plugin implements MidiListener{
 		return p;
 	}
 	@Override
-	public Component getFullView() {
+	public JComponent getFullView() {
 		return new DefaultView("You can't save this plugins state!");
 	}
 	
-	public  String getPluginName() {
-		return NAME;
-	}
-	
-	@Override
-	public int getMaxInputs() {
-		return MAXINPUTS;
-	}
-	@Override
-	public int getMaxOutputs() {
-		return MAXOUTPUTS;
-	}
+
 	@Override
 	public void load() {
 		PluginHost host = this.getPluginHost();
@@ -103,26 +92,7 @@ public class Unserializable extends Plugin implements MidiListener{
 		
 	}
 	
-	@Override
-	public int getMinInputs() {
-		return MININPUTS;
-	}
 	
-	@Override
-	public int getMinOutputs() {
-		return MINOUTPUTS;
-	}
-	
-	@Override
-	public String getDisplayName() {
-		return NAME;
-	}
-	
-	@Override
-	public void setDisplayName() {
-	
-		
-	}
 	@Override
 	public void listen(MidiIO source, MidiMessage msg, long timestamp) {
 		

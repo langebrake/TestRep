@@ -49,7 +49,7 @@ public class MidiInputPlugin extends Plugin implements Serializable, ActionListe
 	}
 	
 	public MidiInputPlugin(PluginHost host) {
-		super(host);
+		super(host,NAME,MININPUTS,MAXINPUTS,MINOUTPUTS,MAXOUTPUTS);
 	}
 
 	@Override
@@ -58,33 +58,8 @@ public class MidiInputPlugin extends Plugin implements Serializable, ActionListe
 	}
 
 	@Override
-	public Component getFullView() {
+	public JComponent getFullView() {
 		return new DefaultView("MIDIINPUT");
-	}
-
-	
-	public  String getPluginName() {
-		return NAME;
-	}
-
-	@Override
-	public int getMaxInputs() {
-		return MAXINPUTS;
-	}
-
-	@Override
-	public int getMaxOutputs() {
-		return MAXOUTPUTS;
-	}
-
-	@Override
-	public int getMinInputs() {
-		return MININPUTS;
-	}
-
-	@Override
-	public int getMinOutputs() {
-		return MINOUTPUTS;
 	}
 
 	@Override
@@ -123,16 +98,6 @@ public class MidiInputPlugin extends Plugin implements Serializable, ActionListe
 			inputMap.get(midiDeviceName).unregister(output);
 		}
 		return true;
-		
-	}
-
-	@Override
-	public String getDisplayName() {
-		return this.midiDeviceName;
-	}
-
-	@Override
-	public void setDisplayName() {
 		
 	}
 

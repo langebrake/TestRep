@@ -49,14 +49,9 @@ public class Grouping extends Plugin {
 	}
 	
 	public Grouping(PluginHost host) {
-		super(host);
+		super(host,NAME,MININPUTS,MAXINPUTS,MINOUTPUTS,MAXOUTPUTS);
 	}
 
-	@Override
-	public String getPluginName() {
-		// TODO Auto-generated method stub
-		return this.NAME;
-	}
 
 	@Override
 	public JComponent getMinimizedView() {
@@ -65,45 +60,10 @@ public class Grouping extends Plugin {
 	}
 
 	@Override
-	public Component getFullView() {
+	public JComponent getFullView() {
 		return controller.getPane();
 	}
 
-	@Override
-	public String getDisplayName() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void setDisplayName() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public int getMaxInputs() {
-		// TODO Auto-generated method stub
-		return MAXINPUTS;
-	}
-
-	@Override
-	public int getMaxOutputs() {
-		// TODO Auto-generated method stub
-		return MAXOUTPUTS;
-	}
-
-	@Override
-	public int getMinInputs() {
-		// TODO Auto-generated method stub
-		return MININPUTS;
-	}
-
-	@Override
-	public int getMinOutputs() {
-		// TODO Auto-generated method stub
-		return MINOUTPUTS;
-	}
 
 	
 	@Override
@@ -442,11 +402,11 @@ public class Grouping extends Plugin {
 	
 	
 	public static class GroupInput extends Plugin {
-		private final int MAXINPUTS = 0;
-		private final int MAXOUTPUTS = -1;
-		private final int MININPUTS = 0;
-		private final int MINOUTPUTS = 0;
-		private final String NAME = "Group Input";
+		private static final int MAXINPUTS = 0;
+		private static final int MAXOUTPUTS = -1;
+		private static final int MININPUTS = 0;
+		private static final int MINOUTPUTS = 0;
+		private static final String NAME = "Group Input";
 		private String msg = "groupinput";
 		private DefaultView view;
 		private transient boolean block;
@@ -454,60 +414,19 @@ public class Grouping extends Plugin {
 		private transient LinkedList<InteractiveCable> pointlessConnections = new LinkedList<InteractiveCable>();
 		
 		public GroupInput(PluginHost host, Grouping grouping) {
-			super(host);
+			super(host,NAME,MININPUTS,MAXINPUTS,MINOUTPUTS,MAXOUTPUTS);
 			this.grouping = grouping;
 		}
 		
-
-		@Override
-		public String getPluginName() {
-		
-			return NAME;
-		}
-
 		@Override
 		public JComponent getMinimizedView() {
 			return view;
 		}
 
 		@Override
-		public Component getFullView() {
+		public JComponent getFullView() {
 			
 			return view;
-		}
-
-		@Override
-		public String getDisplayName() {
-		
-			return NAME;
-		}
-
-		@Override
-		public void setDisplayName() {
-			
-			
-		}
-
-		@Override
-		public int getMaxInputs() {
-			return MAXINPUTS;
-		}
-
-		@Override
-		public int getMaxOutputs() {
-			return MAXOUTPUTS;
-		}
-
-		@Override
-		public int getMinInputs() {
-			// TODO Auto-generated method stub
-			return MININPUTS;
-		}
-
-		@Override
-		public int getMinOutputs() {
-			// TODO Auto-generated method stub
-			return MINOUTPUTS;
 		}
 
 		@Override
@@ -561,11 +480,11 @@ public class Grouping extends Plugin {
 	}
 	
 	public static class GroupOutput extends Plugin {
-		private final int MAXINPUTS = -1;
-		private final int MAXOUTPUTS = 0;
-		private final int MININPUTS = 0;
-		private final int MINOUTPUTS = 0;
-		private final String NAME = "Group Output";
+		private static final int MAXINPUTS = -1;
+		private static final int MAXOUTPUTS = 0;
+		private static final int MININPUTS = 0;
+		private static final int MINOUTPUTS = 0;
+		private static final String NAME = "Group Output";
 		private String msg = "groupoutput";
 		private DefaultView view;
 		private transient boolean block;
@@ -573,16 +492,10 @@ public class Grouping extends Plugin {
 		private transient LinkedList<InteractiveCable> pointlessConnections = new LinkedList<InteractiveCable>();
 		
 		public GroupOutput(PluginHost host, Grouping grouping) {
-			super(host);
+			super(host,NAME,MININPUTS,MAXINPUTS,MINOUTPUTS,MAXOUTPUTS);
 			this.grouping = grouping;
 		}
 		
-
-		@Override
-		public String getPluginName() {
-		
-			return NAME;
-		}
 
 		@Override
 		public JComponent getMinimizedView() {
@@ -590,44 +503,11 @@ public class Grouping extends Plugin {
 		}
 
 		@Override
-		public Component getFullView() {
+		public JComponent getFullView() {
 			
 			return view;
 		}
 
-		@Override
-		public String getDisplayName() {
-		
-			return NAME;
-		}
-
-		@Override
-		public void setDisplayName() {
-			
-			
-		}
-
-		@Override
-		public int getMaxInputs() {
-			return MAXINPUTS;
-		}
-
-		@Override
-		public int getMaxOutputs() {
-			return MAXOUTPUTS;
-		}
-
-		@Override
-		public int getMinInputs() {
-			// TODO Auto-generated method stub
-			return MININPUTS;
-		}
-
-		@Override
-		public int getMinOutputs() {
-			// TODO Auto-generated method stub
-			return MINOUTPUTS;
-		}
 
 		@Override
 		public void notify(HostEvent e) {

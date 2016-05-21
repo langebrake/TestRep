@@ -26,16 +26,11 @@ public class SwitcherPlugin extends Plugin implements ActionListener {
 	transient SwitchView fullView;
 	
 	public SwitcherPlugin(PluginHost host) {
-		super(host);
+		super(host,NAME,MININPUTS,MAXINPUTS,MINOUTPUTS,MAXOUTPUTS);
 	}
 	
 	public static SwitcherPlugin getInstance(PluginHost host){
 		return new SwitcherPlugin(host);
-	}
-
-	@Override
-	public String getPluginName() {
-		return NAME;
 	}
 
 	@Override
@@ -44,7 +39,7 @@ public class SwitcherPlugin extends Plugin implements ActionListener {
 	}
 
 	@Override
-	public Component getFullView() {
+	public JComponent getFullView() {
 		JPanel t = new JPanel();
 		t.setLayout(new BorderLayout());
 		t.add(this.fullView, BorderLayout.CENTER);
@@ -53,35 +48,6 @@ public class SwitcherPlugin extends Plugin implements ActionListener {
 	
 	protected SwitchView getSwitchView(){
 		return this.fullView;
-	}
-	
-	@Override
-	public String getDisplayName() {
-		return NAME;
-	}
-
-	@Override
-	public void setDisplayName() {
-	}
-
-	@Override
-	public int getMaxInputs() {
-		return MAXINPUTS;
-	}
-
-	@Override
-	public int getMaxOutputs() {
-		return MAXOUTPUTS;
-	}
-
-	@Override
-	public int getMinInputs() {
-		return MININPUTS;
-	}
-
-	@Override
-	public int getMinOutputs() {
-		return MINOUTPUTS;
 	}
 
 	@Override
