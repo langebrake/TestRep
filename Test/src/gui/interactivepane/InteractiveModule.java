@@ -337,15 +337,20 @@ public class InteractiveModule extends InteractiveComponent implements CablePoin
 			if(this.fullView == null){
 				JFrame frame = new JFrame();
 				frame.setTitle(this.getName());
-				frame.add(this.module.getPlugin().getFullView());
-				frame.pack();
-				frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-				frame.addWindowListener(new FullViewClosingListener(this));
-				this.fullView = frame;
+				JComponent view = this.module.getPlugin().getFullView();
+				if(view != null){
+					frame.add(this.module.getPlugin().getFullView());
+					frame.pack();
+					frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+					frame.addWindowListener(new FullViewClosingListener(this));
+					this.fullView = frame;
+				}
 				
 			}
-			this.fullView.setVisible(true);
-			this.fullViewShowing = true;
+			if(this.fullView != null){
+				this.fullView.setVisible(true);
+				this.fullViewShowing = true;
+			}
 		}
 	}
 	

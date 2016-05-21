@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Name: Multiplier
+Description: multiplies the input to unlimeted outputs
+Version: 1.0
+Vendor: Hendrik Langebrake
+Web: hl-soundtracks.de
+Type: MidiThruPlugin
+PluginInterfaceVersion: 0.1a
