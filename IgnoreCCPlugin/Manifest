@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Name: Ignore CC
+Description: ignores the set control change 
+Version: 1.0
+Vendor: Hendrik Langebrake
+Web: hl-soundtracks.de
+Type: MidiThruPlugin
+PluginInterfaceVersion: 0.1a

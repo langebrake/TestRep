@@ -5,6 +5,7 @@ import javax.sound.midi.MidiMessage;
 public class MidiUtilities {
 	public static final byte NOTE_ON = 0b1001;
 	public static final byte NOTE_OFF = 0b1000;
+	public static final byte CONTROL_CHANGE = 0b1011;
 	
 	public static byte getStatus(MidiMessage msg){
 		return (byte) ((msg.getMessage()[0] & 0xf0) >> 4);
