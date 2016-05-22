@@ -23,7 +23,7 @@ public class Engine implements MidiEngine, Serializable {
 		}
 	}
 	
-	public Engine() throws MidiUnavailableException{
+	private Engine() throws MidiUnavailableException{
 		inputDevices = SystemMidiDevices.getInputDevices();
 		outputDevices = SystemMidiDevices.getOutputDevices();
 	}

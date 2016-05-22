@@ -16,7 +16,11 @@ public class MinView extends JPanel {
 	}
 	
 	public void updateView(MidiMessage msg){
-		String message = Integer.toBinaryString(msg.getMessage()[0] & 0xFF).replace(' ', '0')+" "+msg.getMessage()[1]+ " " + msg.getMessage()[2];
+		String message = Integer.toBinaryString(msg.getMessage()[0] & 0xFF).replace(' ', '0');
+		for(int i = 1; i<msg.getLength();i++){
+			message = message + " " + msg.getMessage()[i];
+		}
+		
 		label.setText(message);
 	}
 	

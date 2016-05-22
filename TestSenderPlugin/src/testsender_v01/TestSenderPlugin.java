@@ -1,5 +1,7 @@
 package testsender_v01;
 import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -13,7 +15,7 @@ import pluginhost.PluginHost;
 import pluginhost.events.HostEvent;
 
 
-public class TestSenderPlugin extends Plugin {
+public class TestSenderPlugin extends Plugin implements ActionListener{
 
 	
 	private static final int MAXINPUTS = 0;
@@ -23,6 +25,7 @@ public class TestSenderPlugin extends Plugin {
 	private static final String NAME = "Test Sender";
 	private transient MinView fullView;
 	private transient MinView minView;
+	int status,channel, data1,data2;
 	
 	public static TestSenderPlugin getInstance(PluginHost host){
 		return new TestSenderPlugin(host);
@@ -49,6 +52,10 @@ public class TestSenderPlugin extends Plugin {
 
 	@Override
 	public void load() {
+		this.status = 0b1001;
+		this.channel = 0;
+		this.data1 = 60;
+		this.data2 = 100;
 		this.initPlugin();
 
 	}
@@ -93,6 +100,25 @@ public class TestSenderPlugin extends Plugin {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		this.getPluginHost().getOuput(0).send(msg, -1);
+		
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent arg0) {
+		ShortMessage msg = new ShortMessage();
+		
+		try {
+			status = minView.status();
+			channel = minView.channel();
+			data1=minView.data1();
+			data2 = minView.data2();
+			msg.setMessage(status<<4,channel,data1,data2);
+		} catch (InvalidMidiDataException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		this.getPluginHost().getOuput(0).send(msg, -1);
 		
 	}

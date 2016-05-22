@@ -23,6 +23,7 @@ public class Routing implements Serializable, MidiListener,Cloneable,ActionListe
 	protected byte lowValue;
 	protected byte highValue;
 	public boolean block;
+	
 	public Routing(SwitcherPlugin switcher){
 		this.switcher = switcher;
 		this.inputNr = 0;
@@ -53,7 +54,7 @@ public class Routing implements Serializable, MidiListener,Cloneable,ActionListe
 		if(statusMSG == this.statusFilter && msg.getMessage()[1]<=this.highValue && msg.getMessage()[1]>=this.lowValue){
 			System.out.println("ACTIVATE");
 			active = true;
-		} else {
+		} else if(statusMSG == this.statusFilter){
 			System.out.println("DEACTIVATE");
 			active = false;
 		}

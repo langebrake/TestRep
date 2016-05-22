@@ -44,8 +44,10 @@ public abstract class PluginHost implements Serializable, Cloneable{
 	private String name;
 	//TODO: this must be managed over retrieving the class from the plugins name over a static manager!!!!!
 	private Class<? extends Plugin> pluginClass;
+	private boolean notifyPlugin;
 	
 	public PluginHost() throws MidiUnavailableException{
+		this.notifyPlugin = true;
 		this.inputs = new LinkedList<MidiIOThrough>();
 		this.outputs = new LinkedList<MidiIOThrough>();
 		this.engine = Engine.load();
@@ -243,7 +245,8 @@ public abstract class PluginHost implements Serializable, Cloneable{
 			
 			NewInputEvent event = new NewInputEvent(tmp);
 			try{
-				this.plugin.notify(event);
+				if(notifyPlugin)
+					this.plugin.notify(event);
 			} catch (Exception e){
 				this.stateChangedListeners.listen(new PluginError(e,this));
 				return null;
@@ -501,7 +504,8 @@ public abstract class PluginHost implements Serializable, Cloneable{
 		//TODO: HostEvent implementation for this event!
 			NewOutputEvent event = new NewOutputEvent(tmp);
 			try{
-				this.plugin.notify(event);
+				if(notifyPlugin)	
+					this.plugin.notify(event);
 			} catch (Exception e){
 				this.stateChangedListeners.listen(new PluginError(e,this));
 				return null;
@@ -745,9 +749,13 @@ public abstract class PluginHost implements Serializable, Cloneable{
 	
 	public void notify(PluginEvent e){
 		if(e.getClass() == NewOutputRequestEvent.class){
+			notifyPlugin = false;
 			((NewOutputRequestEvent)e).io = this.newOutput();
+			notifyPlugin = true;
 		} else if(e.getClass() == NewInputRequestEvent.class){
+			notifyPlugin = false;
 			((NewInputRequestEvent)e).io = this.newInput();
+			notifyPlugin = true;
 		} else if(e.getClass() == PluginError.class){
 			
 		}
