@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
-Name: Converge Ports
-Description: converge all input ports to one single output port
+Name: Combine Ports
+Description: combine all input ports to one single output port
 Version: 1.0
 Vendor: Hendrik Langebrake
 Web: hl-soundtracks.de

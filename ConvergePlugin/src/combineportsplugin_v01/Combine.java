@@ -1,4 +1,4 @@
-package convergeplugin_v01;
+package combineportsplugin_v01;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -12,14 +12,14 @@ import plugin.Plugin;
 import pluginhost.PluginHost;
 import pluginhost.events.HostEvent;
 
-public class Converge extends Plugin implements MidiListener {
+public class Combine extends Plugin implements MidiListener {
 
-	public Converge(PluginHost host) {
+	public Combine(PluginHost host) {
 		super(host, "Converge Ports", 1, -1, 1, 1);
 	}
 	
 	public static Plugin getInstance(PluginHost host){
-		return new Converge(host);
+		return new Combine(host);
 	}
 
 	@Override
@@ -62,7 +62,7 @@ public class Converge extends Plugin implements MidiListener {
 
 	@Override
 	public Plugin clone(PluginHost newHost) {
-		Converge tmp = new Converge(newHost);
+		Combine tmp = new Combine(newHost);
 		tmp.reload();
 		return tmp;
 	}
