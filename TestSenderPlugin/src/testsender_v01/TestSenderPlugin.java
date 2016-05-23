@@ -111,7 +111,7 @@ public class TestSenderPlugin extends Plugin implements ActionListener{
 		try {
 			status = minView.status();
 			channel = minView.channel();
-			data1=minView.data1();
+			data1 = minView.data1();
 			data2 = minView.data2();
 			msg.setMessage(status<<4,channel,data1,data2);
 		} catch (InvalidMidiDataException e) {

@@ -1,3 +1,4 @@
+package midioutput_v01;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
@@ -7,10 +8,12 @@ import java.util.LinkedList;
 import java.util.Scanner;
 import java.util.concurrent.ConcurrentHashMap;
 
+import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiDevice;
 import javax.sound.midi.MidiMessage;
 import javax.sound.midi.MidiUnavailableException;
 import javax.sound.midi.Receiver;
+import javax.sound.midi.ShortMessage;
 import javax.sound.midi.Transmitter;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -21,6 +24,7 @@ import defaults.DefaultView;
 import defaults.MidiIO;
 import defaults.MidiIOThrough;
 import defaults.MidiListener;
+import engine.MidiUtilities;
 import plugin.Plugin;
 import pluginhost.PluginHost;
 import pluginhost.events.HostEvent;
@@ -37,6 +41,7 @@ public class MidiOutputPlugin extends Plugin implements ActionListener, Serializ
 	private String midiDeviceName;
 	private transient MidiIO input;
 	protected transient LinkedList<MidiDevice> devices;
+	private int selectedChannel;
 	
 	static{
 		outputMap = new ConcurrentHashMap<String,OutputTransmitter>();
@@ -52,7 +57,7 @@ public class MidiOutputPlugin extends Plugin implements ActionListener, Serializ
 
 	@Override
 	public JComponent getMinimizedView() {
-		return new MiniView(this.getPluginHost().getEngine().getOutputDevices(),this,this.midiDeviceName);
+		return new MiniView(this.getPluginHost().getEngine().getOutputDevices(),this,this.midiDeviceName,this.selectedChannel);
 	}
 
 	@Override
@@ -72,7 +77,7 @@ public class MidiOutputPlugin extends Plugin implements ActionListener, Serializ
 	public void load() {
 		this.input = this.getPluginHost().getInput(0);
 		this.devices = this.getPluginHost().getEngine().getOutputDevices();
-		
+		this.selectedChannel = -1;
 	}
 
 	private void setOutputID(int id) throws MidiUnavailableException{
@@ -184,6 +189,25 @@ public class MidiOutputPlugin extends Plugin implements ActionListener, Serializ
 		@Override
 		public void listen(MidiIO source, MidiMessage msg, long timestamp) {
 			if(outputReceiver != null){
+				if(MidiUtilities.getStatus(msg) != 0b1111 && selectedChannel != -1){
+					int data1 = msg.getMessage()[1];
+					int status = msg.getMessage()[0] & 0xF0;
+					int data2 = 0;
+					if(msg.getLength() > 2){
+						data2 = msg.getMessage()[2];
+					}
+					msg = new ShortMessage();
+					try {
+						
+						((ShortMessage)msg).setMessage(status,
+														selectedChannel,
+														data1,
+														data2);
+					} catch (InvalidMidiDataException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
 				outputReceiver.send(msg, timestamp);
 			}
 		}
@@ -194,11 +218,16 @@ public class MidiOutputPlugin extends Plugin implements ActionListener, Serializ
 	public void actionPerformed(ActionEvent arg0) {
 		Object o = arg0.getSource();
 		if(o instanceof JComboBox){
-			try {
-				this.setOutputID(((JComboBox) o).getSelectedIndex());
-			} catch (MidiUnavailableException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
+			if(arg0.getActionCommand().equals("DEVICE")){
+				try {
+					this.setOutputID(((JComboBox) o).getSelectedIndex());
+				} catch (MidiUnavailableException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			} else if(arg0.getActionCommand().equals("CHANNEL")){
+				this.selectedChannel = (((JComboBox) o).getSelectedIndex()) - 1;
+				
 			}
 		}
 		

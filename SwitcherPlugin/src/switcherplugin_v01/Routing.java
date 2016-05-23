@@ -7,7 +7,9 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.io.Serializable;
 
+import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiMessage;
+import javax.sound.midi.ShortMessage;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
 
@@ -16,19 +18,21 @@ import defaults.MidiListener;
 
 public class Routing implements Serializable, MidiListener,Cloneable,ActionListener, ItemListener {
 	protected SwitcherPlugin switcher;
-	protected int inputNr, outputNr;
+	protected int inputNr, outputNr, activeListenNr;
 	private boolean active;
 	protected transient RoutingView routingView;
 	protected byte statusFilter;
 	protected byte lowValue;
 	protected byte highValue;
 	public boolean block;
+	private transient ActiveListener activeListener;
 	
 	public Routing(SwitcherPlugin switcher){
 		this.switcher = switcher;
 		this.inputNr = 0;
 		this.outputNr = 0;
 		this.active = false;
+		this.activeListenNr = 0;
 	}
 	
 	public void setSwitcher(SwitcherPlugin s){
@@ -36,6 +40,7 @@ public class Routing implements Serializable, MidiListener,Cloneable,ActionListe
 	}
 	public void init(){
 		this.routingView = new RoutingView(this);
+		this.activeListener = new ActiveListener();
 		this.updateInput(this.inputNr);
 	}
 	
@@ -50,14 +55,7 @@ public class Routing implements Serializable, MidiListener,Cloneable,ActionListe
 
 	@Override
 	public void listen(MidiIO source, MidiMessage msg, long timestamp) {
-		int statusMSG = (msg.getMessage()[0] & 0xf0) >> 4;
-		if(statusMSG == this.statusFilter && msg.getMessage()[1]<=this.highValue && msg.getMessage()[1]>=this.lowValue){
-			System.out.println("ACTIVATE");
-			active = true;
-		} else if(statusMSG == this.statusFilter){
-			System.out.println("DEACTIVATE");
-			active = false;
-		}
+		
 		if(this.outputNr != 0 && active){
 			
 			this.switcher.getPluginHost().getOuput(outputNr-1).send(msg, timestamp);
@@ -77,6 +75,7 @@ public class Routing implements Serializable, MidiListener,Cloneable,ActionListe
 		tmp.statusFilter = this.statusFilter;
 		tmp.lowValue = this.lowValue;
 		tmp.highValue = this.highValue;
+		tmp.activeListenNr = this.activeListenNr;
 		return tmp;
 		
 	}
@@ -108,12 +107,55 @@ public class Routing implements Serializable, MidiListener,Cloneable,ActionListe
 				this.updateInput(oldInput);
 			} else if(arg0.getSource() == this.routingView.outBox){
 				this.outputNr = (int) arg0.getItem();
+			} else if(arg0.getSource() == this.routingView.activeListenBox){
+				this.activeListener.setListen((int)arg0.getItem()-1);
 			}
 		}
 		
 		
 	}
 	
-	
+	private class ActiveListener implements MidiListener {
+		private int listenOn;
+		
+		public ActiveListener(){
+			if(activeListenNr != 0)
+				this.setListen(activeListenNr-1);
+		}
+		
+		public void listen(MidiIO source, MidiMessage msg, long timestamp) {
+			int statusMSG = (msg.getMessage()[0] & 0xf0) >> 4;
+			if(statusMSG == statusFilter && msg.getMessage()[1]<=highValue && msg.getMessage()[1]>=lowValue){
+				System.out.println("ACTIVATE");
+				active = true;
+			} else if(statusMSG == statusFilter){
+				System.out.println("DEACTIVATE");
+				if(active){
+					for(int i = 0; i<=15;i++){
+						try {
+							ShortMessage noteOff = new ShortMessage(0b10110000,i,123,0);
+							ShortMessage pedalOff = new ShortMessage(0b10110000,i,64,0);
+							switcher.getPluginHost().getOuput(outputNr-1).send(noteOff, -1);
+							switcher.getPluginHost().getOuput(outputNr-1).send(pedalOff, -1);
+						} catch (InvalidMidiDataException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+				}
+				active = false;
+			}
+			
+		}
+		
+		public void setListen(int listenOn){
+			switcher.getPluginHost().getInput(this.listenOn).removeMidiListener(this);
+			this.listenOn = listenOn;
+			Routing.this.activeListenNr = listenOn + 1;
+			switcher.getPluginHost().getInput(this.listenOn).addMidiListener(this);
+			System.out.println("Listen on: " +this.listenOn);
+		}
+		
+	}
 	
 }

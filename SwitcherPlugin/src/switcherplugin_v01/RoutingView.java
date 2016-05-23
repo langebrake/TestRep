@@ -15,11 +15,13 @@ import javax.swing.JTextField;
 
 public class RoutingView extends JPanel {
 	private Routing routing;
-	protected JComboBox<Integer> inBox, outBox;
+	protected JComboBox<Integer> inBox, outBox, activeListenBox;
 	public RoutingView(Routing routing) {
 		this.routing = routing;
 		this.inBox = new JComboBox<Integer>();
 		this.outBox = new JComboBox<Integer>();
+		this.activeListenBox = new JComboBox<Integer>();
+		this.activeListenBox.addItemListener(routing);
 		this.inBox.addItemListener(routing);
 		this.outBox.addItemListener(routing);
 		this.createView();
@@ -29,20 +31,24 @@ public class RoutingView extends JPanel {
 		
 		this.inBox.removeAllItems();
 		this.outBox.removeAllItems();
-		
+		this.activeListenBox.removeAllItems();
 		routing.block = true;
 		for(int i = 1;i<=this.routing.switcher.getPluginHost().getInputCount();i++){
 			this.inBox.addItem(new Integer(i));
+			this.activeListenBox.addItem(new Integer(i));
 		}
 		for(int i = 1;i<=this.routing.switcher.getPluginHost().getOutputCount();i++){
 			this.outBox.addItem(new Integer(i));
 		}
+		
 		routing.block=false;
 		
 		inBox.setSelectedIndex(routing.inputNr-1);
 		outBox.setSelectedIndex(routing.outputNr -1);
+		activeListenBox.setSelectedIndex(routing.activeListenNr -1);
 	}
 	protected JTextField status,low,high;
+	
 	
 	public void createView(){
 		
@@ -51,6 +57,7 @@ public class RoutingView extends JPanel {
 		this.setBackground(Color.RED);
 		JPanel top = new JPanel();
 		top.setLayout(new BoxLayout(top,BoxLayout.X_AXIS));
+		top.add(activeListenBox);
 		JLabel lbl = new JLabel("Status:");
 		top.add(lbl);
 		status = new JTextField(4);
