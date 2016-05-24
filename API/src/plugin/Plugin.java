@@ -41,6 +41,10 @@ public abstract class Plugin implements Serializable, Cloneable{
 		this.host = host;
 	}
 	
+	public static Plugin getInstance(PluginHost host, byte[] data ){
+		return null;
+	}
+	
 	public static PluginHost waiter = null;
 	public static PluginHost waitForHost(){
 		PluginHost tmp = waiter;
@@ -51,7 +55,6 @@ public abstract class Plugin implements Serializable, Cloneable{
 	public final PluginHost getPluginHost(){
 		return this.host;
 	}
-	
 
 	public final int getMaxInputs(){
 		return this.maxInputs;
