@@ -17,15 +17,15 @@ public class Combine extends Plugin implements MidiListener {
 	public Combine(PluginHost host) {
 		super(host, "Converge Ports", 1, -1, 1, 1);
 	}
-	
-	public static Plugin getInstance(PluginHost host){
+
+	public static Plugin getInstance(PluginHost host) {
 		return new Combine(host);
 	}
 
 	@Override
 	public void listen(MidiIO source, MidiMessage msg, long timestamp) {
 		this.getPluginHost().getOuput(0).send(msg, timestamp);
-		
+
 	}
 
 	@Override
@@ -41,13 +41,13 @@ public class Combine extends Plugin implements MidiListener {
 	@Override
 	public void notify(HostEvent e) {
 		this.reload();
-		
+
 	}
 
 	@Override
 	public void load() {
 		this.reload();
-		
+
 	}
 
 	@Override
@@ -66,14 +66,14 @@ public class Combine extends Plugin implements MidiListener {
 		tmp.reload();
 		return tmp;
 	}
-	
-	private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException{
+
+	private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException {
 		in.defaultReadObject();
 		reload();
 	}
-	
-	private void reload(){
-		for(MidiIO m:this.getPluginHost().getInputs()){
+
+	private void reload() {
+		for (MidiIO m : this.getPluginHost().getInputs()) {
 			m.removeMidiListener(this);
 			m.addMidiListener(this);
 		}

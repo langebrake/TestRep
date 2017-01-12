@@ -24,12 +24,12 @@ public class SwitcherPlugin extends Plugin implements ActionListener {
 	private static final String NAME = "Switcher";
 	LinkedList<Routing> routings;
 	transient SwitchView fullView;
-	
+
 	public SwitcherPlugin(PluginHost host) {
-		super(host,NAME,MININPUTS,MAXINPUTS,MINOUTPUTS,MAXOUTPUTS);
+		super(host, NAME, MININPUTS, MAXINPUTS, MINOUTPUTS, MAXOUTPUTS);
 	}
-	
-	public static SwitcherPlugin getInstance(PluginHost host){
+
+	public static SwitcherPlugin getInstance(PluginHost host) {
 		return new SwitcherPlugin(host);
 	}
 
@@ -45,8 +45,8 @@ public class SwitcherPlugin extends Plugin implements ActionListener {
 		t.add(this.fullView, BorderLayout.CENTER);
 		return t;
 	}
-	
-	protected SwitchView getSwitchView(){
+
+	protected SwitchView getSwitchView() {
 		return this.fullView;
 	}
 
@@ -75,7 +75,7 @@ public class SwitcherPlugin extends Plugin implements ActionListener {
 	public Plugin clone(PluginHost host) {
 		SwitcherPlugin tmp = new SwitcherPlugin(host);
 		LinkedList<Routing> rClone = new LinkedList<Routing>();
-		for(Routing r:this.routings){
+		for (Routing r : this.routings) {
 			Routing clone = r.clone(this);
 			rClone.add(clone);
 		}
@@ -83,18 +83,18 @@ public class SwitcherPlugin extends Plugin implements ActionListener {
 		tmp.initPlugin();
 		return tmp;
 	}
-	
-	private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException{
+
+	private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException {
 		in.defaultReadObject();
 		this.initPlugin();
 	}
-	
-	private void writeObject(ObjectOutputStream out) throws IOException{
+
+	private void writeObject(ObjectOutputStream out) throws IOException {
 		out.defaultWriteObject();
 	}
-	
-	private void initPlugin(){
-		for(Routing r:this.routings){
+
+	private void initPlugin() {
+		for (Routing r : this.routings) {
 			r.init();
 		}
 		this.fullView = new SwitchView(this);
@@ -106,7 +106,7 @@ public class SwitcherPlugin extends Plugin implements ActionListener {
 		r.init();
 		this.routings.add(r);
 		this.fullView.updateView();
-		
+
 	}
 
 }

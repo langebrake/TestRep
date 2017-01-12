@@ -8,7 +8,8 @@ import javax.swing.JTextField;
 
 public class MinView extends JPanel {
 	private JTextField ignore;
-	public MinView(IgnoreCC n){
+
+	public MinView(IgnoreCC n) {
 		this.setLayout(new BorderLayout());
 		ignore = new JTextField();
 		ignore.setText(Byte.toString(n.ignore));
@@ -17,8 +18,8 @@ public class MinView extends JPanel {
 		this.add(ignore, BorderLayout.CENTER);
 		this.add(set, BorderLayout.EAST);
 	}
-	
-	public byte getIgnore(){
+
+	public byte getIgnore() {
 		return Byte.parseByte(ignore.getText());
 	}
 }

@@ -10,12 +10,13 @@ import controller.history.actions.UserDeleteAction;
 import controller.interactivepane.InteractiveController;
 
 public class CutAction extends AbstractAction {
-	
+
 	private InteractiveController controller;
+
 	public CutAction(InteractiveController controller) {
 		super("cut");
-		super.putValue(SHORT_DESCRIPTION,"cut selected components");
-		super.putValue(MNEMONIC_KEY,KeyEvent.VK_X);
+		super.putValue(SHORT_DESCRIPTION, "cut selected components");
+		super.putValue(MNEMONIC_KEY, KeyEvent.VK_X);
 		this.controller = controller;
 	}
 
@@ -23,7 +24,8 @@ public class CutAction extends AbstractAction {
 	public void actionPerformed(ActionEvent e) {
 		this.controller.getClipboard().setClipboard(controller.getPane().getComponentSelection());
 		controller.getClipboard().setCopyLocation(controller.getPane().getViewportTranslation());
-		UserAction delete = new UserDeleteAction(controller, controller.getPane().getComponentSelection(), controller.getPane().getShapeSelection());
+		UserAction delete = new UserDeleteAction(controller, controller.getPane().getComponentSelection(),
+				controller.getPane().getShapeSelection());
 		controller.executeAction(delete);
 		controller.clearSelection();
 

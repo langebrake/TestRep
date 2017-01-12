@@ -19,43 +19,44 @@ import controller.interactivepane.Populator;
 import defaults.MidiIO;
 
 public class UserPasteAction extends UserAction {
-	
+
 	private LinkedList<InteractiveComponent> components;
 	private LinkedList<InteractiveCable> cables;
 	private Vector offset;
 	private LinkedList<InteractiveComponent> clipboard;
 	private LinkedList<InteractiveCable> cableClipboard;
-	public UserPasteAction(InteractiveController controller, LinkedList<InteractiveComponent> clipboard, LinkedList<InteractiveCable> cableClipboard, Vector offset) {
-		super(controller); 
+
+	public UserPasteAction(InteractiveController controller, LinkedList<InteractiveComponent> clipboard,
+			LinkedList<InteractiveCable> cableClipboard, Vector offset) {
+		super(controller);
 		this.clipboard = clipboard;
 		this.components = new LinkedList<InteractiveComponent>();
 		cables = new LinkedList<InteractiveCable>();
 		this.offset = offset;
 		this.cableClipboard = cableClipboard;
 		this.populate();
-		
-		
+
 	}
 
 	@Override
 	public void undo() {
-		for(InteractiveCable c:cables){
+		for (InteractiveCable c : cables) {
 			controller.getPane().remove(c);
 		}
-		for(InteractiveComponent c:components){
+		for (InteractiveComponent c : components) {
 			c.close();
 			controller.remove(c);
 		}
 
 	}
-	
+
 	private boolean firstTime = true;
 
 	@Override
 	public void execute() {
 		this.controller.clearSelection();
-		for(InteractiveComponent c:components){
-			if(firstTime){
+		for (InteractiveComponent c : components) {
+			if (firstTime) {
 				firstTime = false;
 			} else {
 				c.reopen();
@@ -63,28 +64,27 @@ public class UserPasteAction extends UserAction {
 			controller.add(c);
 			controller.selectComponent(c, true);
 		}
-		for(InteractiveCable c:cables){
+		for (InteractiveCable c : cables) {
 			controller.getPane().add(c);
 		}
-		
+
 	}
-	
-	
-	
-	private  void populate(){
+
+	private void populate() {
 		HashMap<InteractiveModule, InteractiveModule> modMap = new HashMap<InteractiveModule, InteractiveModule>();
-		for(InteractiveComponent mod:clipboard){
-			if(mod instanceof InteractiveModule){
+		for (InteractiveComponent mod : clipboard) {
+			if (mod instanceof InteractiveModule) {
 				InteractiveModule cMod = ((InteractiveModule) mod).cloneTo(offset, controller);
 				modMap.put((InteractiveModule) mod, cMod);
 				this.components.add(cMod);
 			}
-		};
-		
+		}
+		;
+
 		this.cables = new LinkedList<InteractiveCable>();
-		
-		for(InteractiveCable cable:this.cableClipboard){
-			
+
+		for (InteractiveCable cable : this.cableClipboard) {
+
 			CablePoint source = cable.getSource();
 			CablePoint dest = cable.getDestination();
 			InteractiveModule sourceMapMod = modMap.get(source.getHost());
@@ -95,8 +95,8 @@ public class UserPasteAction extends UserAction {
 			cSource.setCable(cCable);
 			cDest.setCable(cCable);
 			this.cables.add(cCable);
-		};
+		}
+		;
 	}
-	
 
 }

@@ -9,7 +9,4 @@ public class PluginSavingError extends PluginError {
 		// TODO Auto-generated constructor stub
 	}
 
-
-
-
 }

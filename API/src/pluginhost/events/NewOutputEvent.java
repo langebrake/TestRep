@@ -4,11 +4,12 @@ import defaults.MidiIOThrough;
 
 public class NewOutputEvent extends HostEvent {
 	private MidiIOThrough newOutput;
-	
-	public NewOutputEvent(MidiIOThrough newInput){
+
+	public NewOutputEvent(MidiIOThrough newInput) {
 		this.newOutput = newInput;
 	}
-	public MidiIOThrough getNewOutput(){
+
+	public MidiIOThrough getNewOutput() {
 		return this.newOutput;
 	}
 }

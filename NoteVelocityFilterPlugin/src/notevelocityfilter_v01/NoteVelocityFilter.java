@@ -8,8 +8,8 @@ import pluginhost.events.HostEvent;
 
 public class NoteVelocityFilter extends Plugin {
 
-	public NoteVelocityFilter(PluginHost host, String name, int minInputs,
-			int maxInputs, int minOutputs, int maxOutputs) {
+	public NoteVelocityFilter(PluginHost host, String name, int minInputs, int maxInputs, int minOutputs,
+			int maxOutputs) {
 		super(host, name, minInputs, maxInputs, minOutputs, maxOutputs);
 		// TODO Auto-generated constructor stub
 	}

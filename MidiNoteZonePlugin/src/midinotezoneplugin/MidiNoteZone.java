@@ -18,35 +18,36 @@ import pluginhost.PluginHost;
 import pluginhost.events.HostEvent;
 import pluginhost.events.NewOutputEvent;
 
-public class MidiNoteZone extends Plugin implements MidiListener,ActionListener {
+public class MidiNoteZone extends Plugin implements MidiListener, ActionListener {
 	protected LinkedList<Zone> zones;
 	private transient MidiNoteZoneView view;
+
 	public MidiNoteZone(PluginHost host) {
 		super(host, "MIDI Zone", 1, 1, 0, -1);
 	}
-	
-	protected void addZone(){
+
+	protected void addZone() {
 		NewOutputRequestEvent e = new NewOutputRequestEvent();
 		this.getPluginHost().notify(e);
-		Zone z = new Zone(this,e.io.getId());
+		Zone z = new Zone(this, e.io.getId());
 		zones.add(z);
 		z.init();
 		view.updateView();
 	}
-	
-	protected void removeZome(Zone zone){
+
+	protected void removeZome(Zone zone) {
 		zones.remove(zone);
 		int i = 0;
-		for(Zone z:zones){
+		for (Zone z : zones) {
 			z.setIndex(i++);
 		}
 	}
-	
-	protected int indexOfZone(Zone zone){
+
+	protected int indexOfZone(Zone zone) {
 		return zones.indexOf(zone);
 	}
-	
-	public static Plugin getInstance(PluginHost host){
+
+	public static Plugin getInstance(PluginHost host) {
 		return new MidiNoteZone(host);
 	}
 
@@ -62,8 +63,8 @@ public class MidiNoteZone extends Plugin implements MidiListener,ActionListener 
 
 	@Override
 	public void notify(HostEvent e) {
-		if(e.getClass() == NewOutputEvent.class){
-			Zone z = new Zone(this,((NewOutputEvent)e).getNewOutput().getId());
+		if (e.getClass() == NewOutputEvent.class) {
+			Zone z = new Zone(this, ((NewOutputEvent) e).getNewOutput().getId());
 			zones.add(z);
 			z.init();
 			view.updateView();
@@ -90,7 +91,7 @@ public class MidiNoteZone extends Plugin implements MidiListener,ActionListener 
 	public Plugin clone(PluginHost newHost) {
 		MidiNoteZone tmp = new MidiNoteZone(newHost);
 		LinkedList<Zone> newList = new LinkedList<Zone>();
-		for(Zone z:zones){
+		for (Zone z : zones) {
 			newList.add(z.clone());
 		}
 		tmp.initPlugin();
@@ -99,22 +100,22 @@ public class MidiNoteZone extends Plugin implements MidiListener,ActionListener 
 
 	@Override
 	public void listen(MidiIO source, MidiMessage msg, long timestamp) {
-		if(MidiUtilities.getStatus(msg)!= MidiUtilities.NOTE_ON &&
-			MidiUtilities.getStatus(msg)!= MidiUtilities.NOTE_OFF ){
-			for(MidiIO m:getPluginHost().getOutputs()){
+		if (MidiUtilities.getStatus(msg) != MidiUtilities.NOTE_ON
+				&& MidiUtilities.getStatus(msg) != MidiUtilities.NOTE_OFF) {
+			for (MidiIO m : getPluginHost().getOutputs()) {
 				m.send(msg, timestamp);
 			}
 		}
 	}
-	
-	private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException{
+
+	private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException {
 		in.defaultReadObject();
 		this.initPlugin();
 	}
-	
-	private void initPlugin(){
+
+	private void initPlugin() {
 		this.getPluginHost().getInput(0).addMidiListener(this);
-		for(Zone z:zones){
+		for (Zone z : zones) {
 			z.init();
 		}
 		this.view = new MidiNoteZoneView(this);

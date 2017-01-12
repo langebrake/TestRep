@@ -18,55 +18,57 @@ public class Populator {
 	private static HashMap<Module, InteractiveModule> modMap = new HashMap<Module, InteractiveModule>();
 	private static InteractivePane pane;
 	private static InteractiveController c;
-	public static InteractivePane populateWith(InteractiveController c, MidiGraph graph){
+
+	public static InteractivePane populateWith(InteractiveController c, MidiGraph graph) {
 		pane = c.getPane();
 		Populator.c = c;
-		for(Module mod:graph){
-			
+		for (Module mod : graph) {
+
 			addRecursive(mod);
 		}
 		modMap.clear();
 		return pane;
 	}
-	
-	private static InteractiveModule addRecursive(Module mod){
-		
+
+	private static InteractiveModule addRecursive(Module mod) {
+
 		InteractiveModule iMod = modMap.get(mod);
-		if(iMod == null){
+		if (iMod == null) {
 			iMod = new InteractiveModule(mod.origin, mod, c);
-			if(mod.getPlugin() instanceof Grouping){
-				((Grouping)mod.getPlugin()).setParentController(c);
+			if (mod.getPlugin() instanceof Grouping) {
+				((Grouping) mod.getPlugin()).setParentController(c);
 			}
 			modMap.put(mod, iMod);
 			pane.add(iMod);
-			for(CablePoint p:iMod.getCablePoints(CablePointType.OUTPUT)){
-				if(!p.isConnected()){
+			for (CablePoint p : iMod.getCablePoints(CablePointType.OUTPUT)) {
+				if (!p.isConnected()) {
 					MidiIO output = mod.getOuput(p.getIndex());
-					if(output.hasOutput()){
+					if (output.hasOutput()) {
 						MidiIO otherEnd = output.getOutput();
-						//TODO: ClassCast Exception handling(should not happen by design)!
+						// TODO: ClassCast Exception handling(should not happen
+						// by design)!
 						Module otherParent = (Module) otherEnd.getParent();
 						InteractiveModule otherModule;
 						otherModule = modMap.get(otherParent);
-						if(otherModule == null){
+						if (otherModule == null) {
 							otherModule = addRecursive(otherParent);
 						}
-						CablePoint otherEndCp = otherModule.getCablePoint(CablePointType.INPUT,otherEnd.getId());
+						CablePoint otherEndCp = otherModule.getCablePoint(CablePointType.INPUT, otherEnd.getId());
 						InteractiveCable newCable = new InteractiveCable(c);
 						newCable.setSource(p);
 						newCable.setDestination(otherEndCp);
 						p.setCable(newCable);
 						otherEndCp.setCable(newCable);
 						pane.add(newCable);
-						
+
 					}
 				}
 			}
-//			for(MidiIO out:mod.getOutputs()){
-//				iMod.getCablePoint(CablePointType.OUTPUT,out.getId());
-//			}
+			// for(MidiIO out:mod.getOutputs()){
+			// iMod.getCablePoint(CablePointType.OUTPUT,out.getId());
+			// }
 		}
 		return iMod;
-		
+
 	}
 }

@@ -20,10 +20,10 @@ import javax.swing.JComponent;
 
 import controller.interactivepane.InteractiveController;
 
-public class InteractiveCable implements InteractiveShape{
-	
+public class InteractiveCable implements InteractiveShape {
+
 	private GeneralPath cable;
-	private CablePoint source,dest;
+	private CablePoint source, dest;
 	private LinkedList<CablePoint> cablePoints;
 	private boolean selected;
 	private boolean hover;
@@ -33,16 +33,17 @@ public class InteractiveCable implements InteractiveShape{
 	private float width;
 	private boolean draggedEndpoint;
 	protected InteractiveController controller;
-	
-	public InteractiveCable(InteractiveController parent){
-		this(null,null,parent);
+
+	public InteractiveCable(InteractiveController parent) {
+		this(null, null, parent);
 	}
-	
-	public InteractiveCable(CablePoint source, CablePoint dest, InteractiveController parent){
-		this(source,dest,1,Color.BLACK,parent);
+
+	public InteractiveCable(CablePoint source, CablePoint dest, InteractiveController parent) {
+		this(source, dest, 1, Color.BLACK, parent);
 	}
-	
-	public InteractiveCable(CablePoint source, CablePoint dest,float width,Color color, InteractiveController parent){
+
+	public InteractiveCable(CablePoint source, CablePoint dest, float width, Color color,
+			InteractiveController parent) {
 		this.source = source;
 		this.dest = dest;
 		this.cablePoints = new LinkedList<CablePoint>();
@@ -52,29 +53,28 @@ public class InteractiveCable implements InteractiveShape{
 		this.color = this.originColor;
 		this.width = this.originWidth;
 		this.controller = parent;
-		
+
 	}
-	
-	public void setSource(CablePoint source){
+
+	public void setSource(CablePoint source) {
 		this.source = source;
 	}
-	
-	public CablePoint getSource(){
+
+	public CablePoint getSource() {
 		return this.source;
 	}
-	
-	public void setDestination(CablePoint dest){
+
+	public void setDestination(CablePoint dest) {
 		this.dest = dest;
 	}
-	
-	public CablePoint getDestination(){
+
+	public CablePoint getDestination() {
 		return this.dest;
 	}
-	
-	
+
 	@Override
 	public boolean contains(Point2D arg0) {
-		if(cable!=null)
+		if (cable != null)
 			return this.cable.contains(arg0);
 		else
 			return false;
@@ -124,97 +124,95 @@ public class InteractiveCable implements InteractiveShape{
 	public boolean intersects(double x, double y, double w, double h) {
 		return this.cable.intersects(x, y, w, h);
 	}
-	
-	
-	public void setSelected(boolean set){
+
+	public void setSelected(boolean set) {
 		this.selected = set;
-		if(set){
+		if (set) {
 			this.color = Color.RED;
-		}else{
+		} else {
 			this.color = this.originColor;
-			
+
 		}
 	}
-	
-	public boolean isSelected(){
+
+	public boolean isSelected() {
 		return this.selected;
 	}
-	
-	public boolean isHovered(){
+
+	public boolean isHovered() {
 		return this.hover;
 	}
-	public void setHovered(boolean set){
+
+	public void setHovered(boolean set) {
 		this.hover = set;
-		if(set){
-			this.width = originWidth*2;
+		if (set) {
+			this.width = originWidth * 2;
 		} else {
-			this.width = originWidth*1;
+			this.width = originWidth * 1;
 		}
 	}
-	
-	public void setDraggedEndpoint(boolean set){
+
+	public void setDraggedEndpoint(boolean set) {
 		this.draggedEndpoint = set;
 	}
-	
-	public LinkedList<CablePoint> getCablePoints(){
+
+	public LinkedList<CablePoint> getCablePoints() {
 		LinkedList<CablePoint> points = new LinkedList<CablePoint>();
 		points.add(source);
 		points.addAll(cablePoints);
 		points.add(dest);
 		return points;
 	}
-	
-	public void updateView(Graphics2D g2d){
-		int paneX =  (int) this.controller.getPane().getLocationOnScreen().getX();
-		int paneY =  (int) this.controller.getPane().getLocationOnScreen().getY();
-		float x1pos =(float) (this.source.getXOnScreen() - paneX);
-		float y1pos =(float) (this.source.getYOnScreen() - paneY);
-		float x2pos =(float) (this.dest.getXOnScreen() - paneX);
-		float y2pos =(float) (this.dest.getYOnScreen() - paneY);
-		
+
+	public void updateView(Graphics2D g2d) {
+		int paneX = (int) this.controller.getPane().getLocationOnScreen().getX();
+		int paneY = (int) this.controller.getPane().getLocationOnScreen().getY();
+		float x1pos = (float) (this.source.getXOnScreen() - paneX);
+		float y1pos = (float) (this.source.getYOnScreen() - paneY);
+		float x2pos = (float) (this.dest.getXOnScreen() - paneX);
+		float y2pos = (float) (this.dest.getYOnScreen() - paneY);
+
 		float lastx = x1pos;
 		float lasty = y1pos;
 		this.cable = new GeneralPath();
 		this.cable.moveTo(x1pos, y1pos);
-		
-		for(CablePoint c: this.cablePoints){
-			this.cable.lineTo(c.getXOnScreen() - paneX , c.getYOnScreen() - paneY);
+
+		for (CablePoint c : this.cablePoints) {
+			this.cable.lineTo(c.getXOnScreen() - paneX, c.getYOnScreen() - paneY);
 			lastx = c.getXOnScreen() - paneX;
 			lasty = c.getYOnScreen() - paneY;
 		}
-		
+
 		float endpointCurvedX, endpointCurvedY;
-		if(draggedEndpoint){
-			endpointCurvedX = x2pos-(x2pos-lastx)/5;
-			endpointCurvedY = y2pos-(y2pos-lasty)/5;
+		if (draggedEndpoint) {
+			endpointCurvedX = x2pos - (x2pos - lastx) / 5;
+			endpointCurvedY = y2pos - (y2pos - lasty) / 5;
 		} else {
-			endpointCurvedX = x2pos-(x2pos-lastx)/5;
+			endpointCurvedX = x2pos - (x2pos - lastx) / 5;
 			endpointCurvedY = y2pos;
 		}
-		this.cable.curveTo(x1pos+(x2pos-x1pos)/5, y1pos, endpointCurvedX, endpointCurvedY, x2pos, y2pos);
+		this.cable.curveTo(x1pos + (x2pos - x1pos) / 5, y1pos, endpointCurvedX, endpointCurvedY, x2pos, y2pos);
 
-		
 		g2d.setPaint(this.color);
-		g2d.setStroke(new BasicStroke(this.width*controller.getPane().getScaleFactor()));
-		
+		g2d.setStroke(new BasicStroke(this.width * controller.getPane().getScaleFactor()));
+
 		g2d.draw(this.cable);
-		
+
 	}
 
 	@Override
-	public boolean equals(Object o){
-		if(o==null || !(o.getClass() == this.getClass())){
+	public boolean equals(Object o) {
+		if (o == null || !(o.getClass() == this.getClass())) {
 			return false;
 		}
 		InteractiveCable other = (InteractiveCable) o;
 		boolean result = true;
 		return this.source == other.source && this.dest == other.dest;
 	}
-	
+
 	@Override
 	public void translateOriginLocation(Vector translationVectorGrid) {
-		
-		
+
 	}
 
 	@Override
@@ -226,10 +224,9 @@ public class InteractiveCable implements InteractiveShape{
 	public InteractiveController getController() {
 		return this.controller;
 	}
-	
-	public void setController(InteractiveController controller){
+
+	public void setController(InteractiveController controller) {
 		this.controller = controller;
 	}
-	
-	
+
 }

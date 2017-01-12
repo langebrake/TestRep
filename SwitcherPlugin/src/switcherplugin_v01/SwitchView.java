@@ -7,7 +7,8 @@ import javax.swing.JPanel;
 
 public class SwitchView extends JPanel {
 	private SwitcherPlugin switcherPlugin;
-	public SwitchView(){
+
+	public SwitchView() {
 		this(null);
 	}
 
@@ -15,18 +16,18 @@ public class SwitchView extends JPanel {
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		this.switcherPlugin = switcherPlugin;
 		this.updateView();
-		
+
 	}
-	
-	void updateView(){
-		
+
+	void updateView() {
+
 		this.removeAll();
-		for(Routing r:switcherPlugin.routings){
-			if(!this.isAncestorOf(r.getView())){
+		for (Routing r : switcherPlugin.routings) {
+			if (!this.isAncestorOf(r.getView())) {
 				this.add(r.getView());
 			}
 		}
-		for(Routing r:this.switcherPlugin.routings){
+		for (Routing r : this.switcherPlugin.routings) {
 			r.routingView.updateComboBox();
 		}
 		JButton add = new JButton("+");
@@ -34,8 +35,7 @@ public class SwitchView extends JPanel {
 		this.add(add);
 		this.setSize(this.getPreferredSize());
 		this.revalidate();
-		
+
 	}
-	
-	
+
 }

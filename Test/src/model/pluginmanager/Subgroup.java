@@ -4,9 +4,11 @@ import java.util.LinkedList;
 
 public class Subgroup extends LinkedList<PluginHierarchyElement> implements PluginHierarchyElement {
 	private String name;
-	public Subgroup(String name){
+
+	public Subgroup(String name) {
 		this.name = name;
 	}
+
 	@Override
 	public boolean isSubgroup() {
 		return true;
@@ -21,6 +23,5 @@ public class Subgroup extends LinkedList<PluginHierarchyElement> implements Plug
 	public String getName() {
 		return this.name;
 	}
-	
-	
+
 }

@@ -19,16 +19,18 @@ import plugin.Plugin;
 import pluginhost.PluginHost;
 import pluginhost.events.HostEvent;
 
-public class ForceChannel extends Plugin implements ActionListener, MidiListener{
+public class ForceChannel extends Plugin implements ActionListener, MidiListener {
 	private transient MinView view;
 	int selectedChannel;
+
 	public ForceChannel(PluginHost host) {
 		super(host, "Force Channel", 1, 1, 1, 1);
 	}
-	
-	public static Plugin getInstance(PluginHost host){
+
+	public static Plugin getInstance(PluginHost host) {
 		return new ForceChannel(host);
 	}
+
 	@Override
 	public JComponent getMinimizedView() {
 		return this.view;
@@ -41,7 +43,6 @@ public class ForceChannel extends Plugin implements ActionListener, MidiListener
 
 	@Override
 	public void notify(HostEvent e) {
-
 
 	}
 
@@ -74,46 +75,42 @@ public class ForceChannel extends Plugin implements ActionListener, MidiListener
 		return f;
 	}
 
-	
-	private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException{
+	private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException {
 		in.defaultReadObject();
 		this.initPlugin();
 	}
 
 	@Override
 	public void listen(MidiIO source, MidiMessage msg, long timestamp) {
-		if(MidiUtilities.getStatus(msg) != 0b1111 && selectedChannel != -1){
+		if (MidiUtilities.getStatus(msg) != 0b1111 && selectedChannel != -1) {
 			int data1 = msg.getMessage()[1];
 			int status = msg.getMessage()[0] & 0xF0;
 			int data2 = 0;
-			if(msg.getLength() > 2){
+			if (msg.getLength() > 2) {
 				data2 = msg.getMessage()[2];
 			}
 			msg = new ShortMessage();
 			try {
-				
-				((ShortMessage)msg).setMessage(status,
-												selectedChannel,
-												data1,
-												data2);
+
+				((ShortMessage) msg).setMessage(status, selectedChannel, data1, data2);
 			} catch (InvalidMidiDataException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 		getPluginHost().getOuput(0).send(msg, timestamp);
-		
+
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		Object o = e.getSource();
-		if(o instanceof JComboBox){
-			if(e.getActionCommand().equals("CHANNEL")){
+		if (o instanceof JComboBox) {
+			if (e.getActionCommand().equals("CHANNEL")) {
 				this.selectedChannel = (((JComboBox) o).getSelectedIndex()) - 1;
-				
+
 			}
 		}
-		
+
 	}
 }

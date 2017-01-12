@@ -8,7 +8,8 @@ import javax.swing.JTextField;
 
 public class MinView extends JPanel {
 	private JTextField note;
-	public MinView(ConvergeNotes n){
+
+	public MinView(ConvergeNotes n) {
 		this.setLayout(new BorderLayout());
 		note = new JTextField();
 		note.setText(Byte.toString(n.note));
@@ -17,8 +18,8 @@ public class MinView extends JPanel {
 		this.add(note, BorderLayout.CENTER);
 		this.add(set, BorderLayout.EAST);
 	}
-	
-	public byte getNote(){
+
+	public byte getNote() {
 		return Byte.parseByte(note.getText());
 	}
 }

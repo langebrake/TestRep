@@ -17,19 +17,19 @@ import gui.interactivepane.InteractiveCable;
 import gui.interactivepane.InteractiveModule;
 import model.graph.Module;
 
-public class MidiGraph implements Serializable,Iterable<Module>, Cloneable{
+public class MidiGraph implements Serializable, Iterable<Module>, Cloneable {
 	private transient LinkedList<Module> nodes;
-	
-	public MidiGraph(){
+
+	public MidiGraph() {
 		this.nodes = new LinkedList<Module>();
 	}
-	
-	public void add(Module m){
+
+	public void add(Module m) {
 		this.nodes.add(m);
 	}
-	
-	public Module remove(Module m){
-		if(this.nodes.remove(m)){
+
+	public Module remove(Module m) {
+		if (this.nodes.remove(m)) {
 			return m;
 		} else {
 			return null;
@@ -40,68 +40,67 @@ public class MidiGraph implements Serializable,Iterable<Module>, Cloneable{
 	public Iterator<Module> iterator() {
 		return nodes.iterator();
 	}
-	
-	private void writeObject(ObjectOutputStream out) throws IOException{
+
+	private void writeObject(ObjectOutputStream out) throws IOException {
 		String stringer = Stringer.getString();
-		System.out.println(stringer+"GRAPH_START");
+		System.out.println(stringer + "GRAPH_START");
 		out.writeInt(nodes.size());
-		for(Module m:nodes){
+		for (Module m : nodes) {
 			out.writeObject(m);
 		}
-		System.out.println(stringer+"GRAPH_END");
+		System.out.println(stringer + "GRAPH_END");
 		Stringer.minimize();
 	}
-	
-	private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException{
+
+	private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException {
 		int max = in.readInt();
 		nodes = new LinkedList<Module>();
-		for(int i = 0;i<max;i++){
+		for (int i = 0; i < max; i++) {
 			nodes.add((Module) in.readObject());
 		}
 	}
-	
-	public MidiGraph clone(){
-		modMap = new HashMap<Module,Module>();
+
+	public MidiGraph clone() {
+		modMap = new HashMap<Module, Module>();
 		MidiGraph mg = new MidiGraph();
-		for(Module m:this.nodes){
-			cloneRecursive(mg,m);
+		for (Module m : this.nodes) {
+			cloneRecursive(mg, m);
 		}
 		return mg;
 	}
-	
-	private HashMap<Module,Module> modMap;
-	
-	private Module cloneRecursive(MidiGraph cloneIntoThis,Module cloneThis){
+
+	private HashMap<Module, Module> modMap;
+
+	private Module cloneRecursive(MidiGraph cloneIntoThis, Module cloneThis) {
 		Module cMod = modMap.get(cloneThis);
-		if(cMod == null){
-			
+		if (cMod == null) {
 
 			cMod = cloneThis.clone();
 			modMap.put(cloneThis, cMod);
 			cloneIntoThis.add(cMod);
-			for(MidiIO mIO:cMod.getOutputs()){
-				if(!mIO.hasOutput()){
+			for (MidiIO mIO : cMod.getOutputs()) {
+				if (!mIO.hasOutput()) {
 					MidiIO output = cloneThis.getOuput(mIO.getId());
-					if(output.hasOutput()){
+					if (output.hasOutput()) {
 						MidiIO otherEnd = output.getOutput();
-						//TODO: ClassCast Exception handling(should not happen by design)!
+						// TODO: ClassCast Exception handling(should not happen
+						// by design)!
 						Module otherParent = (Module) otherEnd.getParent();
 						Module otherModule;
 						otherModule = modMap.get(otherParent);
-						if(otherModule == null){
-							otherModule = cloneRecursive(cloneIntoThis,otherParent);
+						if (otherModule == null) {
+							otherModule = cloneRecursive(cloneIntoThis, otherParent);
 						}
-						
-						otherEnd=otherModule.getInput(otherEnd.getId());
+
+						otherEnd = otherModule.getInput(otherEnd.getId());
 						mIO.setOutput(otherEnd);
 						otherEnd.setInput(mIO);
 					}
 				}
 			}
 		}
-		
+
 		return cMod;
 	}
 
-	
 }

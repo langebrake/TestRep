@@ -9,6 +9,4 @@ public class PluginLoadingError extends PluginError {
 		// TODO Auto-generated constructor stub
 	}
 
-
-
 }

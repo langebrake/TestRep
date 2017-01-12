@@ -20,14 +20,15 @@ import pluginhost.events.HostEvent;
 public class ConvergeNotes extends Plugin implements MidiListener, ActionListener {
 	private transient MinView view;
 	public byte note;
+
 	public ConvergeNotes(PluginHost host) {
 		super(host, "Converge Notes", 1, 1, 1, 1);
 	}
 
-	public static Plugin getInstance(PluginHost host){
+	public static Plugin getInstance(PluginHost host) {
 		return new ConvergeNotes(host);
 	}
-	
+
 	@Override
 	public JComponent getMinimizedView() {
 		return view;
@@ -66,31 +67,30 @@ public class ConvergeNotes extends Plugin implements MidiListener, ActionListene
 		tmp.initPlugin();
 		return tmp;
 	}
-	
-	private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException{
+
+	private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException {
 		in.defaultReadObject();
 		this.initPlugin();
 	}
 
-	private void initPlugin(){
+	private void initPlugin() {
 		getPluginHost().getInput(0).addMidiListener(this);
 		this.view = new MinView(this);
 	}
+
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		this.note = view.getNote();
-		
+
 	}
 
 	@Override
 	public void listen(MidiIO source, MidiMessage msg, long timestamp) {
-		if(MidiUtilities.getStatus(msg) == MidiUtilities.NOTE_OFF ||
-				MidiUtilities.getStatus(msg) == MidiUtilities.NOTE_ON){
+		if (MidiUtilities.getStatus(msg) == MidiUtilities.NOTE_OFF
+				|| MidiUtilities.getStatus(msg) == MidiUtilities.NOTE_ON) {
 			try {
-				getPluginHost().getOuput(0).send(
-						new ShortMessage(msg.getMessage()[0],
-								note,
-								msg.getMessage()[2]), timestamp);
+				getPluginHost().getOuput(0).send(new ShortMessage(msg.getMessage()[0], note, msg.getMessage()[2]),
+						timestamp);
 			} catch (InvalidMidiDataException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -98,7 +98,7 @@ public class ConvergeNotes extends Plugin implements MidiListener, ActionListene
 		} else {
 			getPluginHost().getOuput(0).send(msg, timestamp);
 		}
-		
+
 	}
 
 }

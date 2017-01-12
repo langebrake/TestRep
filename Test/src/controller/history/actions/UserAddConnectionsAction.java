@@ -10,43 +10,46 @@ import controller.history.UserActionManager;
 import controller.interactivepane.InteractiveController;
 
 public class UserAddConnectionsAction extends UserAction {
-	
-	private HashMap<InteractiveCable,InteractiveCable[]> cables;
+
+	private HashMap<InteractiveCable, InteractiveCable[]> cables;
+
 	/**
-	 * The Hashmap Keys are the new added Cables, Values are the old replaced Cables
-	 * @param UserActionManager m
-	 * @param Calbe Map cables
+	 * The Hashmap Keys are the new added Cables, Values are the old replaced
+	 * Cables
+	 * 
+	 * @param UserActionManager
+	 *            m
+	 * @param Calbe
+	 *            Map cables
 	 */
-	public UserAddConnectionsAction(InteractiveController sourceController, HashMap<InteractiveCable,InteractiveCable[]> cables) {
+	public UserAddConnectionsAction(InteractiveController sourceController,
+			HashMap<InteractiveCable, InteractiveCable[]> cables) {
 		super(sourceController);
 		this.cables = cables;
 	}
 
-	
-
-	 
-	
 	@Override
 	public void undo() {
-		for(InteractiveCable c:cables.keySet()){
+		for (InteractiveCable c : cables.keySet()) {
 			LinkedList<CablePoint> toDisconnect = c.getCablePoints();
 			InteractiveCable[] overrides = cables.get(c);
-			if(overrides != null){
-				//TODO: reconnect old cable, mind the module connection!
-				for(InteractiveCable override:overrides){
-					for(CablePoint p:override.getCablePoints()){
+			if (overrides != null) {
+				// TODO: reconnect old cable, mind the module connection!
+				for (InteractiveCable override : overrides) {
+					for (CablePoint p : override.getCablePoints()) {
 						p.setCable(override);
 						toDisconnect.remove(p);
 					}
 					controller.getPane().add(override);
 				}
 			}
-			//TODO: connect new cable and cableendpoints, mind the module connection!
+			// TODO: connect new cable and cableendpoints, mind the module
+			// connection!
 			controller.getPane().remove(c);
-			for(CablePoint p:toDisconnect){
+			for (CablePoint p : toDisconnect) {
 				p.disconnect();
 			}
-			
+
 		}
 		controller.getPane().repaint();
 
@@ -54,18 +57,18 @@ public class UserAddConnectionsAction extends UserAction {
 
 	@Override
 	public void execute() {
-		for(InteractiveCable c:cables.keySet()){
+		for (InteractiveCable c : cables.keySet()) {
 			InteractiveCable[] overrides = cables.get(c);
-			if(overrides != null){
-				for(InteractiveCable override:overrides){
+			if (overrides != null) {
+				for (InteractiveCable override : overrides) {
 					controller.getPane().remove(override);
-					for(CablePoint p:override.getCablePoints()){
-						
+					for (CablePoint p : override.getCablePoints()) {
+
 						p.disconnect();
 					}
 				}
 			}
-			for(CablePoint p:c.getCablePoints()){
+			for (CablePoint p : c.getCablePoints()) {
 				p.setCable(c);
 			}
 			controller.getPane().add(c);

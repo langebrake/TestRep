@@ -6,11 +6,13 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.Serializable;
 
-public class FullViewClosingListener implements WindowListener,Serializable {
+public class FullViewClosingListener implements WindowListener, Serializable {
 	InteractiveModule module;
-	public FullViewClosingListener(InteractiveModule m){
+
+	public FullViewClosingListener(InteractiveModule m) {
 		this.module = m;
 	}
+
 	@Override
 	public void windowActivated(WindowEvent arg0) {
 		// TODO Auto-generated method stub

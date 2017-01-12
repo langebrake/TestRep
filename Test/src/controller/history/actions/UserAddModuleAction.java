@@ -20,8 +20,8 @@ import engine.Engine;
 
 public class UserAddModuleAction extends UserAction {
 	private InteractiveModule interactiveModule;
-	
-	public UserAddModuleAction(InteractiveController sourceController, Loadable p){
+
+	public UserAddModuleAction(InteractiveController sourceController, Loadable p) {
 		super(sourceController);
 		Module module = null;
 		Plugin plugin = null;
@@ -31,10 +31,10 @@ public class UserAddModuleAction extends UserAction {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		try {
 			plugin = p.getInstance(module);
-			module.setPlugin(plugin,p.getPluginClass());
+			module.setPlugin(plugin, p.getPluginClass());
 		} catch (IllegalArgumentException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -51,28 +51,28 @@ public class UserAddModuleAction extends UserAction {
 		interactiveModule = new InteractiveModule(controller.getLastMouseGridLocation(), module, controller);
 		this.firsttime = true;
 	}
-	
+
 	public UserAddModuleAction(InteractiveController sourceController, InteractiveModule module) {
 		super(sourceController);
 		interactiveModule = module;
 	}
-	
+
 	@Override
 	public void undo() {
 
 		interactiveModule.close();
 		interactiveModule.getController().remove(interactiveModule);
 
-
 	}
 
 	private boolean firsttime;
+
 	@Override
 	public void execute() {
 
-		if(!firsttime){
+		if (!firsttime) {
 			interactiveModule.reopen();
-			
+
 		} else {
 			firsttime = false;
 		}
@@ -80,5 +80,5 @@ public class UserAddModuleAction extends UserAction {
 		interactiveModule.getController().add(interactiveModule);
 
 	}
-	
+
 }

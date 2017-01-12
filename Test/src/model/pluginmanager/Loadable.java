@@ -12,8 +12,8 @@ public class Loadable implements PluginHierarchyElement {
 	private Method getInstance;
 	private Attributes attributes;
 	private Class<? extends Plugin> pClass;
-	
-	public Loadable(Class<? extends Plugin> pClass, Attributes attributes){
+
+	public Loadable(Class<? extends Plugin> pClass, Attributes attributes) {
 		this.pClass = pClass;
 		Method getInstance = null;
 		try {
@@ -25,6 +25,7 @@ public class Loadable implements PluginHierarchyElement {
 		this.getInstance = getInstance;
 		this.attributes = attributes;
 	}
+
 	@Override
 	public boolean isSubgroup() {
 		return false;
@@ -39,15 +40,20 @@ public class Loadable implements PluginHierarchyElement {
 	public String getName() {
 		return this.attributes.getValue("Name");
 	}
-	public String getDescription(){
+
+	public String getDescription() {
 		return this.attributes.getValue("Description");
 	}
-	public Plugin getInstance(PluginHost h) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException{
+
+	public Plugin getInstance(PluginHost h)
+			throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		return (Plugin) this.getInstance.invoke(null, h);
 	}
+
 	public Method getMethod() {
 		return this.getInstance;
 	}
+
 	public Class getPluginClass() {
 		return pClass;
 	}

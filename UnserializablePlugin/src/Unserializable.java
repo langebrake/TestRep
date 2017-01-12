@@ -30,9 +30,7 @@ import defaults.MidiIO;
 import defaults.MidiIOThrough;
 import defaults.MidiListener;
 
-
-
-public class Unserializable extends Plugin implements MidiListener{
+public class Unserializable extends Plugin implements MidiListener {
 	private static final int MAXINPUTS = -1;
 	private static final int MAXOUTPUTS = -1;
 	private static final int MININPUTS = 1;
@@ -41,81 +39,80 @@ public class Unserializable extends Plugin implements MidiListener{
 	private String msg = "DummyPlugin";
 	private Method m = null;
 	private static final Random rn = new Random();
-	private int s = rn.nextInt(1000)+rn.nextInt(3545)+rn.nextInt(4546);
-	private Color c= new Color(rn.nextInt(255),rn.nextInt(255),rn.nextInt(255));
-	
-	
-	public static Plugin getInstance(PluginHost host){
+	private int s = rn.nextInt(1000) + rn.nextInt(3545) + rn.nextInt(4546);
+	private Color c = new Color(rn.nextInt(255), rn.nextInt(255), rn.nextInt(255));
+
+	public static Plugin getInstance(PluginHost host) {
 		return new Unserializable(host);
 	}
-	public Unserializable(PluginHost host){
-		super(host,NAME,MININPUTS,MAXINPUTS,MINOUTPUTS,MAXOUTPUTS);
-	
-		
+
+	public Unserializable(PluginHost host) {
+		super(host, NAME, MININPUTS, MAXINPUTS, MINOUTPUTS, MAXOUTPUTS);
+
 	}
+
 	private boolean block;
-	
-	
+
 	@Override
 	public void notify(HostEvent e) {
-	
+
 	}
+
 	@Override
 	public JComponent getMinimizedView() {
 		JPanel p = new JPanel();
 		p.setBackground(c);
 		return p;
 	}
+
 	@Override
 	public JComponent getFullView() {
 		return new DefaultView("You can't save this plugins state!");
 	}
-	
 
 	@Override
 	public void load() {
 		PluginHost host = this.getPluginHost();
 		host.getInput(0).addMidiListener(this);
 		try {
-			this.m   = Plugin.class.getMethod("getInstance", PluginHost.class);
+			this.m = Plugin.class.getMethod("getInstance", PluginHost.class);
 		} catch (NoSuchMethodException | SecurityException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		
-		
+
 	}
+
 	@Override
 	public boolean close() {
 		return true;
-		
+
 	}
-	
-	
+
 	@Override
 	public void listen(MidiIO source, MidiMessage msg, long timestamp) {
-		
+
 	}
+
 	@Override
 	public boolean reOpen() {
 		return true;
-		
+
 	}
-	
-	private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException{
+
+	private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException {
 		in.defaultReadObject();
 		try {
-			this.m   = Plugin.class.getMethod("getInstance", PluginHost.class);
+			this.m = Plugin.class.getMethod("getInstance", PluginHost.class);
 		} catch (NoSuchMethodException | SecurityException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
+
 	@Override
 	public Plugin clone(PluginHost host) {
 		return new Unserializable(host);
 	}
-	
 
 }

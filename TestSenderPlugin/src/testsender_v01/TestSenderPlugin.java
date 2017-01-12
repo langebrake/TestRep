@@ -1,4 +1,5 @@
 package testsender_v01;
+
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -14,10 +15,8 @@ import plugin.Plugin;
 import pluginhost.PluginHost;
 import pluginhost.events.HostEvent;
 
+public class TestSenderPlugin extends Plugin implements ActionListener {
 
-public class TestSenderPlugin extends Plugin implements ActionListener{
-
-	
 	private static final int MAXINPUTS = 0;
 	private static final int MAXOUTPUTS = 1;
 	private static final int MININPUTS = 0;
@@ -25,16 +24,15 @@ public class TestSenderPlugin extends Plugin implements ActionListener{
 	private static final String NAME = "Test Sender";
 	private transient MinView fullView;
 	private transient MinView minView;
-	int status,channel, data1,data2;
-	
-	public static TestSenderPlugin getInstance(PluginHost host){
+	int status, channel, data1, data2;
+
+	public static TestSenderPlugin getInstance(PluginHost host) {
 		return new TestSenderPlugin(host);
 	}
-	
-	public TestSenderPlugin(PluginHost host) {
-		super(host,NAME,MININPUTS,MAXINPUTS,MINOUTPUTS,MAXOUTPUTS);
-	}
 
+	public TestSenderPlugin(PluginHost host) {
+		super(host, NAME, MININPUTS, MAXINPUTS, MINOUTPUTS, MAXOUTPUTS);
+	}
 
 	@Override
 	public JComponent getMinimizedView() {
@@ -76,18 +74,17 @@ public class TestSenderPlugin extends Plugin implements ActionListener{
 		t.initPlugin();
 		return t;
 	}
-	
-	private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException{
+
+	private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException {
 		in.defaultReadObject();
 		this.initPlugin();
 	}
-	
-	private void writeObject(ObjectOutputStream out) throws IOException{
+
+	private void writeObject(ObjectOutputStream out) throws IOException {
 		out.defaultWriteObject();
 	}
 
-	
-	private void initPlugin(){
+	private void initPlugin() {
 		this.minView = new MinView(this);
 		this.fullView = new MinView(this);
 	}
@@ -101,25 +98,25 @@ public class TestSenderPlugin extends Plugin implements ActionListener{
 			e.printStackTrace();
 		}
 		this.getPluginHost().getOuput(0).send(msg, -1);
-		
+
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		ShortMessage msg = new ShortMessage();
-		
+
 		try {
 			status = minView.status();
 			channel = minView.channel();
 			data1 = minView.data1();
 			data2 = minView.data2();
-			msg.setMessage(status<<4,channel,data1,data2);
+			msg.setMessage(status << 4, channel, data1, data2);
 		} catch (InvalidMidiDataException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		this.getPluginHost().getOuput(0).send(msg, -1);
-		
+
 	}
 }

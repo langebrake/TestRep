@@ -13,27 +13,29 @@ import gui.interactivepane.InteractiveModule;
 import model.graph.Module;
 import model.pluginmanager.Loadable;
 
-public class PluginAddAction extends AbstractAction{
+public class PluginAddAction extends AbstractAction {
 	private InteractiveController controller;
 	private Loadable plugin;
-	public PluginAddAction(InteractiveController controller, Loadable plugin){
+
+	public PluginAddAction(InteractiveController controller, Loadable plugin) {
 		super(plugin.getName());
 		putValue(SHORT_DESCRIPTION, plugin.getDescription());
 		this.controller = controller;
 		this.plugin = plugin;
 	}
+
 	public void actionPerformed(ActionEvent arg0) {
-		
-		//TODO: Think about Threading!
-		Thread t = new Thread(){
-			public void run(){
-				UserAddModuleAction a = new UserAddModuleAction(controller,plugin);
+
+		// TODO: Think about Threading!
+		Thread t = new Thread() {
+			public void run() {
+				UserAddModuleAction a = new UserAddModuleAction(controller, plugin);
 				controller.executeAction(a);
-				
+
 			}
 		};
 		t.start();
-		
+
 	}
 
 }

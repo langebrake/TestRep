@@ -9,13 +9,15 @@ import controller.interactivepane.InteractiveController;
 
 public class CopyAction extends AbstractAction {
 	private InteractiveController controller;
-	public CopyAction(InteractiveController c){
+
+	public CopyAction(InteractiveController c) {
 		super("copy");
-		super.putValue(SHORT_DESCRIPTION,"copy selected components");
-		super.putValue(MNEMONIC_KEY,KeyEvent.VK_C);
+		super.putValue(SHORT_DESCRIPTION, "copy selected components");
+		super.putValue(MNEMONIC_KEY, KeyEvent.VK_C);
 		this.controller = c;
-		
+
 	}
+
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		this.controller.getClipboard().setClipboard(controller.getPane().getComponentSelection());

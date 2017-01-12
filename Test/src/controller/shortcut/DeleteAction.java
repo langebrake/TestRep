@@ -14,19 +14,23 @@ import controller.interactivepane.InteractiveController;
 
 public class DeleteAction extends AbstractAction {
 	private InteractiveController controller;
-	public DeleteAction(InteractiveController controller){
+
+	public DeleteAction(InteractiveController controller) {
 		super("delete");
-		super.putValue(SHORT_DESCRIPTION,"delete selected components");
-		super.putValue(MNEMONIC_KEY,KeyEvent.VK_D);
+		super.putValue(SHORT_DESCRIPTION, "delete selected components");
+		super.putValue(MNEMONIC_KEY, KeyEvent.VK_D);
 		this.controller = controller;
 	}
+
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		UserAction delete = new UserDeleteAction(controller, controller.getPane().getComponentSelection(), controller.getPane().getShapeSelection());
+		UserAction delete = new UserDeleteAction(controller, controller.getPane().getComponentSelection(),
+				controller.getPane().getShapeSelection());
 		controller.executeAction(delete);
 		controller.clearSelection();
-		//TODO: Cables need to get disconnected upon module or cable deletion! (both in Pane and Graph)
-		
+		// TODO: Cables need to get disconnected upon module or cable deletion!
+		// (both in Pane and Graph)
+
 	}
-	
+
 }

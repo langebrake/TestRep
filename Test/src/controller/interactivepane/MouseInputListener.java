@@ -5,7 +5,6 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelListener;
 import java.io.Serializable;
 
-public interface MouseInputListener extends MouseListener, MouseMotionListener,
-		MouseWheelListener, Serializable {
+public interface MouseInputListener extends MouseListener, MouseMotionListener, MouseWheelListener, Serializable {
 
 }

@@ -30,12 +30,12 @@ public class NetworkMidiInput extends Plugin implements ActionListener {
 	int port;
 	private transient ServerSocket server;
 	private transient Socket client;
-	
+
 	public NetworkMidiInput(PluginHost host) {
-		super(host,NAME,MININPUTS,MAXINPUTS,MINOUTPUTS,MAXOUTPUTS);
+		super(host, NAME, MININPUTS, MAXINPUTS, MINOUTPUTS, MAXOUTPUTS);
 	}
 
-	public static NetworkMidiInput getInstance(PluginHost host){
+	public static NetworkMidiInput getInstance(PluginHost host) {
 		return new NetworkMidiInput(host);
 	}
 
@@ -61,14 +61,14 @@ public class NetworkMidiInput extends Plugin implements ActionListener {
 
 	}
 
-	private void initPlugin(){
+	private void initPlugin() {
 		this.fullView = new FullView(this);
 		this.minView = new MinView(this);
-		if(this.port != -1){
+		if (this.port != -1) {
 			this.openServer();
 		}
 	};
-	
+
 	@Override
 	public boolean close() {
 		return true;
@@ -85,22 +85,21 @@ public class NetworkMidiInput extends Plugin implements ActionListener {
 		tmp.load();
 		return tmp;
 	}
-	
-	private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException{
+
+	private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException {
 		in.defaultReadObject();
 		this.initPlugin();
 	}
-	
-	private void writeObject(ObjectOutputStream out) throws IOException{
+
+	private void writeObject(ObjectOutputStream out) throws IOException {
 		out.defaultWriteObject();
 	}
 
-	
-	
 	private transient Thread t;
+
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		if(this.server != null){
+		if (this.server != null) {
 			try {
 				this.client.close();
 				this.server.close();
@@ -109,25 +108,25 @@ public class NetworkMidiInput extends Plugin implements ActionListener {
 				e.printStackTrace();
 			}
 		}
-		
+
 		this.port = this.minView.getPort();
 		this.openServer();
-		
+
 	}
-	
-	private void openServer(){
-		t = new Thread(){
-			public void run(){
+
+	private void openServer() {
+		t = new Thread() {
+			public void run() {
 				try {
 					NetworkMidiInput.this.server = new ServerSocket(NetworkMidiInput.this.port);
 					NetworkMidiInput.this.client = NetworkMidiInput.this.server.accept();
 					DataInputStream din = new DataInputStream(NetworkMidiInput.this.client.getInputStream());
 					int length;
-					while((length = din.readInt()) >0){
+					while ((length = din.readInt()) > 0) {
 						byte[] msg = new byte[length];
-						din.readFully(msg,0,length);
+						din.readFully(msg, 0, length);
 						ShortMessage sendThis = new ShortMessage();
-						sendThis.setMessage(msg[0], msg[1],msg[2]);
+						sendThis.setMessage(msg[0], msg[1], msg[2]);
 						long timestamp = din.readLong();
 						NetworkMidiInput.this.getPluginHost().getOuput(0).send(sendThis, timestamp);
 					}
@@ -140,6 +139,6 @@ public class NetworkMidiInput extends Plugin implements ActionListener {
 				}
 			}
 		};
-	t.start();
+		t.start();
 	}
 }

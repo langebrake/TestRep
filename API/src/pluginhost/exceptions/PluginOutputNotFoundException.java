@@ -1,5 +1,5 @@
 package pluginhost.exceptions;
 
-public class PluginOutputNotFoundException extends PluginException{
+public class PluginOutputNotFoundException extends PluginException {
 
 }

@@ -17,7 +17,7 @@ import plugin.Plugin;
 import pluginhost.PluginHost;
 import pluginhost.events.HostEvent;
 
-public class NetworkMidiOutput extends Plugin implements MidiListener,ActionListener{
+public class NetworkMidiOutput extends Plugin implements MidiListener, ActionListener {
 
 	private static final int MAXINPUTS = 1;
 	private static final int MAXOUTPUTS = 0;
@@ -30,15 +30,15 @@ public class NetworkMidiOutput extends Plugin implements MidiListener,ActionList
 	String name;
 	private transient Socket client;
 	private transient DataOutputStream dout;
-	
+
 	public NetworkMidiOutput(PluginHost host) {
-		super(host,NAME,MININPUTS,MAXINPUTS,MINOUTPUTS,MAXOUTPUTS);
+		super(host, NAME, MININPUTS, MAXINPUTS, MINOUTPUTS, MAXOUTPUTS);
 	}
 
-	public static NetworkMidiOutput getInstance(PluginHost host){
+	public static NetworkMidiOutput getInstance(PluginHost host) {
 		return new NetworkMidiOutput(host);
 	}
-	
+
 	@Override
 	public JComponent getMinimizedView() {
 		return this.minView;
@@ -75,24 +75,24 @@ public class NetworkMidiOutput extends Plugin implements MidiListener,ActionList
 	public Plugin clone(PluginHost host) {
 		return null;
 	}
-	
-	private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException{
+
+	private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException {
 		in.defaultReadObject();
 		this.initPlugin();
 	}
-	
-	private void initPlugin(){
+
+	private void initPlugin() {
 		this.fullView = new FullView();
 		this.minView = new MinView(this);
 		this.getPluginHost().getInput(0).addMidiListener(this);
 		createClient();
-		
+
 	}
-	
-	private void createClient(){
-		if(name!="" && port!=-1){
+
+	private void createClient() {
+		if (name != "" && port != -1) {
 			try {
-				this.client = new Socket(name,port);
+				this.client = new Socket(name, port);
 				this.dout = new DataOutputStream(client.getOutputStream());
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -103,7 +103,7 @@ public class NetworkMidiOutput extends Plugin implements MidiListener,ActionList
 
 	@Override
 	public void listen(MidiIO source, MidiMessage msg, long timestamp) {
-		if(client != null && dout!=null && !client.isClosed()){
+		if (client != null && dout != null && !client.isClosed()) {
 			try {
 				dout.writeInt(msg.getLength());
 				dout.write(msg.getMessage());
@@ -114,14 +114,14 @@ public class NetworkMidiOutput extends Plugin implements MidiListener,ActionList
 				e.printStackTrace();
 			}
 		}
-		
+
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		this.name = minView.getServerName();
 		this.port = minView.getServerPort();
-		if(this.client != null && !this.client.isClosed() && this.dout!=null){
+		if (this.client != null && !this.client.isClosed() && this.dout != null) {
 			try {
 				dout.close();
 				client.close();
@@ -129,10 +129,10 @@ public class NetworkMidiOutput extends Plugin implements MidiListener,ActionList
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
+
 		}
 		this.initPlugin();
-		
+
 	}
 
 }

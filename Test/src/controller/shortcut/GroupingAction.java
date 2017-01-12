@@ -9,20 +9,22 @@ import controller.history.actions.UserAddGroupAction;
 import controller.interactivepane.InteractiveController;
 
 public class GroupingAction extends AbstractAction {
-	
+
 	InteractiveController controller;
-	public GroupingAction(InteractiveController c){
+
+	public GroupingAction(InteractiveController c) {
 		super("group");
-		super.putValue(SHORT_DESCRIPTION,"group selected components");
-		super.putValue(MNEMONIC_KEY,KeyEvent.VK_G);
+		super.putValue(SHORT_DESCRIPTION, "group selected components");
+		super.putValue(MNEMONIC_KEY, KeyEvent.VK_G);
 		this.controller = c;
 	}
+
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		UserAddGroupAction uag = new UserAddGroupAction(controller,controller.getPane().getComponentSelection());
+		UserAddGroupAction uag = new UserAddGroupAction(controller, controller.getPane().getComponentSelection());
 		controller.clearSelection();
 		controller.executeAction(uag);
-		
+
 	}
 
 }

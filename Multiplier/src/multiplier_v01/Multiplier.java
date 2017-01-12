@@ -13,17 +13,18 @@ import pluginhost.PluginHost;
 import pluginhost.events.HostEvent;
 
 public class Multiplier extends Plugin implements MidiListener {
-	
-	public static Plugin getInstance(PluginHost host){
+
+	public static Plugin getInstance(PluginHost host) {
 		return new Multiplier(host);
 	}
+
 	public Multiplier(PluginHost host) {
 		super(host, "Multiplier", 1, 1, 1, -1);
 	}
 
 	@Override
 	public void listen(MidiIO source, MidiMessage msg, long timestamp) {
-		for(MidiIO m: this.getPluginHost().getOutputs()){
+		for (MidiIO m : this.getPluginHost().getOutputs()) {
 			m.send(msg, timestamp);
 		}
 	}
@@ -39,7 +40,7 @@ public class Multiplier extends Plugin implements MidiListener {
 	}
 
 	@Override
-	public void notify(HostEvent e) {		
+	public void notify(HostEvent e) {
 	}
 
 	@Override
@@ -63,13 +64,13 @@ public class Multiplier extends Plugin implements MidiListener {
 		tmp.load();
 		return tmp;
 	}
-	
-	private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException{
+
+	private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException {
 		in.defaultReadObject();
 		this.initPlugin();
 	}
-	
-	private void initPlugin(){
+
+	private void initPlugin() {
 		this.getPluginHost().getInput(0).addMidiListener(this);
 	}
 }

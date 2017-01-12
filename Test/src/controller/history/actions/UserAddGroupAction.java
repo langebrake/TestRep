@@ -31,12 +31,12 @@ public class UserAddGroupAction extends UserAction {
 		this.generateGroup();
 	}
 
-	private void generateGroup(){
+	private void generateGroup() {
 		Module module = null;
 		try {
 			module = new Module();
 			grouping = new Grouping(module);
-			module.setPlugin(grouping,Grouping.class);
+			module.setPlugin(grouping, Grouping.class);
 		} catch (MidiUnavailableException e) {
 			// TODO unexpected Error Handling + log
 			e.printStackTrace();
@@ -48,36 +48,36 @@ public class UserAddGroupAction extends UserAction {
 			e.printStackTrace();
 		}
 		this.groupModule = new InteractiveModule(this.originVector, module, controller);
-		
-		if(this.name!=null){
+
+		if (this.name != null) {
 			this.groupModule.setName(this.name);
 		}
 	}
+
 	@Override
 	public void undo() {
-		
-			grouping.ungroup(groupModule);
-			groupModule.close();
-			controller.remove(groupModule);
-//			this.originVector = groupModule.getOriginLocation();
-//			this.name = groupModule.getName();
-		
+
+		grouping.ungroup(groupModule);
+		groupModule.close();
+		controller.remove(groupModule);
+		// this.originVector = groupModule.getOriginLocation();
+		// this.name = groupModule.getName();
 
 	}
 
 	private boolean firsttime = true;
+
 	@Override
 	public void execute() {
-//			generateGroup();
-		
-			grouping.group(groupModule, groupThis);
-			if(firsttime){
-				firsttime = false;
-			}else {
-				groupModule.reopen();
-			}
-			controller.add(groupModule);
-		
+		// generateGroup();
+
+		grouping.group(groupModule, groupThis);
+		if (firsttime) {
+			firsttime = false;
+		} else {
+			groupModule.reopen();
+		}
+		controller.add(groupModule);
 
 	}
 

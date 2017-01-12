@@ -31,54 +31,57 @@ import engine.Engine;
 import engine.Stringer;
 
 public class Controller implements WindowListener {
-	
+
 	private transient JFrame mainFrame;
 	private Project project;
 	private JFileChooser fileChooser;
 	private File currentProject;
 	private final String programName = "Midi Manipulator v0.1a";
-	
-	public Controller(){
+
+	public Controller() {
 		this.fileChooser = new JFileChooser();
-		FileNameExtensionFilter fne = new FileNameExtensionFilter("Midi Manipulation Project" ,"mmp");
+		FileNameExtensionFilter fne = new FileNameExtensionFilter("Midi Manipulation Project", "mmp");
 		this.fileChooser.setFileFilter(fne);
 		this.createGui();
 		this.loadProject(new Project());
 		this.initClasses();
 	}
-	public Project getProject(){
+
+	public Project getProject() {
 		return this.project;
 	}
-	private void createGui(){
+
+	private void createGui() {
 		mainFrame = new JFrame("Midi Manipulator v0.1a");
-		
+
 		JMenuBar mainBar = this.createMenuBar();
 		mainFrame.setJMenuBar(mainBar);
 		mainFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		mainFrame.addWindowListener(this);
 		mainFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-		mainFrame.setSize(500,500);
+		mainFrame.setSize(500, 500);
 	}
-	
-	private JMenuBar createMenuBar(){
+
+	private JMenuBar createMenuBar() {
 		JMenuBar m = new JMenuBar();
 		m.add(this.createFileMenu());
 		return m;
 	}
-	
-	private JMenu createFileMenu(){
+
+	private JMenu createFileMenu() {
 		JMenu m = new JMenu("File");
 		m.add(new JMenuItem(new NewProject(this)));
 		m.add(new JMenuItem(new OpenProject(this)));
 		m.add(new JMenuItem(new SaveProject(this)));
-		
+
 		return m;
 	}
-	
-	public File getCurrentProject(){
+
+	public File getCurrentProject() {
 		return this.currentProject;
 	}
-	private void initClasses(){
+
+	private void initClasses() {
 		try {
 			PluginManager.loadPlugins();
 		} catch (Exception e) {
@@ -93,35 +96,34 @@ public class Controller implements WindowListener {
 			e.printStackTrace();
 		}
 	}
-	
-	
-	public JFrame getMainFrame(){
+
+	public JFrame getMainFrame() {
 		return this.mainFrame;
 	}
-	
-	public void loadProject(Project project){
+
+	public void loadProject(Project project) {
 		this.project = project;
 		this.mainFrame.setContentPane(project.getContentPane());
 		String title = (this.currentProject == null) ? "Untitled" : this.currentProject.getName();
-		this.mainFrame.setTitle(this.programName + " - "+ title);
+		this.mainFrame.setTitle(this.programName + " - " + title);
 		this.mainFrame.revalidate();
 		System.gc();
 	}
-	
-	public void newProject(){
+
+	public void newProject() {
 		this.currentProject = null;
 		closeProject();
 		this.loadProject(new Project());
-		
+
 	}
-	
-	public void closeProject(){
-		if(this.project != null) {
+
+	public void closeProject() {
+		if (this.project != null) {
 			this.project.close();
 		}
 	}
-	
-	public void loadProject(File file){
+
+	public void loadProject(File file) {
 		closeProject();
 		FileInputStream fos;
 		try {
@@ -139,13 +141,13 @@ public class Controller implements WindowListener {
 		} catch (ClassNotFoundException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
-		} catch (ClassCastException e) { 
+		} catch (ClassCastException e) {
 			e.printStackTrace();
 		}
-		
+
 	}
-	
-	public void saveProject(File file){
+
+	public void saveProject(File file) {
 		FileOutputStream fos;
 		Stringer.stringer = "";
 		try {
@@ -153,7 +155,7 @@ public class Controller implements WindowListener {
 			ObjectOutputStream oos = new ObjectOutputStream(fos);
 			oos.writeObject(this.getProject());
 			this.currentProject = file;
-			this.mainFrame.setTitle(this.programName + " - "+ file.getName());
+			this.mainFrame.setTitle(this.programName + " - " + file.getName());
 		} catch (FileNotFoundException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -161,69 +163,69 @@ public class Controller implements WindowListener {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		
-		
+
 	}
-	public JFileChooser getFileChooser(){
+
+	public JFileChooser getFileChooser() {
 		return this.fileChooser;
 	}
+
 	@Override
 	public void windowActivated(WindowEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void windowClosed(WindowEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void windowClosing(WindowEvent arg0) {
-//		JOptionPane jop = new JOptionPane();
-//		if (JOptionPane.showConfirmDialog(this.getMainFrame(), 
-//	            "Save State?", "Exit Handling", 
-//	            JOptionPane.YES_NO_OPTION,
-//	            JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION){
-//	            try{
-//			FileOutputStream fout = new FileOutputStream("./controller.ser");
-//			ObjectOutputStream oos = new ObjectOutputStream(fout);
-//			oos.writeObject(this);
-//			oos.close();
-//	            }catch (Exception ex){
-//	             ex.printStackTrace();	
-//	            }
-			
-//	        }
-	            this.mainFrame.setVisible(false);
+		// JOptionPane jop = new JOptionPane();
+		// if (JOptionPane.showConfirmDialog(this.getMainFrame(),
+		// "Save State?", "Exit Handling",
+		// JOptionPane.YES_NO_OPTION,
+		// JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION){
+		// try{
+		// FileOutputStream fout = new FileOutputStream("./controller.ser");
+		// ObjectOutputStream oos = new ObjectOutputStream(fout);
+		// oos.writeObject(this);
+		// oos.close();
+		// }catch (Exception ex){
+		// ex.printStackTrace();
+		// }
+
+		// }
+		this.mainFrame.setVisible(false);
 
 		System.exit(0);
 	}
-		
 
 	@Override
 	public void windowDeactivated(WindowEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void windowDeiconified(WindowEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void windowIconified(WindowEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void windowOpened(WindowEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
-	
+
 }

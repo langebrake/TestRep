@@ -14,18 +14,20 @@ import controller.interactivepane.InteractiveController;
 public class UngroupAction extends AbstractAction {
 	private InteractiveModule group;
 	InteractiveController controller;
-	public UngroupAction(InteractiveController c,InteractiveModule group){
+
+	public UngroupAction(InteractiveController c, InteractiveModule group) {
 		super("ungroup");
-		super.putValue(SHORT_DESCRIPTION,"ungroup selected group");
-		super.putValue(MNEMONIC_KEY,KeyEvent.VK_U);
+		super.putValue(SHORT_DESCRIPTION, "ungroup selected group");
+		super.putValue(MNEMONIC_KEY, KeyEvent.VK_U);
 		this.controller = c;
 		this.group = group;
 	}
+
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		UserUngroupAction uag = new UserUngroupAction(controller,group);
+		UserUngroupAction uag = new UserUngroupAction(controller, group);
 		controller.executeAction(uag);
-		
+
 	}
 
 }

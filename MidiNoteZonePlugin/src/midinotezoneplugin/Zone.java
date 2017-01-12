@@ -10,19 +10,19 @@ import defaults.MidiIO;
 import defaults.MidiListener;
 import engine.MidiUtilities;
 
-public class Zone implements MidiListener, ActionListener,Cloneable,Serializable{
+public class Zone implements MidiListener, ActionListener, Cloneable, Serializable {
 	private int index;
 	private MidiNoteZone mnz;
-	private byte low,high;
+	private byte low, high;
 	private transient ZoneView view;
-	
-	public Zone(MidiNoteZone z, int index){
+
+	public Zone(MidiNoteZone z, int index) {
 		this.mnz = z;
 		this.low = 0;
 		this.high = 127;
 		this.index = index;
 	}
-	
+
 	public void setIndex(int i) {
 		this.index = i;
 	}
@@ -30,15 +30,15 @@ public class Zone implements MidiListener, ActionListener,Cloneable,Serializable
 	@Override
 	public void listen(MidiIO source, MidiMessage msg, long timestamp) {
 		byte status = MidiUtilities.getStatus(msg);
-		if((status == MidiUtilities.NOTE_ON || status == MidiUtilities.NOTE_OFF )){
-			if( MidiUtilities.getData1(msg)>=low && MidiUtilities.getData1(msg)<=high){
+		if ((status == MidiUtilities.NOTE_ON || status == MidiUtilities.NOTE_OFF)) {
+			if (MidiUtilities.getData1(msg) >= low && MidiUtilities.getData1(msg) <= high) {
 				this.mnz.getPluginHost().getOuput(index).send(msg, timestamp);
 			}
 		}
-		
+
 	}
-	
-	protected void init(){
+
+	protected void init() {
 		this.view = new ZoneView(this);
 		this.mnz.getPluginHost().getInput(0).addMidiListener(this);
 	}
@@ -47,26 +47,25 @@ public class Zone implements MidiListener, ActionListener,Cloneable,Serializable
 	public void actionPerformed(ActionEvent arg0) {
 		this.low = view.getLow();
 		this.high = view.getHigh();
-		
+
 	}
-	
-	public byte getLow(){
+
+	public byte getLow() {
 		return this.low;
 	}
-	
-	public byte getHigh(){
+
+	public byte getHigh() {
 		return this.high;
 	}
-	
-	
-	public Zone clone(){
-		Zone tmp = new Zone(this.mnz,this.index);
+
+	public Zone clone() {
+		Zone tmp = new Zone(this.mnz, this.index);
 		tmp.high = high;
 		tmp.low = low;
 		return tmp;
 	}
-	
-	public ZoneView getView(){
+
+	public ZoneView getView() {
 		return this.view;
 	}
 

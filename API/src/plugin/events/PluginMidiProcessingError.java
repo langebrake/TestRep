@@ -9,6 +9,4 @@ public class PluginMidiProcessingError extends PluginError {
 		// TODO Auto-generated constructor stub
 	}
 
-
-
 }

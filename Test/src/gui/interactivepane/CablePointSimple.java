@@ -9,20 +9,22 @@ public class CablePointSimple implements CablePoint {
 	private InteractiveCable cable;
 	private final CablePointType type;
 	private CablePointHost host;
-	private int xOnScreen,yOnScreen;
+	private int xOnScreen, yOnScreen;
 	private int index;
-	public CablePointSimple(CablePointType type){
+
+	public CablePointSimple(CablePointType type) {
 		this.type = type;
 	}
-	
-	public void setXOnScreen(int x){
+
+	public void setXOnScreen(int x) {
 		this.xOnScreen = x;
 	}
-	
-	public void setYOnScreen(int y){
+
+	public void setYOnScreen(int y) {
 		this.yOnScreen = y;
-				
+
 	}
+
 	@Override
 	public int getXOnScreen() {
 		return xOnScreen;
@@ -32,7 +34,6 @@ public class CablePointSimple implements CablePoint {
 	public int getYOnScreen() {
 		return yOnScreen;
 	}
-	
 
 	@Override
 	public InteractiveCable getCable() {
@@ -42,30 +43,33 @@ public class CablePointSimple implements CablePoint {
 	@Override
 	public void setCable(InteractiveCable cable) {
 		this.cable = cable;
-		if(host!=null)
+		if (host != null)
 			host.changedState(this);
 	}
+
 	@Override
 	public boolean isConnected() {
-		
+
 		return this.cable != null;
 	}
+
 	@Override
 	public CablePointType getType() {
 		return this.type;
 	}
+
 	@Override
 	public void setHost(CablePointHost host) {
-		this.host=host;
+		this.host = host;
 	}
+
 	@Override
 	public void disconnect() {
 		this.cable = null;
-		if(host!=null)
+		if (host != null)
 			host.changedState(this);
-		
-	}
 
+	}
 
 	@Override
 	public CablePointHost getHost() {
@@ -75,7 +79,7 @@ public class CablePointSimple implements CablePoint {
 	@Override
 	public void setIndex(int i) {
 		this.index = i;
-		
+
 	}
 
 	@Override
@@ -89,6 +93,7 @@ public class CablePointSimple implements CablePoint {
 	}
 
 	private boolean tmpDisconnect;
+
 	@Override
 	public boolean getTmpDisconnect() {
 		return this.tmpDisconnect;
@@ -97,11 +102,9 @@ public class CablePointSimple implements CablePoint {
 	@Override
 	public void tmpDisconnect(boolean set) {
 		this.tmpDisconnect = set;
-		if(host!=null)
+		if (host != null)
 			host.changedState(this);
-		
+
 	}
-	
-	
 
 }

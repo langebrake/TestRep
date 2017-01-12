@@ -16,47 +16,48 @@ import javax.swing.JPanel;
 
 import controller.interactivepane.InteractiveController;
 
-public class InteractiveDisplay extends InteractiveComponent  {
+public class InteractiveDisplay extends InteractiveComponent {
 
 	private JComponent contentPane;
-	
+
 	/**
-	 * creates a new interactive gui component and places it to the origin vector
+	 * creates a new interactive gui component and places it to the origin
+	 * vector
+	 * 
 	 * @param parent
 	 * @param origin
 	 */
-	public InteractiveDisplay(InteractiveController parent, Vector origin, JComponent contentPane ){
-		super(parent,origin);
+	public InteractiveDisplay(InteractiveController parent, Vector origin, JComponent contentPane) {
+		super(parent, origin);
 		super.setLayout(new BorderLayout());
 		this.contentPane = contentPane;
 		this.setOriginDimension(contentPane.getSize());
-		this.add(contentPane,BorderLayout.CENTER);
-		this.setBorder(BorderFactory.createEmptyBorder(1,1,1,1));
+		this.add(contentPane, BorderLayout.CENTER);
+		this.setBorder(BorderFactory.createEmptyBorder(1, 1, 1, 1));
 	}
-	
+
 	@Override
-	public void setHovered(boolean set){
+	public void setHovered(boolean set) {
 		super.setHovered(set);
-		if(set)
+		if (set)
 			this.setBorder(BorderFactory.createLineBorder(Color.black));
 		else {
-			if(this.isSelected()){
+			if (this.isSelected()) {
 				this.setBorder(BorderFactory.createLineBorder(Color.red));
 			} else {
-				this.setBorder(BorderFactory.createEmptyBorder(1,1,1,1));
+				this.setBorder(BorderFactory.createEmptyBorder(1, 1, 1, 1));
 			}
-		}	
+		}
 	}
-	
+
 	@Override
-	public void setSelected(boolean set){
+	public void setSelected(boolean set) {
 		super.setSelected(set);
-		if(set)
+		if (set)
 			this.setBorder(BorderFactory.createLineBorder(Color.red));
 		else
-			this.setBorder(BorderFactory.createEmptyBorder(1,1,1,1));
+			this.setBorder(BorderFactory.createEmptyBorder(1, 1, 1, 1));
 	}
-	
 
 	@Override
 	public boolean close() {
@@ -66,9 +67,7 @@ public class InteractiveDisplay extends InteractiveComponent  {
 	@Override
 	public boolean reopen() {
 		return true;
-		
+
 	}
 
-	
-	
 }

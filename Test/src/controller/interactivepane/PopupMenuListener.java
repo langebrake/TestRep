@@ -33,10 +33,10 @@ import controller.shortcut.UngroupAction;
 
 public class PopupMenuListener extends MouseAdapter implements Serializable {
 	private InteractiveController controller;
+
 	public PopupMenuListener(InteractiveController c) {
 		this.controller = c;
 	}
-
 
 	public void mousePressed(MouseEvent e) {
 		controller.updateLastMouseLocation(e);
@@ -47,47 +47,45 @@ public class PopupMenuListener extends MouseAdapter implements Serializable {
 		controller.updateLastMouseLocation(e);
 		showPopup(e);
 	}
-	
 
 	private void showPopup(MouseEvent e) {
 		if (e.isPopupTrigger()) {
 			Object source = e.getSource();
-				if (source instanceof InteractiveComponent && !((InteractiveComponent) source).isSelected()){
+			if (source instanceof InteractiveComponent && !((InteractiveComponent) source).isSelected()) {
+				controller.clearSelection();
+				controller.selectComponent((InteractiveComponent) source, true);
+			}
+			Point pointOnPane = controller.getLastMousePaneLocation().toPoint();
+			for (InteractiveShape s : controller.getPane().getShapes()) {
+				if (s.contains(pointOnPane) && !s.isSelected()) {
 					controller.clearSelection();
-					controller.selectComponent((InteractiveComponent) source, true);
+					controller.getPane().setShapeSelected(s, true);
 				}
-				Point pointOnPane = controller.getLastMousePaneLocation().toPoint();
-				for(InteractiveShape s:controller.getPane().getShapes()){
-					if(s.contains(pointOnPane) && !s.isSelected()){
-						controller.clearSelection();
-						controller.getPane().setShapeSelected(s, true);
-					}
-				}
+			}
 			JPopupMenu popup = new JPopupMenu();
 			addStandardMenu(popup, e);
 			addPluginMenu(popup);
 			Separator s;
 			s = new JPopupMenu.Separator();
 			popup.add(s);
-			addGroupingMenu(popup,e);
+			addGroupingMenu(popup, e);
 			popup.show(e.getComponent(), e.getX(), e.getY());
 		}
 	}
-	
-	private void addStandardMenu(JPopupMenu p, MouseEvent e){
-		JMenuItem item =  new JMenuItem(new CopyAction(this.controller));
-		item.setEnabled(this.controller.getPane().getComponentSelection().size()!=0);
+
+	private void addStandardMenu(JPopupMenu p, MouseEvent e) {
+		JMenuItem item = new JMenuItem(new CopyAction(this.controller));
+		item.setEnabled(this.controller.getPane().getComponentSelection().size() != 0);
 		p.add(item);
-		
+
 		item = new JMenuItem(new CutAction(this.controller));
-		item.setEnabled(this.controller.getPane().getComponentSelection().size()!=0);	
+		item.setEnabled(this.controller.getPane().getComponentSelection().size() != 0);
 		p.add(item);
-		
+
 		item = new JMenuItem(new PasteAction(this.controller));
 		item.setEnabled(this.controller.getClipboard().hasClipboard());
 		p.add(item);
-		
-		
+
 		item = new JMenuItem(new DeleteAction(this.controller));
 		item.setEnabled(controller.getPane().hasSelected());
 		p.add(item);
@@ -97,43 +95,42 @@ public class PopupMenuListener extends MouseAdapter implements Serializable {
 		p.add(item);
 		item.setEnabled(source instanceof InteractiveModule);
 
-
 	}
-	
-	private void addPluginMenu(JPopupMenu p){
+
+	private void addPluginMenu(JPopupMenu p) {
 		JMenu t = new JMenu("Add");
 		LinkedList<PluginHierarchyElement> plugins = PluginManager.getPluginList();
 		this.addPluginMenuRecursive(t, plugins);
 		p.add(t);
 	}
-	
-	private void addPluginMenuRecursive(JMenu m, LinkedList<PluginHierarchyElement> plugins){
-		for(PluginHierarchyElement e:plugins){
-			if(e.isLoadable()){
+
+	private void addPluginMenuRecursive(JMenu m, LinkedList<PluginHierarchyElement> plugins) {
+		for (PluginHierarchyElement e : plugins) {
+			if (e.isLoadable()) {
 				m.add(new JMenuItem(new PluginAddAction(this.controller, (Loadable) e)));
-			} else if (e.isSubgroup()){
+			} else if (e.isSubgroup()) {
 				JMenu tmp = new JMenu(e.getName());
 				this.addPluginMenuRecursive(tmp, (Subgroup) e);
 				m.add(tmp);
 			}
 		}
 	}
-	
-	private void addGroupingMenu(JPopupMenu p,MouseEvent e){
+
+	private void addGroupingMenu(JPopupMenu p, MouseEvent e) {
 		JMenuItem item = new JMenuItem(new GroupingAction(this.controller));
-		item.setEnabled(controller.getPane().getComponentSelection().size()!=0);
+		item.setEnabled(controller.getPane().getComponentSelection().size() != 0);
 		p.add(item);
-		if(e.getSource() instanceof InteractiveModule &&((InteractiveModule) e.getSource()).getModule().getPlugin() instanceof Grouping){
-			item = new JMenuItem(new UngroupAction(this.controller,(InteractiveModule) e.getSource()));
+		if (e.getSource() instanceof InteractiveModule
+				&& ((InteractiveModule) e.getSource()).getModule().getPlugin() instanceof Grouping) {
+			item = new JMenuItem(new UngroupAction(this.controller, (InteractiveModule) e.getSource()));
 			item.setEnabled(true);
 		} else {
-			item = new JMenuItem(new UngroupAction(this.controller,null));
+			item = new JMenuItem(new UngroupAction(this.controller, null));
 			item.setEnabled(false);
 		}
-		
+
 		p.add(item);
-		
-		
+
 	}
-	
+
 }

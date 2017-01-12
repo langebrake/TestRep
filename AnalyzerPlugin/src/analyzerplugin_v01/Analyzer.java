@@ -1,4 +1,5 @@
 package analyzerplugin_v01;
+
 import java.awt.Component;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -13,7 +14,6 @@ import plugin.Plugin;
 import pluginhost.PluginHost;
 import pluginhost.events.HostEvent;
 
-
 public class Analyzer extends Plugin implements MidiListener {
 	private static final int MAXINPUTS = 1;
 	private static final int MAXOUTPUTS = 1;
@@ -22,13 +22,13 @@ public class Analyzer extends Plugin implements MidiListener {
 	private static final String NAME = "Midi Analyzer";
 	private transient MinView fullView;
 	private transient MinView minView;
-	
-	public static Analyzer getInstance(PluginHost host){
+
+	public static Analyzer getInstance(PluginHost host) {
 		return new Analyzer(host);
 	}
-	
+
 	public Analyzer(PluginHost host) {
-		super(host,NAME, MININPUTS, MAXINPUTS, MINOUTPUTS, MAXOUTPUTS);
+		super(host, NAME, MININPUTS, MAXINPUTS, MINOUTPUTS, MAXOUTPUTS);
 	}
 
 	@Override
@@ -42,16 +42,15 @@ public class Analyzer extends Plugin implements MidiListener {
 		return this.fullView;
 	}
 
-
 	@Override
 	public void notify(HostEvent e) {
-		
+
 	}
 
 	@Override
 	public void load() {
 		this.initPlugin();
-		
+
 	}
 
 	@Override
@@ -71,7 +70,6 @@ public class Analyzer extends Plugin implements MidiListener {
 		a.initPlugin();
 		return a;
 	}
-	
 
 	@Override
 	public void listen(MidiIO source, MidiMessage msg, long timestamp) {
@@ -79,19 +77,17 @@ public class Analyzer extends Plugin implements MidiListener {
 		this.minView.updateView(msg);
 		this.fullView.updateView(msg);
 	}
-	
-	
-	
-	private void writeObject(ObjectOutputStream out) throws IOException{
+
+	private void writeObject(ObjectOutputStream out) throws IOException {
 		out.defaultWriteObject();
 	}
-	
-	private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException{
+
+	private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException {
 		in.defaultReadObject();
 		this.initPlugin();
 	}
-	
-	private void initPlugin(){
+
+	private void initPlugin() {
 		this.getPluginHost().getInput(0).addMidiListener(this);
 		this.minView = new MinView();
 		this.fullView = new MinView();

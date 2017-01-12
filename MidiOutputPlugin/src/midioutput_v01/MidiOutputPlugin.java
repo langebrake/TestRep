@@ -1,4 +1,5 @@
 package midioutput_v01;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
@@ -29,7 +30,6 @@ import plugin.Plugin;
 import pluginhost.PluginHost;
 import pluginhost.events.HostEvent;
 
-
 public class MidiOutputPlugin extends Plugin implements ActionListener, Serializable {
 
 	private static final int MAXINPUTS = 1;
@@ -37,27 +37,28 @@ public class MidiOutputPlugin extends Plugin implements ActionListener, Serializ
 	private static final int MININPUTS = 1;
 	private static final int MINOUTPUTS = 0;
 	private static final String NAME = "MidiOutputPlugin";
-	private transient static ConcurrentHashMap<String,OutputTransmitter> outputMap;
+	private transient static ConcurrentHashMap<String, OutputTransmitter> outputMap;
 	private String midiDeviceName;
 	private transient MidiIO input;
 	protected transient LinkedList<MidiDevice> devices;
 	private int selectedChannel;
-	
-	static{
-		outputMap = new ConcurrentHashMap<String,OutputTransmitter>();
+
+	static {
+		outputMap = new ConcurrentHashMap<String, OutputTransmitter>();
 	}
-	
-	public static MidiOutputPlugin getInstance(PluginHost host){
+
+	public static MidiOutputPlugin getInstance(PluginHost host) {
 		return new MidiOutputPlugin(host);
 	}
-	
+
 	public MidiOutputPlugin(PluginHost host) {
-		super(host,NAME,MININPUTS,MAXINPUTS,MINOUTPUTS,MAXOUTPUTS);
+		super(host, NAME, MININPUTS, MAXINPUTS, MINOUTPUTS, MAXOUTPUTS);
 	}
 
 	@Override
 	public JComponent getMinimizedView() {
-		return new MiniView(this.getPluginHost().getEngine().getOutputDevices(),this,this.midiDeviceName,this.selectedChannel);
+		return new MiniView(this.getPluginHost().getEngine().getOutputDevices(), this, this.midiDeviceName,
+				this.selectedChannel);
 	}
 
 	@Override
@@ -65,12 +66,9 @@ public class MidiOutputPlugin extends Plugin implements ActionListener, Serializ
 		return new DefaultView("MIDIOUTPUT");
 	}
 
-	
-	
-
 	@Override
 	public void notify(HostEvent e) {
-		
+
 	}
 
 	@Override
@@ -80,55 +78,54 @@ public class MidiOutputPlugin extends Plugin implements ActionListener, Serializ
 		this.selectedChannel = -1;
 	}
 
-	private void setOutputID(int id) throws MidiUnavailableException{
-		if(this.midiDeviceName!=null && outputMap.containsKey(midiDeviceName)){
+	private void setOutputID(int id) throws MidiUnavailableException {
+		if (this.midiDeviceName != null && outputMap.containsKey(midiDeviceName)) {
 			outputMap.get(midiDeviceName).unregister(input);
 		}
-		
+
 		this.midiDeviceName = devices.get(id).getDeviceInfo().getName();
-		
-		if(!outputMap.containsKey(midiDeviceName)){
+
+		if (!outputMap.containsKey(midiDeviceName)) {
 			OutputTransmitter lastTransmitter = new OutputTransmitter(devices.get(id));
 			outputMap.put(midiDeviceName, lastTransmitter);
 			outputMap.get(midiDeviceName).register(input);
-		}else {
+		} else {
 			outputMap.get(midiDeviceName).register(this.input);
 		}
-		
+
 	}
-	
+
 	@Override
 	public boolean close() {
-		if(midiDeviceName!=null && outputMap.containsKey(midiDeviceName)){
+		if (midiDeviceName != null && outputMap.containsKey(midiDeviceName)) {
 			outputMap.get(midiDeviceName).unregister(input);
 		}
 		return true;
 	}
-	
+
 	@Override
-	public boolean reOpen(){
+	public boolean reOpen() {
 		try {
-			if(this.midiDeviceName != null && outputMap.get(this.midiDeviceName) != null){
+			if (this.midiDeviceName != null && outputMap.get(this.midiDeviceName) != null) {
 				outputMap.get(this.midiDeviceName).register(input);
 			}
 		} catch (MidiUnavailableException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		return true;
 	}
 
-	
 	private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException {
 		in.defaultReadObject();
 		this.initPlugin();
 	}
-	
-	private void initPlugin(){
+
+	private void initPlugin() {
 		this.devices = this.getPluginHost().getEngine().getOutputDevices();
 		this.input = this.getPluginHost().getInput(0);
-		if(this.midiDeviceName != null && outputMap.containsKey(this.midiDeviceName)){
+		if (this.midiDeviceName != null && outputMap.containsKey(this.midiDeviceName)) {
 			try {
 				outputMap.get(midiDeviceName).register(input);
 			} catch (MidiUnavailableException e) {
@@ -142,67 +139,63 @@ public class MidiOutputPlugin extends Plugin implements ActionListener, Serializ
 		private LinkedList<MidiIO> inputs;
 		private MidiDevice outputDevice;
 		private Receiver outputReceiver;
-		
-		public OutputTransmitter(MidiDevice m){
+
+		public OutputTransmitter(MidiDevice m) {
 			this.inputs = new LinkedList<MidiIO>();
 			this.outputDevice = m;
 		}
-		
-		
+
 		public void close() {
 			this.outputDevice.close();
-			if(outputReceiver!=null){
+			if (outputReceiver != null) {
 				this.outputReceiver.close();
 			}
 			this.outputReceiver = null;
 		}
-		
-		public void open() throws MidiUnavailableException{
-			if(!outputDevice.isOpen()){
+
+		public void open() throws MidiUnavailableException {
+			if (!outputDevice.isOpen()) {
 				this.outputDevice.open();
 				this.outputReceiver = this.outputDevice.getReceiver();
 			}
 		}
 
-		public int inputCount(){
+		public int inputCount() {
 			return this.inputs.size();
 		}
-		
-		public void register(MidiIO m) throws MidiUnavailableException{
-			if(this.inputCount() <= 0){
+
+		public void register(MidiIO m) throws MidiUnavailableException {
+			if (this.inputCount() <= 0) {
 				this.open();
 			}
-			if(!this.inputs.contains(m)){
+			if (!this.inputs.contains(m)) {
 				m.addMidiListener(this);
 				this.inputs.add(m);
 			}
 		}
-		
-		public void unregister(MidiIO m){
+
+		public void unregister(MidiIO m) {
 			this.inputs.remove(m);
 			m.removeMidiListener(this);
-			if(this.inputCount() <= 0){
+			if (this.inputCount() <= 0) {
 				this.close();
 			}
 		}
-		
+
 		@Override
 		public void listen(MidiIO source, MidiMessage msg, long timestamp) {
-			if(outputReceiver != null){
-				if(MidiUtilities.getStatus(msg) != 0b1111 && selectedChannel != -1){
+			if (outputReceiver != null) {
+				if (MidiUtilities.getStatus(msg) != 0b1111 && selectedChannel != -1) {
 					int data1 = msg.getMessage()[1];
 					int status = msg.getMessage()[0] & 0xF0;
 					int data2 = 0;
-					if(msg.getLength() > 2){
+					if (msg.getLength() > 2) {
 						data2 = msg.getMessage()[2];
 					}
 					msg = new ShortMessage();
 					try {
-						
-						((ShortMessage)msg).setMessage(status,
-														selectedChannel,
-														data1,
-														data2);
+
+						((ShortMessage) msg).setMessage(status, selectedChannel, data1, data2);
 					} catch (InvalidMidiDataException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -211,26 +204,26 @@ public class MidiOutputPlugin extends Plugin implements ActionListener, Serializ
 				outputReceiver.send(msg, timestamp);
 			}
 		}
-		
+
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		Object o = arg0.getSource();
-		if(o instanceof JComboBox){
-			if(arg0.getActionCommand().equals("DEVICE")){
+		if (o instanceof JComboBox) {
+			if (arg0.getActionCommand().equals("DEVICE")) {
 				try {
 					this.setOutputID(((JComboBox) o).getSelectedIndex());
 				} catch (MidiUnavailableException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-			} else if(arg0.getActionCommand().equals("CHANNEL")){
+			} else if (arg0.getActionCommand().equals("CHANNEL")) {
 				this.selectedChannel = (((JComboBox) o).getSelectedIndex()) - 1;
-				
+
 			}
 		}
-		
+
 	}
 
 	@Override

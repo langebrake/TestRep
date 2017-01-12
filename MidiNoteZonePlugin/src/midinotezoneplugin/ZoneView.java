@@ -7,14 +7,15 @@ import javax.swing.JTextField;
 
 public class ZoneView extends JPanel {
 	private Zone zone;
+
 	public ZoneView(Zone zone) {
 		this.zone = zone;
 		this.createGui();
 	}
-	
-	private JTextField low,high;
-	
-	private  void createGui(){
+
+	private JTextField low, high;
+
+	private void createGui() {
 		low = new JTextField();
 		low.setText(Byte.toString(zone.getLow()));
 		high = new JTextField();
@@ -26,12 +27,12 @@ public class ZoneView extends JPanel {
 		this.add(high);
 		this.add(set);
 	}
-	
-	public byte getLow(){
+
+	public byte getLow() {
 		return Byte.parseByte(low.getText());
 	}
-	
-	public byte getHigh(){
+
+	public byte getHigh() {
 		return Byte.parseByte(high.getText());
 	}
 

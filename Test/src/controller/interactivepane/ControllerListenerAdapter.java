@@ -8,13 +8,13 @@ import java.awt.event.MouseWheelListener;
 import java.io.Serializable;
 
 public class ControllerListenerAdapter implements MouseInputListener, Serializable {
-	
+
 	protected InteractiveController controller;
-	
-	public ControllerListenerAdapter(InteractiveController controller){
+
+	public ControllerListenerAdapter(InteractiveController controller) {
 		this.controller = controller;
 	}
-	
+
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent arg0) {
 		controller.mouseWheelMoved(arg0);

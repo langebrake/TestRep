@@ -15,22 +15,22 @@ import plugin.Plugin;
 import pluginhost.PluginHost;
 import pluginhost.events.HostEvent;
 
-public class IgnoreCC extends Plugin implements MidiListener, ActionListener{
+public class IgnoreCC extends Plugin implements MidiListener, ActionListener {
 	private transient MinView view;
 	byte ignore;
+
 	public IgnoreCC(PluginHost host) {
 		super(host, "IgnoreCC", 1, 1, 1, 1);
 	}
-	
-	public static Plugin getInstance(PluginHost host){
+
+	public static Plugin getInstance(PluginHost host) {
 		return new IgnoreCC(host);
 	}
 
 	@Override
 	public void listen(MidiIO source, MidiMessage msg, long timestamp) {
-		if(MidiUtilities.getStatus(msg) == MidiUtilities.CONTROL_CHANGE && 
-				MidiUtilities.getData1(msg) == ignore){
-			
+		if (MidiUtilities.getStatus(msg) == MidiUtilities.CONTROL_CHANGE && MidiUtilities.getData1(msg) == ignore) {
+
 		} else {
 			getPluginHost().getOuput(0).send(msg, timestamp);
 		}
@@ -48,7 +48,7 @@ public class IgnoreCC extends Plugin implements MidiListener, ActionListener{
 
 	@Override
 	public void notify(HostEvent e) {
-		
+
 	}
 
 	@Override
@@ -78,15 +78,15 @@ public class IgnoreCC extends Plugin implements MidiListener, ActionListener{
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		ignore = view.getIgnore();
-		
+
 	}
-	
-	private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException{
+
+	private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException {
 		in.defaultReadObject();
 		initPlugin();
 	}
-	
-	private void initPlugin(){
+
+	private void initPlugin() {
 		getPluginHost().getInput(0).addMidiListener(this);
 		view = new MinView(this);
 	}

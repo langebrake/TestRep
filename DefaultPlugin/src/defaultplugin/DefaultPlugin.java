@@ -1,4 +1,5 @@
 package defaultplugin;
+
 import guiinterface.SizeableComponent;
 
 import java.awt.Component;
@@ -26,9 +27,7 @@ import defaults.MidiIO;
 import defaults.MidiIOThrough;
 import defaults.MidiListener;
 
-
-
-public class DefaultPlugin extends Plugin implements MidiListener{
+public class DefaultPlugin extends Plugin implements MidiListener {
 	private static final int MAXINPUTS = -1;
 	private static final int MAXOUTPUTS = -1;
 	private static final int MININPUTS = 1;
@@ -36,38 +35,39 @@ public class DefaultPlugin extends Plugin implements MidiListener{
 	private static final String NAME = "DummyPlugin";
 	private String msg = "DummyPlugin";
 	private DefaultView view;
-	private transient HashMap<MidiIO,MidiIO> ioMap;
-	
-	public static Plugin getInstance(PluginHost host){
+	private transient HashMap<MidiIO, MidiIO> ioMap;
+
+	public static Plugin getInstance(PluginHost host) {
 		return new DefaultPlugin(host);
 	}
-	public DefaultPlugin(PluginHost host){
-		super(host,NAME,MININPUTS,MAXINPUTS,MINOUTPUTS,MAXOUTPUTS);
-		this.ioMap = new HashMap<MidiIO,MidiIO>();
-		
+
+	public DefaultPlugin(PluginHost host) {
+		super(host, NAME, MININPUTS, MAXINPUTS, MINOUTPUTS, MAXOUTPUTS);
+		this.ioMap = new HashMap<MidiIO, MidiIO>();
+
 	}
+
 	private boolean block;
-	
-	
+
 	@Override
 	public void notify(HostEvent e) {
-		if(!block){
+		if (!block) {
 			block = true;
-			if(e.getClass() == NewInputEvent.class){
-				if(!ioMap.containsKey(((NewInputEvent)e).getNewInput())){
+			if (e.getClass() == NewInputEvent.class) {
+				if (!ioMap.containsKey(((NewInputEvent) e).getNewInput())) {
 					NewOutputRequestEvent event = new NewOutputRequestEvent();
 					this.getPluginHost().notify(event);
-					if(event.io != null){
-						this.ioMap.put(((NewInputEvent)e).getNewInput(), event.io);
-						((NewInputEvent)e).getNewInput().addMidiListener(this);
+					if (event.io != null) {
+						this.ioMap.put(((NewInputEvent) e).getNewInput(), event.io);
+						((NewInputEvent) e).getNewInput().addMidiListener(this);
 					}
 				}
-			} else if(e.getClass() == NewOutputEvent.class){
-				if(!ioMap.containsValue(((NewOutputEvent)e).getNewOutput())){
+			} else if (e.getClass() == NewOutputEvent.class) {
+				if (!ioMap.containsValue(((NewOutputEvent) e).getNewOutput())) {
 					NewInputRequestEvent event = new NewInputRequestEvent();
 					this.getPluginHost().notify(event);
-					if(event.io != null){
-						this.ioMap.put(event.io,((NewOutputEvent)e).getNewOutput());
+					if (event.io != null) {
+						this.ioMap.put(event.io, ((NewOutputEvent) e).getNewOutput());
 						(event.io).addMidiListener(this);
 					}
 				}
@@ -75,20 +75,22 @@ public class DefaultPlugin extends Plugin implements MidiListener{
 		}
 		block = false;
 	}
+
 	@Override
 	public JComponent getMinimizedView() {
 		return view;
 	}
+
 	@Override
 	public JComponent getFullView() {
 		return new DefaultView("DEFAULT PLUGIN INTERFACE");
 	}
-	
+
 	@Override
 	public void load() {
 		this.initPluging();
 	}
-	
+
 	@Override
 	public boolean close() {
 		PluginHost host = this.getPluginHost();
@@ -97,43 +99,43 @@ public class DefaultPlugin extends Plugin implements MidiListener{
 		input.disconnectOutput();
 		output.disconnectInput();
 		return true;
-		
+
 	}
-	
+
 	@Override
 	public void listen(MidiIO source, MidiMessage msg, long timestamp) {
-		
+
 		ioMap.get(source).send(msg, timestamp);
-		
+
 	}
+
 	@Override
 	public boolean reOpen() {
 		return true;
-		
+
 	}
-	
-	private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException{
+
+	private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException {
 		in.defaultReadObject();
 		this.initPluging();
 	}
-	
-	private void initPluging(){
+
+	private void initPluging() {
 		this.view = new DefaultView(msg);
-		this.ioMap = new HashMap<MidiIO,MidiIO>();
+		this.ioMap = new HashMap<MidiIO, MidiIO>();
 		int i = 0;
-		for(MidiIO m:this.getPluginHost().getInputs()){
+		for (MidiIO m : this.getPluginHost().getInputs()) {
 			m.addMidiListener(this);
 			ioMap.put(m, this.getPluginHost().getOuput(i++));
 		}
 	}
-	
+
 	@Override
 	public Plugin clone(PluginHost host) {
 		DefaultPlugin dfp = new DefaultPlugin(host);
 		dfp.initPluging();
-		
+
 		return dfp;
 	}
-	
 
 }
