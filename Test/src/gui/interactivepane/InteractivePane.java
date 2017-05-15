@@ -68,7 +68,8 @@ public class InteractivePane extends JLayeredPane {
 		this.tmpSelectedComponents = new LinkedList<InteractiveComponent>();
 		this.groupings = new LinkedList<InteractiveModule>();
 		this.selectionArea = new JPanel();
-		this.selectionArea.setBorder(BorderFactory.createLineBorder(Color.black));
+		this.selectionArea.setBorder(BorderFactory
+				.createLineBorder(Color.black));
 		this.selectionArea.setOpaque(false);
 
 	}
@@ -77,14 +78,17 @@ public class InteractivePane extends JLayeredPane {
 	 * Viewport transformation methods
 	 */
 	public void translateViewport(Vector translationVectorGrid) {
-		this.viewportTranslation = this.viewportTranslation.addVector(translationVectorGrid);
+		this.viewportTranslation = this.viewportTranslation
+				.addVector(translationVectorGrid);
 
 		this.updateView();
 	}
 
-	public synchronized void zoomViewport(Vector zoomSourceScreenLocation, double d) {
+	public synchronized void zoomViewport(Vector zoomSourceScreenLocation,
+			double d) {
 
-		Vector gridLocation = this.convertToGridLocation(zoomSourceScreenLocation);
+		Vector gridLocation = this
+				.convertToGridLocation(zoomSourceScreenLocation);
 		if (d > 0) {
 			if (this.scaleFactor - this.scaleIncrement < this.scaleMin) {
 				return;
@@ -99,7 +103,8 @@ public class InteractivePane extends JLayeredPane {
 		}
 
 		this.scaleOrigin = gridLocation;
-		this.translateViewport(gridLocation.diffVector(this.convertToGridLocation(zoomSourceScreenLocation)));
+		this.translateViewport(gridLocation.diffVector(this
+				.convertToGridLocation(zoomSourceScreenLocation)));
 	}
 
 	public void translateSelection(Vector translationVectorGrid) {
@@ -118,9 +123,11 @@ public class InteractivePane extends JLayeredPane {
 	public Vector convertToGridLocation(Vector viewportVector) {
 		// first untranslate zoomTranslation, than untranslate translation with
 		// translationvector*scalefactor, than unscale
-		Vector untranslated = this.viewportTranslation.scaleVector(this.scaleFactor).diffVector(viewportVector);
+		Vector untranslated = this.viewportTranslation.scaleVector(
+				this.scaleFactor).diffVector(viewportVector);
 		// P=(P'-S)/sf+S
-		Vector untranslatedUnscaled = ((this.scaleOrigin.diffVector(untranslated)).scaleVector(1 / this.scaleFactor))
+		Vector untranslatedUnscaled = ((this.scaleOrigin
+				.diffVector(untranslated)).scaleVector(1 / this.scaleFactor))
 				.addVector(this.scaleOrigin);
 		return untranslatedUnscaled;
 	}
@@ -129,10 +136,11 @@ public class InteractivePane extends JLayeredPane {
 		// first scale, than translate with translatevector*scalefactor
 
 		// P'=S+sf*(P-S)
-		Vector scaled = this.scaleOrigin
-				.addVector((this.scaleOrigin.diffVector(gridLocationVector)).scaleVector(this.scaleFactor));
+		Vector scaled = this.scaleOrigin.addVector((this.scaleOrigin
+				.diffVector(gridLocationVector)).scaleVector(this.scaleFactor));
 		// translate + zoomtranslate in one step
-		Vector scaledTranslated = scaled.addVector(this.viewportTranslation.scaleVector(this.scaleFactor));
+		Vector scaledTranslated = scaled.addVector(this.viewportTranslation
+				.scaleVector(this.scaleFactor));
 		return scaledTranslated;
 	}
 
@@ -193,7 +201,8 @@ public class InteractivePane extends JLayeredPane {
 		this.repaint();
 	}
 
-	public void setComponentSelected(InteractiveComponent component, boolean selected) {
+	public void setComponentSelected(InteractiveComponent component,
+			boolean selected) {
 		component.setSelected(selected);
 		if (selected) {
 			this.selectedComponents.add(component);
@@ -222,7 +231,8 @@ public class InteractivePane extends JLayeredPane {
 
 	}
 
-	public void setComponentHovered(InteractiveComponent component, boolean hovered) {
+	public void setComponentHovered(InteractiveComponent component,
+			boolean hovered) {
 		component.setHovered(hovered);
 	}
 
@@ -258,7 +268,8 @@ public class InteractivePane extends JLayeredPane {
 	 * @param lowerRight
 	 * @param additive
 	 */
-	public void selectionArea(Vector vec1, Vector vec2, boolean additive, InteractiveController controller) {
+	public void selectionArea(Vector vec1, Vector vec2, boolean additive,
+			InteractiveController controller) {
 		int xpos, ypos, height, width;
 		xpos = Math.min(vec1.getX(), vec2.getX());
 		ypos = Math.min(vec1.getY(), vec2.getY());
@@ -279,14 +290,18 @@ public class InteractivePane extends JLayeredPane {
 				if (((InteractiveComponent) c).intersects(selectionRect)) {
 					if (!((InteractiveComponent) c).isSelected()) {
 						((InteractiveComponent) c).setSelected(true);
-						controller.tmpSelectComponent((InteractiveComponent) c, true);
-						this.tmpSelectedComponents.add((InteractiveComponent) c);
+						controller.tmpSelectComponent((InteractiveComponent) c,
+								true);
+						this.tmpSelectedComponents
+								.add((InteractiveComponent) c);
 					}
 
 				} else {
-					if (!this.selectedComponents.contains(((InteractiveComponent) c))) {
+					if (!this.selectedComponents
+							.contains(((InteractiveComponent) c))) {
 						((InteractiveComponent) c).setSelected(false);
-						controller.tmpSelectComponent((InteractiveComponent) c, false);
+						controller.tmpSelectComponent((InteractiveComponent) c,
+								false);
 						this.tmpSelectedComponents.remove(c);
 					}
 				}
@@ -348,7 +363,9 @@ public class InteractivePane extends JLayeredPane {
 		super.paint(g);
 		if (g instanceof Graphics2D) {
 			Graphics2D g2d = (Graphics2D) g;
-			RenderingHints rh = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+			RenderingHints rh = new RenderingHints(
+					RenderingHints.KEY_ANTIALIASING,
+					RenderingHints.VALUE_ANTIALIAS_ON);
 			g2d.setRenderingHints(rh);
 			for (InteractiveShape c : this.shapes) {
 				c.updateView(g2d);

@@ -9,7 +9,8 @@ public interface CablePointHost extends Serializable {
 
 	public LinkedList<? extends CablePoint> getCablePoints(CablePointType type);
 
-	public LinkedList<? extends CablePoint> getCablePoints(CablePointType type, int... indices);
+	public LinkedList<? extends CablePoint> getCablePoints(CablePointType type,
+			int... indices);
 
 	public CablePoint getCablePoint();
 

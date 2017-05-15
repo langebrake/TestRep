@@ -13,7 +13,8 @@ public class UserUngroupAction extends UserAction {
 	private InteractiveModule groupModule;
 	LinkedList<InteractiveComponent> groupThis;
 
-	public UserUngroupAction(InteractiveController controller, InteractiveModule grouping) {
+	public UserUngroupAction(InteractiveController controller,
+			InteractiveModule grouping) {
 		super(controller);
 		this.groupModule = grouping;
 		this.grouping = (Grouping) grouping.getModule().getPlugin();

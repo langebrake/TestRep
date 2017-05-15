@@ -1,16 +1,17 @@
 package controller.history;
 
-import java.awt.event.ActionEvent;
+
 import java.io.Serializable;
 import java.util.EmptyStackException;
 import java.util.Stack;
 
-import javax.swing.AbstractAction;
-
-import controller.interactivepane.InteractiveController;
 import controller.maincontrol.Project;
 
 public class UserActionManager implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3726020575384580219L;
 	private Stack<UserAction> undo;
 	private Stack<UserAction> redo;
 	private Project project;

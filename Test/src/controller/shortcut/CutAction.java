@@ -22,10 +22,13 @@ public class CutAction extends AbstractAction {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		this.controller.getClipboard().setClipboard(controller.getPane().getComponentSelection());
-		controller.getClipboard().setCopyLocation(controller.getPane().getViewportTranslation());
-		UserAction delete = new UserDeleteAction(controller, controller.getPane().getComponentSelection(),
-				controller.getPane().getShapeSelection());
+		this.controller.getClipboard().setClipboard(
+				controller.getPane().getComponentSelection());
+		controller.getClipboard().setCopyLocation(
+				controller.getPane().getViewportTranslation());
+		UserAction delete = new UserDeleteAction(controller, controller
+				.getPane().getComponentSelection(), controller.getPane()
+				.getShapeSelection());
 		controller.executeAction(delete);
 		controller.clearSelection();
 

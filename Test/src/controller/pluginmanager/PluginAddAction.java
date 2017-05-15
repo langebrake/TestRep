@@ -19,6 +19,7 @@ public class PluginAddAction extends AbstractAction {
 
 	public PluginAddAction(InteractiveController controller, Loadable plugin) {
 		super(plugin.getName());
+		
 		putValue(SHORT_DESCRIPTION, plugin.getDescription());
 		this.controller = controller;
 		this.plugin = plugin;
@@ -29,7 +30,8 @@ public class PluginAddAction extends AbstractAction {
 		// TODO: Think about Threading!
 		Thread t = new Thread() {
 			public void run() {
-				UserAddModuleAction a = new UserAddModuleAction(controller, plugin);
+				UserAddModuleAction a = new UserAddModuleAction(controller,
+						plugin);
 				controller.executeAction(a);
 
 			}

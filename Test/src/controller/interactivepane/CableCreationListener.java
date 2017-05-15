@@ -40,7 +40,8 @@ public class CableCreationListener extends MouseAdapter implements Serializable 
 
 	public void mousePressed(MouseEvent e) {
 		componentSource = e.getSource();
-		Object source = searchSourceRecursive(e, (Component) e.getSource(), CablePointHost.class);
+		Object source = searchSourceRecursive(e, (Component) e.getSource(),
+				CablePointHost.class);
 		if (validInteraction(e) && source instanceof CablePointHost) {
 			sourcePoint = ((CablePointHost) source).getCablePoint(e.getPoint());
 			if (sourcePoint != null) {
@@ -49,9 +50,11 @@ public class CableCreationListener extends MouseAdapter implements Serializable 
 					controller.getPane().remove(this.oldSourceConnection);
 				}
 
-				tmpPoint = new CablePointComponent(controller.getPane(), CablePointType.THROUGH);
+				tmpPoint = new CablePointComponent(controller.getPane(),
+						CablePointType.THROUGH);
 				tmpPoint.setLocation(controller.relativeToPane(e).toPoint());
-				tmpCable = new InteractiveCable(sourcePoint, tmpPoint, 1, Color.BLACK, controller);
+				tmpCable = new InteractiveCable(sourcePoint, tmpPoint, 1,
+						Color.BLACK, controller);
 				tmpPoint.setCable(tmpCable);
 				sourcePoint.setCable(tmpCable);
 				tmpCable.setDraggedEndpoint(true);
@@ -66,7 +69,8 @@ public class CableCreationListener extends MouseAdapter implements Serializable 
 
 	public void mouseReleased(MouseEvent e) {
 
-		if (tmpPoint != null && sourcePoint != null && SwingUtilities.isLeftMouseButton(e)
+		if (tmpPoint != null && sourcePoint != null
+				&& SwingUtilities.isLeftMouseButton(e)
 				&& !SwingUtilities.isMiddleMouseButton(e)) {
 			// TODO : Safe casting of getSource!
 			Component searchComponent;
@@ -75,9 +79,11 @@ public class CableCreationListener extends MouseAdapter implements Serializable 
 			} else {
 				searchComponent = (Component) e.getSource();
 			}
-			Component source = searchSourceRecursive(e, searchComponent, CablePointHost.class);
+			Component source = searchSourceRecursive(e, searchComponent,
+					CablePointHost.class);
 			if (source instanceof CablePointHost) {
-				CablePoint destPoint = ((CablePointHost) source).getCablePoint(sourcePoint.getType().getCounterPart());
+				CablePoint destPoint = ((CablePointHost) source)
+						.getCablePoint(sourcePoint.getType().getCounterPart());
 
 				if (destPoint != null) {
 
@@ -94,11 +100,13 @@ public class CableCreationListener extends MouseAdapter implements Serializable 
 						}
 						this.newConnections.put(tmpCable, overrides);
 
-						this.controller.executeAction(new UserAddConnectionsAction(controller, newConnections));
+						this.controller
+								.executeAction(new UserAddConnectionsAction(
+										controller, newConnections));
 					} else {
-						if (!(this.oldSourceConnection != null
-								&& ((destPoint == this.oldSourceConnection.getDestination()
-										|| destPoint == this.oldSourceConnection.getSource())))) {
+						if (!(this.oldSourceConnection != null && ((destPoint == this.oldSourceConnection
+								.getDestination() || destPoint == this.oldSourceConnection
+								.getSource())))) {
 
 							tmpCable.setDestination(destPoint);
 							controller.getPane().remove(tmpCable);
@@ -112,12 +120,15 @@ public class CableCreationListener extends MouseAdapter implements Serializable 
 								overrides[0] = destPoint.getCable();
 							}
 							this.newConnections.put(tmpCable, overrides);
-							this.controller.executeAction(new UserAddConnectionsAction(controller, newConnections));
+							this.controller
+									.executeAction(new UserAddConnectionsAction(
+											controller, newConnections));
 						} else {
 							sourcePoint.setCable(this.oldSourceConnection);
 							controller.getPane().remove(tmpCable);
 							if (this.oldSourceConnection != null) {
-								controller.getPane().add(this.oldSourceConnection);
+								controller.getPane().add(
+										this.oldSourceConnection);
 							}
 						}
 					}
@@ -162,14 +173,16 @@ public class CableCreationListener extends MouseAdapter implements Serializable 
 		}
 	}
 
-	private Component searchSourceRecursive(MouseEvent e, Component c, Class<?> searchFor) {
+	private Component searchSourceRecursive(MouseEvent e, Component c,
+			Class<?> searchFor) {
 		if (c.isShowing()) {
 			if (searchFor.isInstance(c)) {
 				return c;
 			}
 
-			Component tmp = c.getComponentAt(
-					(new Vector(c.getLocationOnScreen())).diffVector((new Vector(e.getLocationOnScreen()))).toPoint());
+			Component tmp = c.getComponentAt((new Vector(c
+					.getLocationOnScreen())).diffVector(
+					(new Vector(e.getLocationOnScreen()))).toPoint());
 			if (tmp == null || c == tmp) {
 				return null;
 			} else {
@@ -181,7 +194,8 @@ public class CableCreationListener extends MouseAdapter implements Serializable 
 	}
 
 	private boolean validInteraction(MouseEvent e) {
-		return SwingUtilities.isLeftMouseButton(e) && (e.isControlDown() && e.isShiftDown())
+		return SwingUtilities.isLeftMouseButton(e)
+				&& (e.isControlDown() && e.isShiftDown())
 				&& !SwingUtilities.isMiddleMouseButton(e);
 	}
 

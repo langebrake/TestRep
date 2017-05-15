@@ -7,7 +7,8 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.io.Serializable;
 
-public class ControllerListenerAdapter implements MouseInputListener, Serializable {
+public class ControllerListenerAdapter implements MouseInputListener,
+		Serializable {
 
 	protected InteractiveController controller;
 

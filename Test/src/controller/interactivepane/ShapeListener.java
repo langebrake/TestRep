@@ -29,10 +29,12 @@ public class ShapeListener extends MouseAdapter implements Serializable {
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
-		inPane = controller.getPane().contains(controller.relativeToPane(e).toPoint());
+		inPane = controller.getPane().contains(
+				controller.relativeToPane(e).toPoint());
 		if (inPane) {
 			Vector paneVector = controller.relativeToPane(e);
-			LinkedList<InteractiveShape> shapes = controller.getPane().getShapes();
+			LinkedList<InteractiveShape> shapes = controller.getPane()
+					.getShapes();
 
 			for (InteractiveShape s : shapes) {
 				if (s.contains(paneVector.toPoint())) {
@@ -51,7 +53,8 @@ public class ShapeListener extends MouseAdapter implements Serializable {
 	public void mouseClicked(MouseEvent e) {
 		// TODO: seleactable with SHIFT+click!!
 		if (inPane) {
-			LinkedList<InteractiveShape> shapes = controller.getPane().getShapes();
+			LinkedList<InteractiveShape> shapes = controller.getPane()
+					.getShapes();
 			for (InteractiveShape s : shapes) {
 				if (s.contains(e.getPoint())) {
 					controller.getPane().setShapeSelected(s, true);

@@ -36,6 +36,10 @@ import pluginhost.events.*;
 
 public abstract class PluginHost implements Serializable, Cloneable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2021581852556325825L;
 	private LinkedList<MidiIOThrough> inputs, outputs;
 	private transient Plugin plugin;
 	private transient MidiEngine engine;

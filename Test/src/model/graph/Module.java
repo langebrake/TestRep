@@ -2,22 +2,19 @@ package model.graph;
 
 import gui.interactivepane.Vector;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 
 import javax.sound.midi.MidiUnavailableException;
 
-import midiengine.MidiEngine;
-import defaults.MidiIOThrough;
-import plugin.Plugin;
-import plugin.events.PluginEvent;
-import pluginhost.events.*;
 import pluginhost.PluginHost;
-import pluginhost.exceptions.*;
 
 public class Module extends PluginHost {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 707303639669192953L;
 	public Vector origin;
 
 	public Module() throws MidiUnavailableException {
@@ -25,7 +22,8 @@ public class Module extends PluginHost {
 		origin = new Vector();
 	}
 
-	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+	private void readObject(ObjectInputStream in) throws IOException,
+			ClassNotFoundException {
 		in.defaultReadObject();
 	}
 

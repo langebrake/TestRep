@@ -50,13 +50,15 @@ public class Moveable extends JPanel {
 		this.offset = 10;
 		this.addMouseMotionListener(new MouseAdapter() {
 			public void mouseDragged(MouseEvent e) {
-				Point unscaled = unscaledPoint(e.getXOnScreen(), e.getYOnScreen());
+				Point unscaled = unscaledPoint(e.getXOnScreen(),
+						e.getYOnScreen());
 				dragComponent(unscaled.x, unscaled.y);
 			}
 		});
 		this.addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent e) {
-				Point unscaled = unscaledPoint(e.getXOnScreen(), e.getYOnScreen());
+				Point unscaled = unscaledPoint(e.getXOnScreen(),
+						e.getYOnScreen());
 				focus();
 
 				setPressOrigin(unscaled.x, unscaled.y);
@@ -87,7 +89,8 @@ public class Moveable extends JPanel {
 
 	private void createFrame(Point pos) {
 		if (this.dialog == null) {
-			JFrame dialog = new JFrame(new BigInteger(130, new SecureRandom()).toString(32));
+			JFrame dialog = new JFrame(
+					new BigInteger(130, new SecureRandom()).toString(32));
 			this.dialog = dialog;
 			dialog.setLocation(pos);
 			dialog.addWindowListener(new WindowAdapter() {
@@ -158,14 +161,17 @@ public class Moveable extends JPanel {
 	}
 
 	private void reposition() {
-		this.setLocation((int) (this.scaleSource.x + this.scalefactor * (this.unzoomedPosition.x - this.scaleSource.x)),
-				(int) (this.scaleSource.y + this.scalefactor * (this.unzoomedPosition.y - this.scaleSource.y)));
+		this.setLocation((int) (this.scaleSource.x + this.scalefactor
+				* (this.unzoomedPosition.x - this.scaleSource.x)),
+				(int) (this.scaleSource.y + this.scalefactor
+						* (this.unzoomedPosition.y - this.scaleSource.y)));
 		this.setSize((int) (this.unzoomedDimension.height * this.scalefactor),
 				(int) (this.unzoomedDimension.width * this.scalefactor));
 	}
 
 	private Point unscaledPoint(int scaledx, int scaledy) {
-		return new Point((int) ((scaledx - this.scaleSource.x) / this.scalefactor + this.scaleSource.x),
+		return new Point(
+				(int) ((scaledx - this.scaleSource.x) / this.scalefactor + this.scaleSource.x),
 				(int) ((scaledy - this.scaleSource.y) / this.scalefactor + this.scaleSource.y));
 	}
 

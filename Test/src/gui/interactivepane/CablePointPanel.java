@@ -19,8 +19,8 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
-public class CablePointPanel extends JPanel
-		implements CablePointHost, MouseListener, MouseMotionListener, MouseWheelListener {
+public class CablePointPanel extends JPanel implements CablePointHost,
+		MouseListener, MouseMotionListener, MouseWheelListener {
 	private final CablePointType type;
 	private CablePointSimple cps;
 	private int index;
@@ -44,8 +44,10 @@ public class CablePointPanel extends JPanel
 
 	public void updatePoint() {
 		if (this.isShowing()) {
-			this.cps.setXOnScreen((int) (this.getLocationOnScreen().getX() + this.getWidth() / 2));
-			this.cps.setYOnScreen((int) (this.getLocationOnScreen().getY() + this.getHeight() / 2));
+			this.cps.setXOnScreen((int) (this.getLocationOnScreen().getX() + this
+					.getWidth() / 2));
+			this.cps.setYOnScreen((int) (this.getLocationOnScreen().getY() + this
+					.getHeight() / 2));
 		}
 	}
 
@@ -60,7 +62,8 @@ public class CablePointPanel extends JPanel
 			} else if (this.type == CablePointType.OUTPUT) {
 				g2d.setColor(Color.MAGENTA);
 			}
-			g2d.fillOval(this.getHeight() / 2 - radius / 2, this.getWidth() / 2 - radius / 2, radius, radius);
+			g2d.fillOval(this.getHeight() / 2 - radius / 2, this.getWidth() / 2
+					- radius / 2, radius, radius);
 		}
 	}
 
@@ -87,9 +90,11 @@ public class CablePointPanel extends JPanel
 	}
 
 	@Override
-	public LinkedList<? extends CablePoint> getCablePoints(CablePointType type, int... indices) {
+	public LinkedList<? extends CablePoint> getCablePoints(CablePointType type,
+			int... indices) {
 		LinkedList<CablePoint> tmp = new LinkedList<CablePoint>();
-		if (indices.length == 1 && indices[0] == this.index && this.cps.getType() == type) {
+		if (indices.length == 1 && indices[0] == this.index
+				&& this.cps.getType() == type) {
 			tmp.add(this.cps);
 		}
 		return tmp;
@@ -116,7 +121,8 @@ public class CablePointPanel extends JPanel
 
 	@Override
 	public boolean forceExistence(CablePoint... forceThis) {
-		if (forceThis.length != 1 && !Arrays.asList(forceThis).contains(this.cps)) {
+		if (forceThis.length != 1
+				&& !Arrays.asList(forceThis).contains(this.cps)) {
 			return false;
 		} else {
 			return true;
@@ -169,7 +175,8 @@ public class CablePointPanel extends JPanel
 	@Override
 	public void mousePressed(MouseEvent arg0) {
 		// TODO: CableCreation Shortcut
-		if (arg0.isShiftDown() && arg0.isControlDown() && SwingUtilities.isLeftMouseButton(arg0))
+		if (arg0.isShiftDown() && arg0.isControlDown()
+				&& SwingUtilities.isLeftMouseButton(arg0))
 			this.cableDrawProcess = true;
 		modifyEvent(arg0);
 		this.getParent().dispatchEvent(arg0);
@@ -186,8 +193,12 @@ public class CablePointPanel extends JPanel
 
 	private void modifyEvent(MouseEvent arg0) {
 		arg0.setSource(this.getParent());
-		arg0.getPoint().translate((this.getParent().getLocationOnScreen().x - this.getLocationOnScreen().x),
-				this.getParent().getLocationOnScreen().y - this.getLocationOnScreen().y);
+		arg0.getPoint()
+				.translate(
+						(this.getParent().getLocationOnScreen().x - this
+								.getLocationOnScreen().x),
+						this.getParent().getLocationOnScreen().y
+								- this.getLocationOnScreen().y);
 
 	}
 

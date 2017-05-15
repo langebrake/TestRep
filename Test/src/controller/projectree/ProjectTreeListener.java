@@ -14,7 +14,8 @@ import javax.swing.tree.TreePath;
 import stdlib.grouping.Grouping;
 import controller.maincontrol.Project;
 
-public class ProjectTreeListener extends MouseAdapter implements TreeSelectionListener {
+public class ProjectTreeListener extends MouseAdapter implements
+		TreeSelectionListener {
 	private Project project;
 
 	public ProjectTreeListener(Project project) {
@@ -25,15 +26,17 @@ public class ProjectTreeListener extends MouseAdapter implements TreeSelectionLi
 	public void valueChanged(TreeSelectionEvent arg0) {
 		TreePath[] paths = arg0.getPaths();
 		for (TreePath path : paths) {
-			InteractiveModule mod = (InteractiveModule) ((DefaultMutableTreeNode) path.getLastPathComponent())
-					.getUserObject();
+			InteractiveModule mod = (InteractiveModule) ((DefaultMutableTreeNode) path
+					.getLastPathComponent()).getUserObject();
 			if (arg0.isAddedPath(path)) {
 				if (!mod.isSelected())
-					mod.getController().getPane().setComponentSelected(mod, true);
+					mod.getController().getPane()
+							.setComponentSelected(mod, true);
 				;
 			} else {
-				if (mod.isSelected())
-					mod.getController().getPane().setComponentSelected(mod, false);
+				if (mod!=null && mod.isSelected())
+					mod.getController().getPane()
+							.setComponentSelected(mod, false);
 				;
 			}
 		}
@@ -41,7 +44,8 @@ public class ProjectTreeListener extends MouseAdapter implements TreeSelectionLi
 
 	public void mousePressed(MouseEvent e) {
 		int selRow = project.getTree().getRowForLocation(e.getX(), e.getY());
-		TreePath selPath = project.getTree().getPathForLocation(e.getX(), e.getY());
+		TreePath selPath = project.getTree().getPathForLocation(e.getX(),
+				e.getY());
 		if (selRow != -1) {
 			if (e.getClickCount() == 1) {
 				singleClick(selRow, selPath);
@@ -56,7 +60,8 @@ public class ProjectTreeListener extends MouseAdapter implements TreeSelectionLi
 	}
 
 	public void doubleClick(int row, TreePath path) {
-		DefaultMutableTreeNode tmp = (DefaultMutableTreeNode) path.getLastPathComponent();
+		DefaultMutableTreeNode tmp = (DefaultMutableTreeNode) path
+				.getLastPathComponent();
 		if (tmp.getUserObject() instanceof InteractiveModule) {
 			InteractiveModule mod = (InteractiveModule) tmp.getUserObject();
 			mod.getController().focusComponent(mod);

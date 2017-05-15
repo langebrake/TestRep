@@ -29,12 +29,16 @@ public class PasteAction extends AbstractAction {
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 
-		Vector offset = this.controller.getPane().getViewportTranslation()
-				.diffVector(this.controller.getClipboard().getCopyGridLocation()).addVector(new Vector(10, 10));
+		Vector offset = this.controller
+				.getPane()
+				.getViewportTranslation()
+				.diffVector(
+						this.controller.getClipboard().getCopyGridLocation())
+				.addVector(new Vector(10, 10));
 
-		this.controller
-				.executeAction(new UserPasteAction(this.controller, this.controller.getClipboard().getClipboard(),
-						this.controller.getClipboard().getCableClipboard(), offset));
+		this.controller.executeAction(new UserPasteAction(this.controller,
+				this.controller.getClipboard().getClipboard(), this.controller
+						.getClipboard().getCableClipboard(), offset));
 	}
 
 }

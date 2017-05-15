@@ -33,9 +33,7 @@ public abstract class Plugin implements Serializable, Cloneable {
 		this.host = host;
 	}
 
-	public static Plugin getInstance(PluginHost host, byte[] data) {
-		return null;
-	}
+
 
 	public static PluginHost waiter = null;
 

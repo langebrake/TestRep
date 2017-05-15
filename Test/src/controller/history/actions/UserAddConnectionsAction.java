@@ -11,6 +11,10 @@ import controller.interactivepane.InteractiveController;
 
 public class UserAddConnectionsAction extends UserAction {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -315400839684658111L;
 	private HashMap<InteractiveCable, InteractiveCable[]> cables;
 
 	/**

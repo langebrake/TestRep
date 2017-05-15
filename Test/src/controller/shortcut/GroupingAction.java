@@ -21,7 +21,8 @@ public class GroupingAction extends AbstractAction {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		UserAddGroupAction uag = new UserAddGroupAction(controller, controller.getPane().getComponentSelection());
+		UserAddGroupAction uag = new UserAddGroupAction(controller, controller
+				.getPane().getComponentSelection());
 		controller.clearSelection();
 		controller.executeAction(uag);
 

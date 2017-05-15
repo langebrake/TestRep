@@ -27,7 +27,8 @@ public class InteractiveDisplay extends InteractiveComponent {
 	 * @param parent
 	 * @param origin
 	 */
-	public InteractiveDisplay(InteractiveController parent, Vector origin, JComponent contentPane) {
+	public InteractiveDisplay(InteractiveController parent, Vector origin,
+			JComponent contentPane) {
 		super(parent, origin);
 		super.setLayout(new BorderLayout());
 		this.contentPane = contentPane;

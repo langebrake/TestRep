@@ -52,13 +52,13 @@ public class SynthPlugin extends Plugin implements MidiListener {
 
 	@Override
 	public boolean close() {
-		// TODO Auto-generated method stub
+		System.out.println("CLOSED");
 		return false;
 	}
 
 	@Override
 	public boolean reOpen() {
-		// TODO Auto-generated method stub
+		System.out.println("REOPEN");
 		return false;
 	}
 

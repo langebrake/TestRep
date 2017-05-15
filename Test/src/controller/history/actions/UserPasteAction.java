@@ -26,7 +26,8 @@ public class UserPasteAction extends UserAction {
 	private LinkedList<InteractiveComponent> clipboard;
 	private LinkedList<InteractiveCable> cableClipboard;
 
-	public UserPasteAction(InteractiveController controller, LinkedList<InteractiveComponent> clipboard,
+	public UserPasteAction(InteractiveController controller,
+			LinkedList<InteractiveComponent> clipboard,
 			LinkedList<InteractiveCable> cableClipboard, Vector offset) {
 		super(controller);
 		this.clipboard = clipboard;
@@ -74,7 +75,8 @@ public class UserPasteAction extends UserAction {
 		HashMap<InteractiveModule, InteractiveModule> modMap = new HashMap<InteractiveModule, InteractiveModule>();
 		for (InteractiveComponent mod : clipboard) {
 			if (mod instanceof InteractiveModule) {
-				InteractiveModule cMod = ((InteractiveModule) mod).cloneTo(offset, controller);
+				InteractiveModule cMod = ((InteractiveModule) mod).cloneTo(
+						offset, controller);
 				modMap.put((InteractiveModule) mod, cMod);
 				this.components.add(cMod);
 			}
@@ -89,9 +91,12 @@ public class UserPasteAction extends UserAction {
 			CablePoint dest = cable.getDestination();
 			InteractiveModule sourceMapMod = modMap.get(source.getHost());
 			InteractiveModule destMapMod = modMap.get(dest.getHost());
-			CablePoint cSource = sourceMapMod.getCablePoint(source.getType(), source.getIndex());
-			CablePoint cDest = destMapMod.getCablePoint(dest.getType(), dest.getIndex());
-			InteractiveCable cCable = new InteractiveCable(cSource, cDest, controller);
+			CablePoint cSource = sourceMapMod.getCablePoint(source.getType(),
+					source.getIndex());
+			CablePoint cDest = destMapMod.getCablePoint(dest.getType(),
+					dest.getIndex());
+			InteractiveCable cCable = new InteractiveCable(cSource, cDest,
+					controller);
 			cSource.setCable(cCable);
 			cDest.setCable(cCable);
 			this.cables.add(cCable);

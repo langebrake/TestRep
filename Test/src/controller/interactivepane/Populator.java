@@ -19,7 +19,8 @@ public class Populator {
 	private static InteractivePane pane;
 	private static InteractiveController c;
 
-	public static InteractivePane populateWith(InteractiveController c, MidiGraph graph) {
+	public static InteractivePane populateWith(InteractiveController c,
+			MidiGraph graph) {
 		pane = c.getPane();
 		Populator.c = c;
 		for (Module mod : graph) {
@@ -53,7 +54,8 @@ public class Populator {
 						if (otherModule == null) {
 							otherModule = addRecursive(otherParent);
 						}
-						CablePoint otherEndCp = otherModule.getCablePoint(CablePointType.INPUT, otherEnd.getId());
+						CablePoint otherEndCp = otherModule.getCablePoint(
+								CablePointType.INPUT, otherEnd.getId());
 						InteractiveCable newCable = new InteractiveCable(c);
 						newCable.setSource(p);
 						newCable.setDestination(otherEndCp);

@@ -16,6 +16,10 @@ import pluginhost.PluginHost;
 
 public class MidiIOThrough implements MidiIO, Serializable {
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1332699547375999233L;
+	/**
 	 * Connecting MidiIO:
 	 */
 	// TODO: host transient? maybe less disk space, but longer loading times
@@ -66,6 +70,7 @@ public class MidiIOThrough implements MidiIO, Serializable {
 	 * @param t
 	 */
 	public void setInput(MidiIO input) {
+		
 		if (input == this) {
 			throw new IllegalArgumentException("Connectet input is loop");
 		}

@@ -27,7 +27,8 @@ import controller.interactivepane.InteractiveController;
 import controller.interactivepane.ModuleListener;
 import controller.interactivepane.PopupMenuListener;
 
-public abstract class InteractiveComponent extends JPanel implements InteractiveUpdateable, Cloneable {
+public abstract class InteractiveComponent extends JPanel implements
+		InteractiveUpdateable, Cloneable {
 
 	private Vector originLocation;
 	private Dimension originDimension;
@@ -61,7 +62,8 @@ public abstract class InteractiveComponent extends JPanel implements Interactive
 		// this.controller.getPopupMenuListener(),
 		// this.controller.getCableCreationListener());
 		this.controller = controller;
-		this.addListeners(controller.getModuleListener(), controller.getPopupMenuListener(),
+		this.addListeners(controller.getModuleListener(),
+				controller.getPopupMenuListener(),
 				controller.getCableCreationListener());
 	}
 
@@ -109,7 +111,8 @@ public abstract class InteractiveComponent extends JPanel implements Interactive
 	public void updateView() {
 
 		// set components screen location
-		this.setLocation(controller.getPane().convertToScreenLocation(this.originLocation).toPoint());
+		this.setLocation(controller.getPane()
+				.convertToScreenLocation(this.originLocation).toPoint());
 		// size component
 		double scaleFactor = this.controller.getPane().getScaleFactor();
 		this.setSize((int) (this.originDimension.width * scaleFactor),
@@ -168,11 +171,13 @@ public abstract class InteractiveComponent extends JPanel implements Interactive
 			this.removeListeners(l);
 		}
 		out.defaultWriteObject();
-		this.addListeners(this.controller.getModuleListener(), this.controller.getPopupMenuListener(),
+		this.addListeners(this.controller.getModuleListener(),
+				this.controller.getPopupMenuListener(),
 				this.controller.getCableCreationListener());
 	}
 
-	private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException {
+	private void readObject(ObjectInputStream in)
+			throws ClassNotFoundException, IOException {
 		in.defaultReadObject();
 		// TODO: further debugging
 

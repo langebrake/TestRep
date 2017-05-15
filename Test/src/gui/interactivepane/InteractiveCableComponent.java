@@ -26,7 +26,8 @@ public class InteractiveCableComponent extends InteractiveComponent {
 	private float width;
 	private boolean draggedEndpoint;
 
-	public InteractiveCableComponent(CablePoint source, CablePoint dest, InteractiveController parent) {
+	public InteractiveCableComponent(CablePoint source, CablePoint dest,
+			InteractiveController parent) {
 		this(parent, null);
 		this.source = source;
 		this.dest = dest;
@@ -37,7 +38,8 @@ public class InteractiveCableComponent extends InteractiveComponent {
 
 	}
 
-	private InteractiveCableComponent(InteractiveController parent, Vector origin) {
+	private InteractiveCableComponent(InteractiveController parent,
+			Vector origin) {
 		super(parent, origin);
 		// TODO Auto-generated constructor stub
 	}
@@ -115,7 +117,8 @@ public class InteractiveCableComponent extends InteractiveComponent {
 			this.cable.moveTo(x1pos, y1pos);
 
 			for (CablePoint c : this.cablePoints) {
-				this.cable.lineTo(c.getXOnScreen() - paneX, c.getYOnScreen() - paneY);
+				this.cable.lineTo(c.getXOnScreen() - paneX, c.getYOnScreen()
+						- paneY);
 				lastx = c.getXOnScreen() - paneX;
 				lasty = c.getYOnScreen() - paneY;
 			}
@@ -128,7 +131,8 @@ public class InteractiveCableComponent extends InteractiveComponent {
 				endpointCurvedX = x2pos - (x2pos - lastx) / 5;
 				endpointCurvedY = y2pos;
 			}
-			this.cable.curveTo(x1pos + (x2pos - x1pos) / 5, y1pos, endpointCurvedX, endpointCurvedY, x2pos, y2pos);
+			this.cable.curveTo(x1pos + (x2pos - x1pos) / 5, y1pos,
+					endpointCurvedX, endpointCurvedY, x2pos, y2pos);
 
 		}
 
@@ -141,7 +145,8 @@ public class InteractiveCableComponent extends InteractiveComponent {
 			Graphics2D g2d = (Graphics2D) g;
 
 			g2d.setPaint(this.color);
-			g2d.setStroke(new BasicStroke(this.width * controller.getPane().getScaleFactor()));
+			g2d.setStroke(new BasicStroke(this.width
+					* controller.getPane().getScaleFactor()));
 
 			g2d.draw(this.cable);
 		}

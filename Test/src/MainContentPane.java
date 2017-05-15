@@ -81,12 +81,14 @@ public class MainContentPane extends JLayeredPane {
 	private void addMoveable(int x, int y) {
 		Random rand = new Random();
 		Point unscaledPoint = this.unscaledPoint(x, y);
-		this.add(new Moveable(unscaledPoint.x, unscaledPoint.y,
-				new Color(rand.nextFloat(), rand.nextFloat(), rand.nextFloat()), this.scaleSource, this.scalefactor));
+		this.add(new Moveable(unscaledPoint.x, unscaledPoint.y, new Color(rand
+				.nextFloat(), rand.nextFloat(), rand.nextFloat()),
+				this.scaleSource, this.scalefactor));
 	}
 
 	private Point unscaledPoint(int scaledx, int scaledy) {
-		return new Point((int) ((scaledx - this.scaleSource.x) / this.scalefactor + this.scaleSource.x),
+		return new Point(
+				(int) ((scaledx - this.scaleSource.x) / this.scalefactor + this.scaleSource.x),
 				(int) ((scaledy - this.scaleSource.y) / this.scalefactor + this.scaleSource.y));
 	}
 

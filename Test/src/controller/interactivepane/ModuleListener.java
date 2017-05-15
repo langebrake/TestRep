@@ -38,21 +38,26 @@ public class ModuleListener extends ControllerListenerAdapter {
 
 	@Override
 	public void mouseDragged(MouseEvent arg0) {
-		if ((!controller.getCableAddProcess() || SwingUtilities.isMiddleMouseButton(arg0))
+		if ((!controller.getCableAddProcess() || SwingUtilities
+				.isMiddleMouseButton(arg0))
 				&& arg0.getSource() instanceof InteractiveComponent) {
 
 			if (validInteraction(arg0)) {
-				Vector currentMouseGridLocation = controller.toGridCoordinate(controller.relativeToPane(arg0));
-				Vector translation = controller.getLastMouseGridLocation().diffVector(currentMouseGridLocation);
+				Vector currentMouseGridLocation = controller
+						.toGridCoordinate(controller.relativeToPane(arg0));
+				Vector translation = controller.getLastMouseGridLocation()
+						.diffVector(currentMouseGridLocation);
 
-				InteractiveComponent source = (InteractiveComponent) arg0.getSource();
+				InteractiveComponent source = (InteractiveComponent) arg0
+						.getSource();
 
 				if (!((InteractiveComponent) source).isSelected()) {
 					if (!arg0.isShiftDown()) {
 						controller.clearSelection();
 
 					}
-					controller.selectComponent((InteractiveComponent) source, true);
+					controller.selectComponent((InteractiveComponent) source,
+							true);
 				}
 
 				controller.getPane().translateSelection(translation);
@@ -69,7 +74,8 @@ public class ModuleListener extends ControllerListenerAdapter {
 	@Override
 	public void mouseEntered(MouseEvent arg0) {
 		if (arg0.getSource() instanceof InteractiveComponent) {
-			controller.getPane().setComponentHovered((InteractiveComponent) arg0.getSource(), true);
+			controller.getPane().setComponentHovered(
+					(InteractiveComponent) arg0.getSource(), true);
 		}
 
 	}
@@ -77,7 +83,8 @@ public class ModuleListener extends ControllerListenerAdapter {
 	@Override
 	public void mouseExited(MouseEvent arg0) {
 		if (arg0.getSource() instanceof InteractiveComponent) {
-			controller.getPane().setComponentHovered((InteractiveComponent) arg0.getSource(), false);
+			controller.getPane().setComponentHovered(
+					(InteractiveComponent) arg0.getSource(), false);
 		}
 
 	}
@@ -93,15 +100,19 @@ public class ModuleListener extends ControllerListenerAdapter {
 					((InteractiveModule) source).openFullView();
 				}
 			}
-			boolean componentWasSelected = ((InteractiveComponent) source).isSelected();
+			boolean componentWasSelected = ((InteractiveComponent) source)
+					.isSelected();
 			boolean userMultiSelect = (arg0.getModifiers() & InputEvent.SHIFT_MASK) != 0;
 			boolean paneHasSelection = controller.getPane().hasSelected();
-			boolean paneHasMultiSelection = controller.getPane().hasMultiSelected();
+			boolean paneHasMultiSelection = controller.getPane()
+					.hasMultiSelected();
 			if (userMultiSelect) {
 				if (componentWasSelected) {
-					controller.selectComponent((InteractiveComponent) source, false);
+					controller.selectComponent((InteractiveComponent) source,
+							false);
 				} else {
-					controller.selectComponent((InteractiveComponent) source, true);
+					controller.selectComponent((InteractiveComponent) source,
+							true);
 				}
 			} else {
 				if (paneHasSelection) {
@@ -109,12 +120,15 @@ public class ModuleListener extends ControllerListenerAdapter {
 				}
 				if (componentWasSelected) {
 					if (paneHasMultiSelection) {
-						controller.selectComponent((InteractiveComponent) source, true);
+						controller.selectComponent(
+								(InteractiveComponent) source, true);
 					} else {
-						controller.selectComponent((InteractiveComponent) source, false);
+						controller.selectComponent(
+								(InteractiveComponent) source, false);
 					}
 				} else {
-					controller.selectComponent((InteractiveComponent) source, true);
+					controller.selectComponent((InteractiveComponent) source,
+							true);
 				}
 			}
 		} else {
@@ -128,7 +142,9 @@ public class ModuleListener extends ControllerListenerAdapter {
 	}
 
 	private boolean validInteraction(MouseEvent e) {
-		return SwingUtilities.isLeftMouseButton(e) && !(e.isControlDown() && e.isShiftDown()) && !(e.isControlDown())
+		return SwingUtilities.isLeftMouseButton(e)
+				&& !(e.isControlDown() && e.isShiftDown())
+				&& !(e.isControlDown())
 				&& !SwingUtilities.isMiddleMouseButton(e);
 	}
 

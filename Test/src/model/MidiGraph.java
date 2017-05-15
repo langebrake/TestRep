@@ -5,25 +5,31 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 
 import defaults.MidiIO;
 import engine.Stringer;
-import gui.interactivepane.CablePoint;
-import gui.interactivepane.CablePointType;
-import gui.interactivepane.InteractiveCable;
-import gui.interactivepane.InteractiveModule;
 import model.graph.Module;
 
 public class MidiGraph implements Serializable, Iterable<Module>, Cloneable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8797003248129448925L;
 	private transient LinkedList<Module> nodes;
 
 	public MidiGraph() {
 		this.nodes = new LinkedList<Module>();
 	}
 
+	public Module get(Module m){
+		if(nodes.contains(m))
+			return m;
+		else
+			return null;
+	}
+	
 	public void add(Module m) {
 		this.nodes.add(m);
 	}
@@ -52,7 +58,8 @@ public class MidiGraph implements Serializable, Iterable<Module>, Cloneable {
 		Stringer.minimize();
 	}
 
-	private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException {
+	private void readObject(ObjectInputStream in)
+			throws ClassNotFoundException, IOException {
 		int max = in.readInt();
 		nodes = new LinkedList<Module>();
 		for (int i = 0; i < max; i++) {
@@ -89,7 +96,8 @@ public class MidiGraph implements Serializable, Iterable<Module>, Cloneable {
 						Module otherModule;
 						otherModule = modMap.get(otherParent);
 						if (otherModule == null) {
-							otherModule = cloneRecursive(cloneIntoThis, otherParent);
+							otherModule = cloneRecursive(cloneIntoThis,
+									otherParent);
 						}
 
 						otherEnd = otherModule.getInput(otherEnd.getId());

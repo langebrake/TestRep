@@ -24,7 +24,8 @@ public class UserAddGroupAction extends UserAction {
 	Vector originVector;
 	String name;
 
-	public UserAddGroupAction(InteractiveController sourceController, LinkedList<InteractiveComponent> linkedList) {
+	public UserAddGroupAction(InteractiveController sourceController,
+			LinkedList<InteractiveComponent> linkedList) {
 		super(sourceController);
 		this.groupThis = linkedList;
 		this.originVector = controller.getLastMousePaneLocation();
@@ -47,7 +48,8 @@ public class UserAddGroupAction extends UserAction {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		this.groupModule = new InteractiveModule(this.originVector, module, controller);
+		this.groupModule = new InteractiveModule(this.originVector, module,
+				controller);
 
 		if (this.name != null) {
 			this.groupModule.setName(this.name);

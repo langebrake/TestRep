@@ -34,8 +34,10 @@ public class Clipboard {
 			if (c instanceof InteractiveModule) {
 				for (CablePoint p : ((InteractiveModule) c).getCablePoints()) {
 					InteractiveCable cable = p.getCable();
-					if (p.isConnected() && clipboard.contains(cable.getSource().getHost())
-							&& clipboard.contains(cable.getDestination().getHost())
+					if (p.isConnected()
+							&& clipboard.contains(cable.getSource().getHost())
+							&& clipboard.contains(cable.getDestination()
+									.getHost())
 							&& !this.cableClipboard.contains(cable)) {
 
 						this.cableClipboard.add(cable);
@@ -66,7 +68,8 @@ public class Clipboard {
 		LinkedList<InteractiveComponent> tmp = new LinkedList<InteractiveComponent>();
 		for (InteractiveComponent c : clipboard) {
 			if (c instanceof InteractiveModule)
-				tmp.add(((InteractiveModule) c).cloneTo(offset, destinationController));
+				tmp.add(((InteractiveModule) c).cloneTo(offset,
+						destinationController));
 
 		}
 		return tmp;

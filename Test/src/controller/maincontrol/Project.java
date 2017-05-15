@@ -107,7 +107,8 @@ public class Project implements Serializable {
 		Stringer.minimize();
 	}
 
-	private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException {
+	private void readObject(ObjectInputStream in)
+			throws ClassNotFoundException, IOException {
 		init();
 		InteractiveController.clipboardControl = this.clipboard;
 		InteractiveController.managerControl = this.actionManager;
@@ -121,7 +122,8 @@ public class Project implements Serializable {
 		LinkedList<TreePath> expanded = new LinkedList<TreePath>();
 		if (tree != null) {
 
-			Enumeration<TreePath> e = tree.getExpandedDescendants(new TreePath(root.getPath()));
+			Enumeration<TreePath> e = tree.getExpandedDescendants(new TreePath(
+					root.getPath()));
 			if (e != null)
 				while (e.hasMoreElements()) {
 					expanded.add(e.nextElement());
@@ -141,7 +143,8 @@ public class Project implements Serializable {
 				tree.expandPath(tp);
 			}
 		}
-		tree.setSelectionPaths((TreePath[]) selectedNodes.toArray(new TreePath[selectedNodes.size()]));
+		tree.setSelectionPaths((TreePath[]) selectedNodes
+				.toArray(new TreePath[selectedNodes.size()]));
 
 	}
 
@@ -157,7 +160,8 @@ public class Project implements Serializable {
 		} else {
 			selectedNodes.remove(treePath);
 		}
-		tree.setSelectionPaths((TreePath[]) selectedNodes.toArray(new TreePath[selectedNodes.size()]));
+		tree.setSelectionPaths((TreePath[]) selectedNodes
+				.toArray(new TreePath[selectedNodes.size()]));
 	}
 
 	public void clearTreeSelection() {
@@ -167,7 +171,8 @@ public class Project implements Serializable {
 	}
 
 	public void changeTabTitle(InteractiveController interactiveController) {
-		int index = tabbedPane.indexOfComponent(interactiveController.getPane());
+		int index = tabbedPane
+				.indexOfComponent(interactiveController.getPane());
 		if (index >= 0) {
 			tabbedPane.setTitleAt(index, interactiveController.getTitle());
 

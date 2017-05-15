@@ -46,15 +46,16 @@ import controller.interactivepane.FullViewClosingListener;
 import controller.interactivepane.InteractiveController;
 import model.graph.Module;
 
-public class InteractiveModule extends InteractiveComponent
-		implements CablePointHost, PluginStateChangedListener, Groupable, Cloneable {
+public class InteractiveModule extends InteractiveComponent implements
+		CablePointHost, PluginStateChangedListener, Groupable, Cloneable {
 
 	private Module module;
 	private transient JFrame fullView;
 	private boolean fullViewShowing;
 	private JComponent contentPane;
 	private InteractiveModuleHeader displayHeader;
-	protected boolean inputPopoutActive, outputPopoutActive, inputPopoutPermanent, outputPopoutPermanent, closed;
+	protected boolean inputPopoutActive, outputPopoutActive,
+			inputPopoutPermanent, outputPopoutPermanent, closed;
 	private Popout inputPopout, outputPopout;
 	private CablePointSimple inputPopupConnector, outputPopupConnector;
 	private InteractiveCable inputPopoutCable, outputPopoutCable;
@@ -63,7 +64,8 @@ public class InteractiveModule extends InteractiveComponent
 	private transient TimerTask t;
 	private transient DefaultMutableTreeNode tree;
 
-	public InteractiveModule(Vector origin, Module module, InteractiveController controller) {
+	public InteractiveModule(Vector origin, Module module,
+			InteractiveController controller) {
 		super(controller, origin);
 		this.setBorder(BorderFactory.createEmptyBorder(1, 1, 1, 1));
 		super.setLayout(new GridBagLayout());
@@ -73,23 +75,27 @@ public class InteractiveModule extends InteractiveComponent
 		this.initView();
 		inputPopupConnector = new CablePointSimple(CablePointType.INPUT);
 		outputPopupConnector = new CablePointSimple(CablePointType.OUTPUT);
-		this.inputPopout = new Popout(this.controller, this, this.getOriginLocation().addVector(new Vector(-60, 0)),
+		this.inputPopout = new Popout(this.controller, this, this
+				.getOriginLocation().addVector(new Vector(-60, 0)),
 				CablePointType.INPUT);
-		this.outputPopout = new Popout(this.controller, this,
-				this.getOriginLocation().addVector(new Vector(this.getOriginDimension().width + 10, 0)),
+		this.outputPopout = new Popout(this.controller, this, this
+				.getOriginLocation().addVector(
+						new Vector(this.getOriginDimension().width + 10, 0)),
 				CablePointType.OUTPUT);
 		this.inputMap = new ConcurrentSkipListMap<CablePointSimple, MidiIOThrough>();
 		this.outputMap = new ConcurrentSkipListMap<CablePointSimple, MidiIOThrough>();
-		inputPopoutCable = new InteractiveCable(inputPopout.connector, inputPopupConnector, 2, Color.BLUE, controller);
-		outputPopoutCable = new InteractiveCable(outputPopout.connector, outputPopupConnector, 2, Color.MAGENTA,
-				controller);
+		inputPopoutCable = new InteractiveCable(inputPopout.connector,
+				inputPopupConnector, 2, Color.BLUE, controller);
+		outputPopoutCable = new InteractiveCable(outputPopout.connector,
+				outputPopupConnector, 2, Color.MAGENTA, controller);
 
 		this.fullViewShowing = false;
 		this.module.setPluginStateChangedListener(this);
 
 		this.tree = new DefaultMutableTreeNode(this);
 		if (this.module.getPlugin() instanceof Grouping) {
-			for (DefaultMutableTreeNode n : ((Grouping) this.module.getPlugin()).treeView())
+			for (DefaultMutableTreeNode n : ((Grouping) this.module.getPlugin())
+					.treeView())
 				tree.add(n);
 		}
 		this.updateIO();
@@ -140,16 +146,19 @@ public class InteractiveModule extends InteractiveComponent
 	public void resetIO() {
 		this.inputMap.clear();
 		this.outputMap.clear();
-		this.inputPopout = new Popout(this.controller, this, this.getOriginLocation().addVector(new Vector(-60, 0)),
+		this.inputPopout = new Popout(this.controller, this, this
+				.getOriginLocation().addVector(new Vector(-60, 0)),
 				CablePointType.INPUT);
-		this.outputPopout = new Popout(this.controller, this,
-				this.getOriginLocation().addVector(new Vector(this.getOriginDimension().width + 10, 0)),
+		this.outputPopout = new Popout(this.controller, this, this
+				.getOriginLocation().addVector(
+						new Vector(this.getOriginDimension().width + 10, 0)),
 				CablePointType.OUTPUT);
 		updateIO();
 	}
 
 	public void setController(InteractiveController c) {
-		boolean updatePopouts = this.inputPopout != null && this.outputPopout != null && this.inputPopoutCable != null
+		boolean updatePopouts = this.inputPopout != null
+				&& this.outputPopout != null && this.inputPopoutCable != null
 				&& this.outputPopoutCable != null;
 		if (updatePopouts) {
 			this.inputPopout(false, this.inputPopoutPermanent);
@@ -165,8 +174,10 @@ public class InteractiveModule extends InteractiveComponent
 		}
 
 		if (updatePopouts) {
-			this.inputPopout(this.inputPopoutPermanent, this.inputPopoutPermanent);
-			this.outputPopout(this.outputPopoutPermanent, this.outputPopoutPermanent);
+			this.inputPopout(this.inputPopoutPermanent,
+					this.inputPopoutPermanent);
+			this.outputPopout(this.outputPopoutPermanent,
+					this.outputPopoutPermanent);
 		}
 
 	}
@@ -176,7 +187,8 @@ public class InteractiveModule extends InteractiveComponent
 		boolean newPoint = false;
 		for (MidiIOThrough m : inputs) {
 			if (!inputMap.containsValue(m)) {
-				CablePointSimple cps = new CablePointSimple(CablePointType.INPUT);
+				CablePointSimple cps = new CablePointSimple(
+						CablePointType.INPUT);
 				cps.setHost(this);
 				cps.setIndex(inputs.indexOf(m));
 				inputMap.put(cps, m);
@@ -193,7 +205,8 @@ public class InteractiveModule extends InteractiveComponent
 		boolean newPoint = false;
 		for (MidiIOThrough m : outputs) {
 			if (!outputMap.containsValue(m)) {
-				CablePointSimple cps = new CablePointSimple(CablePointType.OUTPUT);
+				CablePointSimple cps = new CablePointSimple(
+						CablePointType.OUTPUT);
 				cps.setHost(this);
 				cps.setIndex(outputs.indexOf(m));
 				outputMap.put(cps, m);
@@ -241,7 +254,9 @@ public class InteractiveModule extends InteractiveComponent
 			this.t = new TimerTask() {
 				@Override
 				public void run() {
-					while (outputPopout.navigating() || inputPopout.navigating() || controller.getCableAddProcess()) {
+					while (outputPopout.navigating()
+							|| inputPopout.navigating()
+							|| controller.getCableAddProcess()) {
 						close();
 						try {
 							Thread.sleep(1000);
@@ -254,13 +269,21 @@ public class InteractiveModule extends InteractiveComponent
 				}
 
 				private void close() {
-					if (inputPopoutActive && !closed && !inputPopout.navigating()
-							&& !inputPopout.isAncestorOf((Component) controller.getCableAddProcessSource())) {
+					if (inputPopoutActive
+							&& !closed
+							&& !inputPopout.navigating()
+							&& !inputPopout.isAncestorOf((Component) controller
+									.getCableAddProcessSource())) {
 						inputPopout(inputPopoutPermanent, inputPopoutPermanent);
 					}
-					if (outputPopoutActive && !closed && !outputPopout.navigating()
-							&& !outputPopout.isAncestorOf((Component) controller.getCableAddProcessSource())) {
-						outputPopout(outputPopoutPermanent, outputPopoutPermanent);
+					if (outputPopoutActive
+							&& !closed
+							&& !outputPopout.navigating()
+							&& !outputPopout
+									.isAncestorOf((Component) controller
+											.getCableAddProcessSource())) {
+						outputPopout(outputPopoutPermanent,
+								outputPopoutPermanent);
 
 					}
 				}
@@ -331,7 +354,8 @@ public class InteractiveModule extends InteractiveComponent
 
 	public void openFullView() {
 		if (this.module.getPlugin() instanceof Grouping) {
-			this.controller.getProject().registerTab(((Grouping) this.module.getPlugin()).getController());
+			this.controller.getProject().registerTab(
+					((Grouping) this.module.getPlugin()).getController());
 
 		} else {
 			if (this.fullView == null) {
@@ -399,24 +423,31 @@ public class InteractiveModule extends InteractiveComponent
 	private void updateCablePoints() {
 		if (this.isShowing()) {
 
-			inputPopupConnector.setXOnScreen((int) this.getLocationOnScreen().getX());
-			inputPopupConnector.setYOnScreen((int) this.getLocationOnScreen().getY() + this.getHeight() / 2);
-			outputPopupConnector.setXOnScreen((int) (this.getLocationOnScreen().getX() + this.getWidth()));
-			outputPopupConnector.setYOnScreen((int) this.getLocationOnScreen().getY() + this.getHeight() / 2);
+			inputPopupConnector.setXOnScreen((int) this.getLocationOnScreen()
+					.getX());
+			inputPopupConnector.setYOnScreen((int) this.getLocationOnScreen()
+					.getY() + this.getHeight() / 2);
+			outputPopupConnector.setXOnScreen((int) (this.getLocationOnScreen()
+					.getX() + this.getWidth()));
+			outputPopupConnector.setYOnScreen((int) this.getLocationOnScreen()
+					.getY() + this.getHeight() / 2);
 			int i = 1;
 			if (!this.inputPopoutActive) {
 				Set<CablePointSimple> inputSet = this.inputMap.keySet();
 				for (CablePointSimple cps : inputSet) {
 					cps.setXOnScreen(this.getLocationOnScreen().x + 5);
-					cps.setYOnScreen(this.getLocationOnScreen().y + i++ * this.getHeight() / (1 + inputSet.size()));
+					cps.setYOnScreen(this.getLocationOnScreen().y + i++
+							* this.getHeight() / (1 + inputSet.size()));
 				}
 			}
 			i = 1;
 			if (!this.outputPopoutActive) {
 				Set<CablePointSimple> outputSet = this.outputMap.keySet();
 				for (CablePointSimple cps : outputSet) {
-					cps.setXOnScreen(this.getLocationOnScreen().x + this.getWidth() - 5);
-					cps.setYOnScreen(this.getLocationOnScreen().y + i++ * this.getHeight() / (1 + outputSet.size()));
+					cps.setXOnScreen(this.getLocationOnScreen().x
+							+ this.getWidth() - 5);
+					cps.setYOnScreen(this.getLocationOnScreen().y + i++
+							* this.getHeight() / (1 + outputSet.size()));
 				}
 			}
 		}
@@ -448,7 +479,8 @@ public class InteractiveModule extends InteractiveComponent
 	}
 
 	@Override
-	public LinkedList<? extends CablePoint> getCablePoints(CablePointType type, int... indices) {
+	public LinkedList<? extends CablePoint> getCablePoints(CablePointType type,
+			int... indices) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -500,10 +532,12 @@ public class InteractiveModule extends InteractiveComponent
 		CablePointSimple cps = null;
 		if (type == CablePointType.INPUT) {
 			if (this.getModule().getPlugin().getMaxInputs() == -1
-					|| cpsSet.size() < this.getModule().getPlugin().getMaxInputs()) {
+					|| cpsSet.size() < this.getModule().getPlugin()
+							.getMaxInputs()) {
 
 				MidiIOThrough tmp = this.getModule().newInput();
-				for (Map.Entry<CablePointSimple, MidiIOThrough> entry : this.inputMap.entrySet()) {
+				for (Map.Entry<CablePointSimple, MidiIOThrough> entry : this.inputMap
+						.entrySet()) {
 					if (entry.getValue() == tmp) {
 						cps = entry.getKey();
 						cps.setHost(this);
@@ -517,10 +551,12 @@ public class InteractiveModule extends InteractiveComponent
 			}
 		} else {
 			if (this.getModule().getPlugin().getMaxOutputs() == -1
-					|| cpsSet.size() < this.getModule().getPlugin().getMaxOutputs()) {
+					|| cpsSet.size() < this.getModule().getPlugin()
+							.getMaxOutputs()) {
 
 				MidiIOThrough tmp = this.getModule().newOutput();
-				for (Map.Entry<CablePointSimple, MidiIOThrough> entry : this.outputMap.entrySet()) {
+				for (Map.Entry<CablePointSimple, MidiIOThrough> entry : this.outputMap
+						.entrySet()) {
 					if (tmp == entry.getValue()) {
 						cps = entry.getKey();
 						cps.setHost(this);
@@ -587,7 +623,8 @@ public class InteractiveModule extends InteractiveComponent
 		public CablePointSimple connector;
 		private CablePointType type;
 
-		public Popout(InteractiveController parent, InteractiveModule moduleDisplay, Vector origin,
+		public Popout(InteractiveController parent,
+				InteractiveModule moduleDisplay, Vector origin,
 				CablePointType type) {
 			super(parent, origin);
 			this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -643,11 +680,13 @@ public class InteractiveModule extends InteractiveComponent
 
 		private void updateCablePoints() {
 			if (this.isShowing()) {
-				connector.setYOnScreen(this.getLocationOnScreen().y + this.getHeight() / 2);
+				connector.setYOnScreen(this.getLocationOnScreen().y
+						+ this.getHeight() / 2);
 				if (connector.getType() == CablePointType.OUTPUT) {
 					connector.setXOnScreen(this.getLocationOnScreen().x);
 				} else if (connector.getType() == CablePointType.INPUT) {
-					connector.setXOnScreen(this.getLocationOnScreen().x + this.getWidth());
+					connector.setXOnScreen(this.getLocationOnScreen().x
+							+ this.getWidth());
 				}
 				for (Component p : this.getComponents()) {
 					((CablePointPanel) p).updatePoint();
@@ -794,14 +833,16 @@ public class InteractiveModule extends InteractiveComponent
 			if (!this.inputMap.containsValue(((NewInputEvent) e).getNewInput()))
 				this.updateInputs();
 		} else if (e instanceof NewOutputEvent) {
-			if (!this.outputMap.containsValue(((NewOutputEvent) e).getNewOutput()))
+			if (!this.outputMap.containsValue(((NewOutputEvent) e)
+					.getNewOutput()))
 				this.updateOutputs();
 		}
 	}
 
 	@Override
 	public void listen(PluginEvent e) {
-		if (e instanceof NewInputRequestEvent || e instanceof NewOutputRequestEvent) {
+		if (e instanceof NewInputRequestEvent
+				|| e instanceof NewOutputRequestEvent) {
 			// normal event
 			this.updateIO();
 		} else {
@@ -816,7 +857,8 @@ public class InteractiveModule extends InteractiveComponent
 
 			}
 			// this.controller.addPluginError(this, e)
-			System.out.println("Error: " + ((PluginError) e).getSourceHost().getName());
+			System.out.println("Error: "
+					+ ((PluginError) e).getSourceHost().getName());
 			((PluginError) e).getException().printStackTrace();
 
 		}
@@ -827,9 +869,11 @@ public class InteractiveModule extends InteractiveComponent
 
 	}
 
-	public InteractiveModule cloneTo(Vector offset, InteractiveController controller) {
+	public InteractiveModule cloneTo(Vector offset,
+			InteractiveController controller) {
 		Module m = this.module.clone();
-		InteractiveModule tmp = new InteractiveModule(this.getOriginLocation().addVector(offset), m, controller);
+		InteractiveModule tmp = new InteractiveModule(this.getOriginLocation()
+				.addVector(offset), m, controller);
 		return tmp;
 
 	}
@@ -840,7 +884,8 @@ public class InteractiveModule extends InteractiveComponent
 		this.initView();
 	}
 
-	private void readObject(ObjectInputStream ois) throws ClassNotFoundException, IOException {
+	private void readObject(ObjectInputStream ois)
+			throws ClassNotFoundException, IOException {
 		ois.defaultReadObject();
 		this.module.setPluginStateChangedListener(this);
 		this.removeAll();
@@ -850,7 +895,8 @@ public class InteractiveModule extends InteractiveComponent
 	public DefaultMutableTreeNode treeView() {
 		if (this.module.getPlugin() instanceof Grouping) {
 			this.tree.removeAllChildren();
-			for (DefaultMutableTreeNode n : ((Grouping) this.module.getPlugin()).treeView())
+			for (DefaultMutableTreeNode n : ((Grouping) this.module.getPlugin())
+					.treeView())
 				tree.add(n);
 		}
 		return this.tree;

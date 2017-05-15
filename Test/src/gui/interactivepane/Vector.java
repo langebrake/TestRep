@@ -35,7 +35,8 @@ public class Vector implements Serializable {
 	 * @return Differentiation vector from this to other
 	 */
 	public Vector diffVector(Vector other) {
-		return new Vector(other.point.x - this.point.x, other.point.y - this.point.y);
+		return new Vector(other.point.x - this.point.x, other.point.y
+				- this.point.y);
 	}
 
 	/**
@@ -44,7 +45,8 @@ public class Vector implements Serializable {
 	 * @return Vector addition result
 	 */
 	public Vector addVector(Vector other) {
-		return new Vector(this.point.x + other.point.x, this.point.y + other.point.y);
+		return new Vector(this.point.x + other.point.x, this.point.y
+				+ other.point.y);
 	}
 
 	/**
@@ -54,7 +56,8 @@ public class Vector implements Serializable {
 	 * @return scaled vector
 	 */
 	public Vector scaleVector(float scaleFactor) {
-		return new Vector((this.point.x * scaleFactor), (this.point.y * scaleFactor));
+		return new Vector((this.point.x * scaleFactor),
+				(this.point.y * scaleFactor));
 	}
 
 	/**

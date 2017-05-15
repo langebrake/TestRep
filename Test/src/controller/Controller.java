@@ -26,6 +26,7 @@ import controller.interactivepane.InteractiveController;
 import controller.maincontrol.NewProject;
 import controller.maincontrol.OpenProject;
 import controller.maincontrol.Project;
+import controller.maincontrol.RescanPlugins;
 import controller.maincontrol.SaveProject;
 import engine.Engine;
 import engine.Stringer;
@@ -36,11 +37,12 @@ public class Controller implements WindowListener {
 	private Project project;
 	private JFileChooser fileChooser;
 	private File currentProject;
-	private final String programName = "Midi Manipulator v0.1a";
+	private final String programName = "MIDI Manipulation Tool (prototype)";
 
 	public Controller() {
 		this.fileChooser = new JFileChooser();
-		FileNameExtensionFilter fne = new FileNameExtensionFilter("Midi Manipulation Project", "mmp");
+		FileNameExtensionFilter fne = new FileNameExtensionFilter(
+				"Midi Manipulation Project", "mmp");
 		this.fileChooser.setFileFilter(fne);
 		this.createGui();
 		this.loadProject(new Project());
@@ -73,6 +75,7 @@ public class Controller implements WindowListener {
 		m.add(new JMenuItem(new NewProject(this)));
 		m.add(new JMenuItem(new OpenProject(this)));
 		m.add(new JMenuItem(new SaveProject(this)));
+		m.add(new JMenuItem(new RescanPlugins(this)));
 
 		return m;
 	}
@@ -104,7 +107,8 @@ public class Controller implements WindowListener {
 	public void loadProject(Project project) {
 		this.project = project;
 		this.mainFrame.setContentPane(project.getContentPane());
-		String title = (this.currentProject == null) ? "Untitled" : this.currentProject.getName();
+		String title = (this.currentProject == null) ? "Untitled"
+				: this.currentProject.getName();
 		this.mainFrame.setTitle(this.programName + " - " + title);
 		this.mainFrame.revalidate();
 		System.gc();
@@ -154,6 +158,7 @@ public class Controller implements WindowListener {
 			fos = new FileOutputStream(file);
 			ObjectOutputStream oos = new ObjectOutputStream(fos);
 			oos.writeObject(this.getProject());
+			oos.close();
 			this.currentProject = file;
 			this.mainFrame.setTitle(this.programName + " - " + file.getName());
 		} catch (FileNotFoundException e1) {

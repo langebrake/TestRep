@@ -38,12 +38,13 @@ public class InteractiveCable implements InteractiveShape {
 		this(null, null, parent);
 	}
 
-	public InteractiveCable(CablePoint source, CablePoint dest, InteractiveController parent) {
+	public InteractiveCable(CablePoint source, CablePoint dest,
+			InteractiveController parent) {
 		this(source, dest, 1, Color.BLACK, parent);
 	}
 
-	public InteractiveCable(CablePoint source, CablePoint dest, float width, Color color,
-			InteractiveController parent) {
+	public InteractiveCable(CablePoint source, CablePoint dest, float width,
+			Color color, InteractiveController parent) {
 		this.source = source;
 		this.dest = dest;
 		this.cablePoints = new LinkedList<CablePoint>();
@@ -165,8 +166,10 @@ public class InteractiveCable implements InteractiveShape {
 	}
 
 	public void updateView(Graphics2D g2d) {
-		int paneX = (int) this.controller.getPane().getLocationOnScreen().getX();
-		int paneY = (int) this.controller.getPane().getLocationOnScreen().getY();
+		int paneX = (int) this.controller.getPane().getLocationOnScreen()
+				.getX();
+		int paneY = (int) this.controller.getPane().getLocationOnScreen()
+				.getY();
 		float x1pos = (float) (this.source.getXOnScreen() - paneX);
 		float y1pos = (float) (this.source.getYOnScreen() - paneY);
 		float x2pos = (float) (this.dest.getXOnScreen() - paneX);
@@ -178,7 +181,8 @@ public class InteractiveCable implements InteractiveShape {
 		this.cable.moveTo(x1pos, y1pos);
 
 		for (CablePoint c : this.cablePoints) {
-			this.cable.lineTo(c.getXOnScreen() - paneX, c.getYOnScreen() - paneY);
+			this.cable.lineTo(c.getXOnScreen() - paneX, c.getYOnScreen()
+					- paneY);
 			lastx = c.getXOnScreen() - paneX;
 			lasty = c.getYOnScreen() - paneY;
 		}
@@ -191,10 +195,12 @@ public class InteractiveCable implements InteractiveShape {
 			endpointCurvedX = x2pos - (x2pos - lastx) / 5;
 			endpointCurvedY = y2pos;
 		}
-		this.cable.curveTo(x1pos + (x2pos - x1pos) / 5, y1pos, endpointCurvedX, endpointCurvedY, x2pos, y2pos);
+		this.cable.curveTo(x1pos + (x2pos - x1pos) / 5, y1pos, endpointCurvedX,
+				endpointCurvedY, x2pos, y2pos);
 
 		g2d.setPaint(this.color);
-		g2d.setStroke(new BasicStroke(this.width * controller.getPane().getScaleFactor()));
+		g2d.setStroke(new BasicStroke(this.width
+				* controller.getPane().getScaleFactor()));
 
 		g2d.draw(this.cable);
 

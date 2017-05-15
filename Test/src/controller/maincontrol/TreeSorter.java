@@ -19,7 +19,8 @@ public class TreeSorter {
 		@SuppressWarnings("unchecked")
 		Enumeration<DefaultMutableTreeNode> e = root.depthFirstEnumeration();
 		while (e.hasMoreElements()) {
-			DefaultMutableTreeNode node = (DefaultMutableTreeNode) e.nextElement();
+			DefaultMutableTreeNode node = (DefaultMutableTreeNode) e
+					.nextElement();
 			if (!node.isLeaf()) {
 				sort(node);
 			}
@@ -32,16 +33,21 @@ public class TreeSorter {
 		public int compare(DefaultMutableTreeNode a, DefaultMutableTreeNode b) {
 			Object leftObj = a.getUserObject();
 			Object rightObj = b.getUserObject();
-			if (leftObj instanceof InteractiveModule && rightObj instanceof InteractiveModule) {
-				Plugin left = ((InteractiveModule) leftObj).getModule().getPlugin();
-				Plugin right = ((InteractiveModule) rightObj).getModule().getPlugin();
+			if (leftObj instanceof InteractiveModule
+					&& rightObj instanceof InteractiveModule) {
+				Plugin left = ((InteractiveModule) leftObj).getModule()
+						.getPlugin();
+				Plugin right = ((InteractiveModule) rightObj).getModule()
+						.getPlugin();
 				if ((left instanceof Grouping.GroupInput || left instanceof Grouping.GroupOutput)) {
 					return -1;
 				} else if ((right instanceof Grouping.GroupInput || right instanceof Grouping.GroupOutput)) {
 					return -1;
-				} else if (left instanceof Grouping && !(right instanceof Grouping)) {
+				} else if (left instanceof Grouping
+						&& !(right instanceof Grouping)) {
 					return -1;
-				} else if (!(left instanceof Grouping) && (right instanceof Grouping)) {
+				} else if (!(left instanceof Grouping)
+						&& (right instanceof Grouping)) {
 					return 1;
 				}
 

@@ -51,7 +51,8 @@ public class PopupMenuListener extends MouseAdapter implements Serializable {
 	private void showPopup(MouseEvent e) {
 		if (e.isPopupTrigger()) {
 			Object source = e.getSource();
-			if (source instanceof InteractiveComponent && !((InteractiveComponent) source).isSelected()) {
+			if (source instanceof InteractiveComponent
+					&& !((InteractiveComponent) source).isSelected()) {
 				controller.clearSelection();
 				controller.selectComponent((InteractiveComponent) source, true);
 			}
@@ -75,11 +76,13 @@ public class PopupMenuListener extends MouseAdapter implements Serializable {
 
 	private void addStandardMenu(JPopupMenu p, MouseEvent e) {
 		JMenuItem item = new JMenuItem(new CopyAction(this.controller));
-		item.setEnabled(this.controller.getPane().getComponentSelection().size() != 0);
+		item.setEnabled(this.controller.getPane().getComponentSelection()
+				.size() != 0);
 		p.add(item);
 
 		item = new JMenuItem(new CutAction(this.controller));
-		item.setEnabled(this.controller.getPane().getComponentSelection().size() != 0);
+		item.setEnabled(this.controller.getPane().getComponentSelection()
+				.size() != 0);
 		p.add(item);
 
 		item = new JMenuItem(new PasteAction(this.controller));
@@ -99,15 +102,18 @@ public class PopupMenuListener extends MouseAdapter implements Serializable {
 
 	private void addPluginMenu(JPopupMenu p) {
 		JMenu t = new JMenu("Add");
-		LinkedList<PluginHierarchyElement> plugins = PluginManager.getPluginList();
+		LinkedList<PluginHierarchyElement> plugins = PluginManager
+				.getPluginList();
 		this.addPluginMenuRecursive(t, plugins);
 		p.add(t);
 	}
 
-	private void addPluginMenuRecursive(JMenu m, LinkedList<PluginHierarchyElement> plugins) {
+	private void addPluginMenuRecursive(JMenu m,
+			LinkedList<PluginHierarchyElement> plugins) {
 		for (PluginHierarchyElement e : plugins) {
 			if (e.isLoadable()) {
-				m.add(new JMenuItem(new PluginAddAction(this.controller, (Loadable) e)));
+				m.add(new JMenuItem(new PluginAddAction(this.controller,
+						(Loadable) e)));
 			} else if (e.isSubgroup()) {
 				JMenu tmp = new JMenu(e.getName());
 				this.addPluginMenuRecursive(tmp, (Subgroup) e);
@@ -122,7 +128,8 @@ public class PopupMenuListener extends MouseAdapter implements Serializable {
 		p.add(item);
 		if (e.getSource() instanceof InteractiveModule
 				&& ((InteractiveModule) e.getSource()).getModule().getPlugin() instanceof Grouping) {
-			item = new JMenuItem(new UngroupAction(this.controller, (InteractiveModule) e.getSource()));
+			item = new JMenuItem(new UngroupAction(this.controller,
+					(InteractiveModule) e.getSource()));
 			item.setEnabled(true);
 		} else {
 			item = new JMenuItem(new UngroupAction(this.controller, null));

@@ -7,7 +7,8 @@ import java.util.LinkedList;
 
 import javax.swing.JComponent;
 
-public class CablePointComponent extends JComponent implements CablePoint, CablePointHost {
+public class CablePointComponent extends JComponent implements CablePoint,
+		CablePointHost {
 	private InteractiveCable cable;
 	private final CablePointType type;
 	private CablePointHost host;
@@ -89,7 +90,8 @@ public class CablePointComponent extends JComponent implements CablePoint, Cable
 	}
 
 	@Override
-	public LinkedList<? extends CablePoint> getCablePoints(CablePointType type, int... indices) {
+	public LinkedList<? extends CablePoint> getCablePoints(CablePointType type,
+			int... indices) {
 		LinkedList<CablePointComponent> tmp = new LinkedList<CablePointComponent>();
 		if (indices.length == 1 && indices[0] == 0 && this.getType() == type) {
 			tmp.add(this);

@@ -1,9 +1,6 @@
 package model.pluginmanager;
 
 import java.io.File;
-import java.io.FilenameFilter;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URI;
 import java.net.URL;
@@ -13,21 +10,10 @@ import java.util.LinkedList;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-import javax.sound.midi.MidiUnavailableException;
-import javax.swing.JMenu;
-import javax.swing.filechooser.FileFilter;
-
-import midiengine.MidiEngine;
-import model.graph.Module;
 import plugin.Plugin;
-import pluginhost.PluginHost;
-import controller.Controller;
-//import defaultplugin.DefaultPlugin;
-import engine.Engine;
 
 public class PluginManager {
 
-	private Controller controller;
 	private static LinkedList<PluginHierarchyElement> plugins;
 	public static LinkedList<URLClassLoader> classes;
 
@@ -40,7 +26,9 @@ public class PluginManager {
 		return plugins;
 	}
 
-	private static void loadPlugins(File dir, LinkedList<PluginHierarchyElement> appendList) throws Exception {
+	@SuppressWarnings("unchecked")
+	private static void loadPlugins(File dir,
+			LinkedList<PluginHierarchyElement> appendList) throws Exception {
 		for (File file : dir.listFiles()) {
 			if (file.isDirectory()) {
 				Subgroup s = new Subgroup(file.getName());
@@ -61,13 +49,14 @@ public class PluginManager {
 						continue;
 					}
 
-					String className = je.getName().substring(0, je.getName().length() - 6);
+					String className = je.getName().substring(0,
+							je.getName().length() - 6);
 					className = className.replace('/', '.');
 					Class<?> c = cl.loadClass(className);
 					if (c.getSuperclass() == Plugin.class) {
-						Method m = c.getMethod("getInstance", PluginHost.class);
-						appendList
-								.add(new Loadable((Class<? extends Plugin>) c, jar.getManifest().getMainAttributes()));
+						appendList.add(new Loadable(
+								(Class<? extends Plugin>) c, jar.getManifest()
+										.getMainAttributes()));
 
 					} else {
 
@@ -90,9 +79,11 @@ public class PluginManager {
 	public static void addPath(String s) throws Exception {
 		File f = new File(s);
 		URI u = f.toURI();
-		URLClassLoader urlClassLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
+		URLClassLoader urlClassLoader = (URLClassLoader) ClassLoader
+				.getSystemClassLoader();
 		Class<URLClassLoader> urlClass = URLClassLoader.class;
-		Method method = urlClass.getDeclaredMethod("addURL", new Class[] { URL.class });
+		Method method = urlClass.getDeclaredMethod("addURL",
+				new Class[] { URL.class });
 		method.setAccessible(true);
 		method.invoke(urlClassLoader, new Object[] { u.toURL() });
 	}

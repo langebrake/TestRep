@@ -31,6 +31,10 @@ import pluginhost.events.NewOutputEvent;
 import pluginhost.exceptions.PluginMaxOutputsExceededException;
 
 public class Grouping extends Plugin {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1457392337456540186L;
 	private static final int MAXINPUTS = -1;
 	private static final int MAXOUTPUTS = -1;
 	private static final int MININPUTS = 0;
@@ -69,7 +73,8 @@ public class Grouping extends Plugin {
 			if (e instanceof NewInputEvent) {
 				((GroupInput) groupInput.getModule().getPlugin()).block = true;
 				MidiIO externalInput = ((NewInputEvent) e).getNewInput();
-				MidiIO internalOutput = this.groupInput.getModule().getPlugin().getPluginHost().newOutput();
+				MidiIO internalOutput = this.groupInput.getModule().getPlugin()
+						.getPluginHost().newOutput();
 				// TODO: use listener to make persistence efficient and safe
 				externalInput.setOutput(internalOutput);
 				internalOutput.setInput(externalInput);
@@ -77,7 +82,8 @@ public class Grouping extends Plugin {
 			} else if (e instanceof NewOutputEvent) {
 				((GroupOutput) groupOutput.getModule().getPlugin()).block = true;
 				MidiIO externalOutput = ((NewOutputEvent) e).getNewOutput();
-				MidiIO internalInput = this.groupOutput.getModule().getPlugin().getPluginHost().newInput();
+				MidiIO internalInput = this.groupOutput.getModule().getPlugin()
+						.getPluginHost().newInput();
 				internalInput.setOutput(externalOutput);
 				externalOutput.setInput(internalInput);
 				((GroupOutput) groupOutput.getModule().getPlugin()).block = false;
@@ -110,7 +116,8 @@ public class Grouping extends Plugin {
 			Module m = new Module();
 			Plugin p = new GroupOutput(m, this);
 			m.setPlugin(p, GroupOutput.class);
-			groupOutput = new InteractiveModule(new Vector(0, 500), m, controller);
+			groupOutput = new InteractiveModule(new Vector(0, 500), m,
+					controller);
 		} catch (SecurityException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -127,16 +134,20 @@ public class Grouping extends Plugin {
 
 	}
 
-	public void group(InteractiveModule groupModule, LinkedList<InteractiveComponent> groupThis) {
+	public void group(InteractiveModule groupModule,
+			LinkedList<InteractiveComponent> groupThis) {
 
-		this.controller.setUserActionManager(groupModule.getController().getActionManager());
-		this.controller.setClipboard(groupModule.getController().getClipboard());
+		this.controller.setUserActionManager(groupModule.getController()
+				.getActionManager());
+		this.controller
+				.setClipboard(groupModule.getController().getClipboard());
 		this.controller.setProject(groupModule.getController().getProject());
 		InteractiveController oldController = groupModule.getController();
 		InteractiveController newController = this.controller;
 		InteractivePane oldPane = groupModule.getController().getPane();
 		InteractivePane newPane = this.controller.getPane();
-		Vector resetTranslation = groupModule.getOriginLocation().scaleVector(-1);
+		Vector resetTranslation = groupModule.getOriginLocation().scaleVector(
+				-1);
 		oldController.clearSelection();
 		int inputCounter = 0, outputCounter = 0;
 		for (InteractiveComponent c : groupThis) {
@@ -150,33 +161,44 @@ public class Grouping extends Plugin {
 							if (cable.getController() != this.controller) {
 								oldPane.remove(cable);
 								cable.setController(controller);
-								CablePoint otherEnd = (cable.getSource() == p) ? cable.getDestination()
-										: cable.getSource();
+								CablePoint otherEnd = (cable.getSource() == p) ? cable
+										.getDestination() : cable.getSource();
 								if (!groupThis.contains(otherEnd.getHost())) {
 									// TODO: manage external Inputs
 									if (otherEnd.getType() == CablePointType.INPUT) {
 										// external output
 										// TODO: Error Management, if null
 										CablePoint newExternalEndpoint = groupModule
-												.getCablePoint(CablePointType.OUTPUT, outputCounter++);
+												.getCablePoint(
+														CablePointType.OUTPUT,
+														outputCounter++);
 										if (newExternalEndpoint == null) {
 											this.getPluginHost().newOutput();
 											// generating new Cable on original
 											// Pane, connect with groupmodule
 											// output
-											newExternalEndpoint = groupModule.getCablePoint(CablePointType.OUTPUT,
-													groupModule.getCablePoints(CablePointType.OUTPUT).size() - 1);
+											newExternalEndpoint = groupModule
+													.getCablePoint(
+															CablePointType.OUTPUT,
+															groupModule
+																	.getCablePoints(
+																			CablePointType.OUTPUT)
+																	.size() - 1);
 										}
-										InteractiveCable newExternalCable = new InteractiveCable(newExternalEndpoint,
-												otherEnd, groupModule.getController());
+										InteractiveCable newExternalCable = new InteractiveCable(
+												newExternalEndpoint, otherEnd,
+												groupModule.getController());
 										oldPane.add(newExternalCable);
-										newExternalEndpoint.setCable(newExternalCable);
+										newExternalEndpoint
+												.setCable(newExternalCable);
 										otherEnd.setCable(newExternalCable);
 
 										// internal Cable gets new endpoint
 										cable.setSource(p);
 										CablePoint newInternalEndpoint = this.groupOutput
-												.getCablePoint(CablePointType.INPUT, outputCounter - 1);
+												.getCablePoint(
+														CablePointType.INPUT,
+														outputCounter - 1);
 										cable.setDestination(newInternalEndpoint);
 										p.setCable(cable);
 										newInternalEndpoint.setCable(cable);
@@ -185,26 +207,37 @@ public class Grouping extends Plugin {
 										// external input
 										// TODO: Error Management, if null
 
-										CablePoint newExternalEndpoint = groupModule.getCablePoint(CablePointType.INPUT,
-												inputCounter++);
+										CablePoint newExternalEndpoint = groupModule
+												.getCablePoint(
+														CablePointType.INPUT,
+														inputCounter++);
 										if (newExternalEndpoint == null) {
 											this.getPluginHost().newInput();
 											// generating new Cable on original
 											// Pane, connect with groupmodule
 											// output
-											newExternalEndpoint = groupModule.getCablePoint(CablePointType.INPUT,
-													groupModule.getCablePoints(CablePointType.INPUT).size() - 1);
+											newExternalEndpoint = groupModule
+													.getCablePoint(
+															CablePointType.INPUT,
+															groupModule
+																	.getCablePoints(
+																			CablePointType.INPUT)
+																	.size() - 1);
 										}
-										InteractiveCable newExternalCable = new InteractiveCable(newExternalEndpoint,
-												otherEnd, groupModule.getController());
+										InteractiveCable newExternalCable = new InteractiveCable(
+												newExternalEndpoint, otherEnd,
+												groupModule.getController());
 										oldPane.add(newExternalCable);
-										newExternalEndpoint.setCable(newExternalCable);
+										newExternalEndpoint
+												.setCable(newExternalCable);
 										otherEnd.setCable(newExternalCable);
 
 										// internal Cable gets new endpoint
 										cable.setSource(p);
 										CablePoint newInternalEndpoint = this.groupInput
-												.getCablePoint(CablePointType.OUTPUT, inputCounter - 1);
+												.getCablePoint(
+														CablePointType.OUTPUT,
+														inputCounter - 1);
 										cable.setDestination(newInternalEndpoint);
 										p.setCable(cable);
 										newInternalEndpoint.setCable(cable);
@@ -232,10 +265,10 @@ public class Grouping extends Plugin {
 		}
 
 		addPointlessConnections(oldController, this.pointlessConnections);
-		addPointlessConnections(newController,
-				((GroupInput) this.groupInput.getModule().getPlugin()).pointlessConnections);
-		addPointlessConnections(newController,
-				((GroupOutput) this.groupOutput.getModule().getPlugin()).pointlessConnections);
+		addPointlessConnections(newController, ((GroupInput) this.groupInput
+				.getModule().getPlugin()).pointlessConnections);
+		addPointlessConnections(newController, ((GroupOutput) this.groupOutput
+				.getModule().getPlugin()).pointlessConnections);
 
 		newPane.updateView();
 		// TODO: mind the translation: the modules in the new pane need to be
@@ -268,7 +301,8 @@ public class Grouping extends Plugin {
 		newController.clearSelection();
 		Vector restoreTranslation = groupModule.getOriginLocation();
 		for (Component comp : this.controller.getPane().getComponents()) {
-			if (comp instanceof InteractiveComponent && comp instanceof Groupable
+			if (comp instanceof InteractiveComponent
+					&& comp instanceof Groupable
 					&& ungroupable((InteractiveComponent) comp)) {
 				InteractiveComponent c = (InteractiveComponent) comp;
 				c.setController(groupModule.getController());
@@ -278,26 +312,32 @@ public class Grouping extends Plugin {
 					for (CablePoint p : ((CablePointHost) c).getCablePoints()) {
 						if (p.isConnected()) {
 							InteractiveCable cable = p.getCable();
-							if (cable.getController() != groupModule.getController()) {
+							if (cable.getController() != groupModule
+									.getController()) {
 								oldPane.remove(cable);
 								cable.setController(newController);
-								CablePoint otherEnd = (cable.getSource() == p) ? cable.getDestination()
-										: cable.getSource();
+								CablePoint otherEnd = (cable.getSource() == p) ? cable
+										.getDestination() : cable.getSource();
 
 								// TODO: better codemanagement possible, these
 								// cases are very similar
 								if (otherEnd.getHost() == this.groupOutput) {
 									// external output
 
-									CablePoint externalOutput = groupModule.getCablePoint(CablePointType.OUTPUT,
-											otherEnd.getIndex());
+									CablePoint externalOutput = groupModule
+											.getCablePoint(
+													CablePointType.OUTPUT,
+													otherEnd.getIndex());
 									if (externalOutput.isConnected()) {
 										// p must be connected to
 										// externalOutputs other End
-										InteractiveCable externalCable = externalOutput.getCable();
+										InteractiveCable externalCable = externalOutput
+												.getCable();
 										newPane.remove(externalCable);
-										CablePoint externalEndpoint = externalCable.getSource() == externalOutput
-												? externalCable.getDestination() : externalCable.getSource();
+										CablePoint externalEndpoint = externalCable
+												.getSource() == externalOutput ? externalCable
+												.getDestination()
+												: externalCable.getSource();
 										cable.setSource(p);
 										cable.setDestination(externalEndpoint);
 										p.setCable(cable);
@@ -307,7 +347,8 @@ public class Grouping extends Plugin {
 									} else {
 										// remove unused connection
 
-										((GroupOutput) groupOutput.getModule().getPlugin()).pointlessConnections
+										((GroupOutput) groupOutput.getModule()
+												.getPlugin()).pointlessConnections
 												.add(cable);
 										p.disconnect();
 										otherEnd.disconnect();
@@ -315,15 +356,20 @@ public class Grouping extends Plugin {
 
 								} else if (otherEnd.getHost() == this.groupInput) {
 									// external input
-									CablePoint externalInput = groupModule.getCablePoint(CablePointType.INPUT,
-											otherEnd.getIndex());
+									CablePoint externalInput = groupModule
+											.getCablePoint(
+													CablePointType.INPUT,
+													otherEnd.getIndex());
 									if (externalInput.isConnected()) {
 										// p must be connected to
 										// externalOutputs other End
-										InteractiveCable externalCable = externalInput.getCable();
+										InteractiveCable externalCable = externalInput
+												.getCable();
 										newPane.remove(externalCable);
-										CablePoint externalEndpoint = externalCable.getSource() == externalInput
-												? externalCable.getDestination() : externalCable.getSource();
+										CablePoint externalEndpoint = externalCable
+												.getSource() == externalInput ? externalCable
+												.getDestination()
+												: externalCable.getSource();
 										cable.setSource(p);
 										cable.setDestination(externalEndpoint);
 										p.setCable(cable);
@@ -333,7 +379,8 @@ public class Grouping extends Plugin {
 									} else {
 										// remove unused connection
 
-										((GroupInput) groupInput.getModule().getPlugin()).pointlessConnections
+										((GroupInput) groupInput.getModule()
+												.getPlugin()).pointlessConnections
 												.add(cable);
 										p.disconnect();
 										otherEnd.disconnect();
@@ -375,7 +422,8 @@ public class Grouping extends Plugin {
 	public LinkedList<InteractiveComponent> getContent() {
 		LinkedList<InteractiveComponent> content = new LinkedList<InteractiveComponent>();
 		for (Component c : this.controller.getPane().getComponents()) {
-			if (c instanceof InteractiveComponent && this.ungroupable((InteractiveComponent) c)) {
+			if (c instanceof InteractiveComponent
+					&& this.ungroupable((InteractiveComponent) c)) {
 				content.add((InteractiveComponent) c);
 			}
 		}
@@ -383,7 +431,8 @@ public class Grouping extends Plugin {
 	}
 
 	private boolean ungroupable(InteractiveComponent c) {
-		if (c instanceof InteractiveModule && ((InteractiveModule) c).getModule().getPlugin() == this) {
+		if (c instanceof InteractiveModule
+				&& ((InteractiveModule) c).getModule().getPlugin() == this) {
 			return false;
 		}
 		return (c != this.groupInput && c != this.groupOutput);
@@ -418,6 +467,10 @@ public class Grouping extends Plugin {
 	}
 
 	public static class GroupInput extends Plugin {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -5565743169993198964L;
 		private static final int MAXINPUTS = 0;
 		private static final int MAXOUTPUTS = -1;
 		private static final int MININPUTS = 0;
@@ -478,7 +531,8 @@ public class Grouping extends Plugin {
 			return true;
 		}
 
-		private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException {
+		private void readObject(ObjectInputStream in)
+				throws ClassNotFoundException, IOException {
 			in.defaultReadObject();
 			this.pointlessConnections = new LinkedList<InteractiveCable>();
 		}
@@ -496,6 +550,10 @@ public class Grouping extends Plugin {
 	}
 
 	public static class GroupOutput extends Plugin {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 8425678461423382476L;
 		private static final int MAXINPUTS = -1;
 		private static final int MAXOUTPUTS = 0;
 		private static final int MININPUTS = 0;
@@ -529,7 +587,8 @@ public class Grouping extends Plugin {
 				if (e instanceof NewInputEvent) {
 					grouping.block = true;
 					MidiIO internalInput = ((NewInputEvent) e).getNewInput();
-					MidiIO externalOutput = grouping.getPluginHost().newOutput();
+					MidiIO externalOutput = grouping.getPluginHost()
+							.newOutput();
 					internalInput.setOutput(externalOutput);
 					externalOutput.setInput(internalInput);
 					grouping.block = false;
@@ -558,7 +617,8 @@ public class Grouping extends Plugin {
 			return true;
 		}
 
-		private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException {
+		private void readObject(ObjectInputStream in)
+				throws ClassNotFoundException, IOException {
 			in.defaultReadObject();
 			this.pointlessConnections = new LinkedList<InteractiveCable>();
 		}
@@ -571,7 +631,8 @@ public class Grouping extends Plugin {
 		}
 	}
 
-	private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException {
+	private void readObject(ObjectInputStream in)
+			throws ClassNotFoundException, IOException {
 		in.defaultReadObject();
 		this.initPlugin();
 	}
@@ -589,16 +650,20 @@ public class Grouping extends Plugin {
 				this.groupInput = (InteractiveModule) c;
 				((GroupInput) this.groupInput.getModule().getPlugin()).grouping = this;
 				for (int i = 0; i < this.getPluginHost().getInputCount(); i++) {
-					this.getPluginHost().getInput(i).setOutput(groupInput.getModule().getOuput(i));
-					groupInput.getModule().getOuput(i).setInput(this.getPluginHost().getInput(i));
+					this.getPluginHost().getInput(i)
+							.setOutput(groupInput.getModule().getOuput(i));
+					groupInput.getModule().getOuput(i)
+							.setInput(this.getPluginHost().getInput(i));
 				}
 			}
 			if (((InteractiveModule) c).getModule().getPlugin() instanceof GroupOutput) {
 				this.groupOutput = (InteractiveModule) c;
 				((GroupOutput) this.groupOutput.getModule().getPlugin()).grouping = this;
 				for (int i = 0; i < this.getPluginHost().getOutputCount(); i++) {
-					this.getPluginHost().getOuput(i).setInput(groupOutput.getModule().getInput(i));
-					groupOutput.getModule().getInput(i).setOutput(this.getPluginHost().getOuput(i));
+					this.getPluginHost().getOuput(i)
+							.setInput(groupOutput.getModule().getInput(i));
+					groupOutput.getModule().getInput(i)
+							.setOutput(this.getPluginHost().getOuput(i));
 				}
 			}
 		}

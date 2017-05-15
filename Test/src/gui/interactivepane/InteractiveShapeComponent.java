@@ -15,7 +15,8 @@ import javax.swing.BorderFactory;
 
 import controller.interactivepane.InteractiveController;
 
-public class InteractiveShapeComponent extends InteractiveComponent implements CablePointHost {
+public class InteractiveShapeComponent extends InteractiveComponent implements
+		CablePointHost {
 	private Shape s;
 	private LinkedList<CablePointSimple> cablePoints;
 
@@ -41,12 +42,16 @@ public class InteractiveShapeComponent extends InteractiveComponent implements C
 		if (this.isShowing())
 			for (CablePointSimple c : this.cablePoints) {
 				if (c.getType() == CablePointType.INPUT) {
-					c.setXOnScreen((int) (this.getLocationOnScreen().getX() + this.getWidth() / 4));
-					c.setYOnScreen((int) (this.getLocationOnScreen().getY() + (this.getHeight() / 2)));
+					c.setXOnScreen((int) (this.getLocationOnScreen().getX() + this
+							.getWidth() / 4));
+					c.setYOnScreen((int) (this.getLocationOnScreen().getY() + (this
+							.getHeight() / 2)));
 
 				} else {
-					c.setXOnScreen((int) (this.getLocationOnScreen().getX() + 3 * this.getWidth() / 4));
-					c.setYOnScreen((int) (this.getLocationOnScreen().getY() + (this.getHeight() / 2)));
+					c.setXOnScreen((int) (this.getLocationOnScreen().getX() + 3 * this
+							.getWidth() / 4));
+					c.setYOnScreen((int) (this.getLocationOnScreen().getY() + (this
+							.getHeight() / 2)));
 
 				}
 				i++;
@@ -117,7 +122,8 @@ public class InteractiveShapeComponent extends InteractiveComponent implements C
 	}
 
 	@Override
-	public LinkedList<? extends CablePoint> getCablePoints(CablePointType type, int... indices) {
+	public LinkedList<? extends CablePoint> getCablePoints(CablePointType type,
+			int... indices) {
 		LinkedList<CablePointSimple> tmp = new LinkedList<CablePointSimple>();
 		for (int i : indices) {
 			if (i >= this.cablePoints.size()) {
@@ -133,7 +139,8 @@ public class InteractiveShapeComponent extends InteractiveComponent implements C
 
 	@Override
 	public CablePoint getCablePoint(CablePointType type, int index) {
-		if (index >= this.cablePoints.size() || this.cablePoints.get(index).getType() != type) {
+		if (index >= this.cablePoints.size()
+				|| this.cablePoints.get(index).getType() != type) {
 			return null;
 		} else {
 			return this.cablePoints.get(index);

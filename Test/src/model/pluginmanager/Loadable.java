@@ -3,7 +3,6 @@ package model.pluginmanager;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.jar.Attributes;
-import java.util.jar.Manifest;
 
 import plugin.Plugin;
 import pluginhost.PluginHost;
@@ -17,7 +16,8 @@ public class Loadable implements PluginHierarchyElement {
 		this.pClass = pClass;
 		Method getInstance = null;
 		try {
-			getInstance = pClass.getDeclaredMethod("getInstance", PluginHost.class);
+			getInstance = pClass.getDeclaredMethod("getInstance",
+					PluginHost.class);
 		} catch (NoSuchMethodException | SecurityException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -45,8 +45,8 @@ public class Loadable implements PluginHierarchyElement {
 		return this.attributes.getValue("Description");
 	}
 
-	public Plugin getInstance(PluginHost h)
-			throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+	public Plugin getInstance(PluginHost h) throws IllegalAccessException,
+			IllegalArgumentException, InvocationTargetException {
 		return (Plugin) this.getInstance.invoke(null, h);
 	}
 
@@ -54,7 +54,7 @@ public class Loadable implements PluginHierarchyElement {
 		return this.getInstance;
 	}
 
-	public Class getPluginClass() {
+	public Class<? extends Plugin> getPluginClass() {
 		return pClass;
 	}
 }
