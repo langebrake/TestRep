@@ -80,11 +80,10 @@ public class InteractivePane extends JLayeredPane {
 	public void translateViewport(Vector translationVectorGrid) {
 		this.viewportTranslation = this.viewportTranslation
 				.addVector(translationVectorGrid);
-
 		this.updateView();
 	}
 
-	public synchronized void zoomViewport(Vector zoomSourceScreenLocation,
+	public synchronized void scaleViewport(Vector zoomSourceScreenLocation,
 			double d) {
 
 		Vector gridLocation = this

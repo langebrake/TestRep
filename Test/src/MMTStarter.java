@@ -2,7 +2,7 @@ import java.io.FileInputStream;
 import model.pluginmanager.PluginManager;
 import controller.Controller;
 
-public class GuiTest {
+public class MMTStarter {
 	private static void createAndShowGui() throws Exception {
 
 		Controller c = new Controller();

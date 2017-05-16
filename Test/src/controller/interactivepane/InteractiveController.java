@@ -248,7 +248,7 @@ public class InteractiveController implements MouseInputListener,
 					.toGridCoordinate(this.lastMousePaneLocation);
 		}
 
-		this.pane.zoomViewport(this.lastMousePaneLocation,
+		this.pane.scaleViewport(this.lastMousePaneLocation,
 				arg0.getPreciseWheelRotation());
 	}
 
