@@ -1,7 +1,11 @@
 package controller.interactivepane;
 
+import defaults.MidiIOThrough;
 import engine.Stringer;
+import gui.interactivepane.CablePoint;
 import gui.interactivepane.CablePointHost;
+import gui.interactivepane.CablePointSimple;
+import gui.interactivepane.CablePointType;
 import gui.interactivepane.InteractiveComponent;
 import gui.interactivepane.InteractiveModule;
 import gui.interactivepane.InteractivePane;
@@ -12,7 +16,6 @@ import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
-
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowStateListener;
 import java.io.IOException;
@@ -21,14 +24,20 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 
+
+
+import java.util.concurrent.ConcurrentSkipListMap;
+
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
 import javax.swing.InputMap;
 import javax.swing.JComponent;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
-
 import javax.swing.tree.DefaultMutableTreeNode;
+
+
+
 
 
 import stdlib.grouping.Grouping;
@@ -485,6 +494,31 @@ public class InteractiveController implements MouseInputListener,
 
 		this.title = title;
 		this.project.changeTabTitle(this);
+	}
+
+	public void connectionModification(CablePoint point, ConcurrentSkipListMap<CablePointSimple, MidiIOThrough> inputMap, ConcurrentSkipListMap<CablePointSimple, MidiIOThrough> outputMap) {
+		if (!point.getTmpDisconnect() && point.isConnected()) {
+			CablePoint tmp = point.getCable().getSource();
+			if (tmp == point) {
+				tmp = point.getCable().getDestination();
+			}
+			CablePointHost p = tmp.getHost();
+			if (p instanceof InteractiveModule) {
+				MidiIOThrough mit = ((InteractiveModule) p).getMidiIO(tmp);
+				if (point.getType() == CablePointType.INPUT) {
+					inputMap.get(point).setInput(mit);
+				} else {
+					outputMap.get(point).setOutput(mit);
+				}
+			}
+		} else {
+			if (point.getType() == CablePointType.INPUT) {
+				inputMap.get(point).disconnectInput();
+			} else {
+				outputMap.get(point).disconnectOutput();
+			}
+		}
+		
 	}
 
 }

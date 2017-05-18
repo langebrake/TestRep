@@ -27,7 +27,8 @@ public class PluginAddAction extends AbstractAction {
 
 	public void actionPerformed(ActionEvent arg0) {
 
-		// TODO: Think about Threading!
+		// TODO: Threading is not necessary, will prevent Loaduptimes to interrupt interface.
+		// Implement more threadingoptions on other plugininteractions
 		Thread t = new Thread() {
 			public void run() {
 				UserAddModuleAction a = new UserAddModuleAction(controller,

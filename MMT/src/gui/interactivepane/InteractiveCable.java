@@ -165,7 +165,7 @@ public class InteractiveCable implements InteractiveShape {
 		return points;
 	}
 
-	public void updateView(Graphics2D g2d) {
+	public void paint(Graphics2D g2d) {
 		int paneX = (int) this.controller.getPane().getLocationOnScreen()
 				.getX();
 		int paneY = (int) this.controller.getPane().getLocationOnScreen()
@@ -179,7 +179,8 @@ public class InteractiveCable implements InteractiveShape {
 		float lasty = y1pos;
 		this.cable = new GeneralPath();
 		this.cable.moveTo(x1pos, y1pos);
-
+		
+		//TODO: for later implementation of structurizing alternative cablepoints
 		for (CablePoint c : this.cablePoints) {
 			this.cable.lineTo(c.getXOnScreen() - paneX, c.getYOnScreen()
 					- paneY);

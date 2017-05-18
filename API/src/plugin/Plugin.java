@@ -37,7 +37,7 @@ public abstract class Plugin implements Serializable, Cloneable {
 
 	public static PluginHost waiter = null;
 
-	public static PluginHost waitForHost() {
+	public final static PluginHost waitForHost() {
 		PluginHost tmp = waiter;
 		waiter = null;
 		return tmp;

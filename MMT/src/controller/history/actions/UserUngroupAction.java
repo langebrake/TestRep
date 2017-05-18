@@ -9,6 +9,10 @@ import controller.history.UserAction;
 import controller.interactivepane.InteractiveController;
 
 public class UserUngroupAction extends UserAction {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1376288847591842426L;
 	private Grouping grouping;
 	private InteractiveModule groupModule;
 	LinkedList<InteractiveComponent> groupThis;

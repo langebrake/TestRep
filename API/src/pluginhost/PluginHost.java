@@ -34,7 +34,7 @@ import plugin.events.PluginSavingError;
 import pluginhost.exceptions.*;
 import pluginhost.events.*;
 
-public abstract class PluginHost implements Serializable, Cloneable {
+public abstract class PluginHost implements Serializable, Cloneable, PluginHostCommunicator {
 
 	/**
 	 * 

@@ -2,11 +2,9 @@ package controller.history.actions;
 
 import gui.interactivepane.CablePoint;
 import gui.interactivepane.CablePointHost;
-import gui.interactivepane.CablePointPanel;
 import gui.interactivepane.InteractiveCable;
 import gui.interactivepane.InteractiveComponent;
 import gui.interactivepane.InteractiveModule;
-import gui.interactivepane.InteractivePane;
 import gui.interactivepane.InteractiveShape;
 
 import java.awt.Component;
@@ -20,6 +18,10 @@ import controller.history.UserActionManager;
 import controller.interactivepane.InteractiveController;
 
 public class UserDeleteAction extends UserAction {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2531599436850930440L;
 	final LinkedList<InteractiveComponent> components;
 	final LinkedList<InteractiveShape> shapes;
 
@@ -62,7 +64,7 @@ public class UserDeleteAction extends UserAction {
 					}
 				}
 
-				// TODO: handlin error classcastexception
+				// TODO: handling error classcastexception
 				if (!c.getController().getPane().isAncestorOf(c))
 					c.getController().add((InteractiveModule) c);
 
@@ -113,7 +115,7 @@ public class UserDeleteAction extends UserAction {
 					}
 				}
 
-				// TODO: handle Class Cast Exception
+				// TODO: handle Class Cast Exception if new components implemented
 				c.getController().remove((InteractiveModule) c);
 
 			}
@@ -132,9 +134,9 @@ public class UserDeleteAction extends UserAction {
 	}
 
 	private <T> LinkedList<T> getRecursive(JComponent c, Class<?> contained) {
-		LinkedList<T> tmp = new LinkedList();
+		LinkedList<T> tmp = new LinkedList<T>();
 		if (contained.isInstance(c)) {
-			tmp.add((T) c);
+			tmp.add(((T) c));
 		}
 		for (Component component : c.getComponents()) {
 			if (component instanceof JComponent) {

@@ -1,4 +1,3 @@
-import java.io.FileInputStream;
 import model.pluginmanager.PluginManager;
 import controller.Controller;
 

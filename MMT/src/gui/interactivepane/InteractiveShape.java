@@ -15,7 +15,7 @@ public interface InteractiveShape extends Shape, Serializable {
 
 	public boolean isHovered();
 
-	public void updateView(Graphics2D g2d);
+	public void paint(Graphics2D g2d);
 
 	public void translateOriginLocation(Vector translationVectorGrid);
 

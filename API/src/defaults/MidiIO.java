@@ -4,7 +4,7 @@ import javax.sound.midi.MidiMessage;
 
 import pluginhost.PluginHost;
 
-public interface MidiIO {
+public interface MidiIO extends MidiIOCommunicator{
 
 	public void send(MidiMessage message, long timeStamp);
 

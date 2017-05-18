@@ -1,25 +1,23 @@
 package controller.history.actions;
 
 import gui.interactivepane.CablePoint;
-import gui.interactivepane.CablePointType;
 import gui.interactivepane.InteractiveCable;
 import gui.interactivepane.InteractiveComponent;
 import gui.interactivepane.InteractiveModule;
-import gui.interactivepane.InteractivePane;
 import gui.interactivepane.Vector;
 
 import java.util.HashMap;
 import java.util.LinkedList;
 
-import model.MidiGraph;
-import model.graph.Module;
 import controller.history.UserAction;
 import controller.interactivepane.InteractiveController;
-import controller.interactivepane.Populator;
-import defaults.MidiIO;
 
 public class UserPasteAction extends UserAction {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4138976856613389145L;
 	private LinkedList<InteractiveComponent> components;
 	private LinkedList<InteractiveCable> cables;
 	private Vector offset;

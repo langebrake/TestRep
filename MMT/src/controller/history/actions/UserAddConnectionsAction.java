@@ -6,7 +6,6 @@ import java.util.LinkedList;
 import gui.interactivepane.CablePoint;
 import gui.interactivepane.InteractiveCable;
 import controller.history.UserAction;
-import controller.history.UserActionManager;
 import controller.interactivepane.InteractiveController;
 
 public class UserAddConnectionsAction extends UserAction {
@@ -28,6 +27,7 @@ public class UserAddConnectionsAction extends UserAction {
 	 */
 	public UserAddConnectionsAction(InteractiveController sourceController,
 			HashMap<InteractiveCable, InteractiveCable[]> cables) {
+		//TODO: for now just 1:1 cable replacements possible. Functionality for multi-automated cable additions can be implemented with this hashmap.
 		super(sourceController);
 		this.cables = cables;
 	}
@@ -77,6 +77,8 @@ public class UserAddConnectionsAction extends UserAction {
 			}
 			controller.getPane().add(c);
 		}
+		
+		//TODO: not necessarily necessary. Move to view 
 		controller.getPane().repaint();
 
 	}

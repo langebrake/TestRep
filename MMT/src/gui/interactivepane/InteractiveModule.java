@@ -23,7 +23,6 @@ import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
-import javax.swing.JTree;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -49,6 +48,10 @@ import model.graph.Module;
 public class InteractiveModule extends InteractiveComponent implements
 		CablePointHost, PluginStateChangedListener, Groupable, Cloneable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6925557408863491387L;
 	private Module module;
 	private transient JFrame fullView;
 	private boolean fullViewShowing;
@@ -610,16 +613,22 @@ public class InteractiveModule extends InteractiveComponent implements
 	public boolean reopen() {
 		this.inputPopout(inputPopoutPermanent, inputPopoutPermanent);
 		this.outputPopout(outputPopoutPermanent, outputPopoutPermanent);
+		//TODO: not MVC here, but more lokal behaviour.
 		this.getModule().reOpen();
 		this.closed = false;
 		if (this.fullViewShowing) {
 			this.openFullView();
 		}
+		//TODO: when implementing Error-Management, allow false openings
 		return true;
 
 	}
 
 	private class Popout extends InteractiveComponent implements CablePoint {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 2829655320069136959L;
 		public CablePointSimple connector;
 		private CablePointType type;
 
@@ -802,28 +811,7 @@ public class InteractiveModule extends InteractiveComponent implements
 
 	@Override
 	public void changedState(CablePoint point) {
-		// TODO: this is controller Functionality! not view!
-		if (!point.getTmpDisconnect() && point.isConnected()) {
-			CablePoint tmp = point.getCable().getSource();
-			if (tmp == point) {
-				tmp = point.getCable().getDestination();
-			}
-			CablePointHost p = tmp.getHost();
-			if (p instanceof InteractiveModule) {
-				MidiIOThrough mit = ((InteractiveModule) p).getMidiIO(tmp);
-				if (point.getType() == CablePointType.INPUT) {
-					this.inputMap.get(point).setInput(mit);
-				} else {
-					this.outputMap.get(point).setOutput(mit);
-				}
-			}
-		} else {
-			if (point.getType() == CablePointType.INPUT) {
-				this.inputMap.get(point).disconnectInput();
-			} else {
-				this.outputMap.get(point).disconnectOutput();
-			}
-		}
+		controller.connectionModification(point,this.inputMap, this.outputMap);
 
 	}
 

@@ -164,10 +164,10 @@ public class Grouping extends Plugin {
 								CablePoint otherEnd = (cable.getSource() == p) ? cable
 										.getDestination() : cable.getSource();
 								if (!groupThis.contains(otherEnd.getHost())) {
-									// TODO: manage external Inputs
+								
 									if (otherEnd.getType() == CablePointType.INPUT) {
 										// external output
-										// TODO: Error Management, if null
+										
 										CablePoint newExternalEndpoint = groupModule
 												.getCablePoint(
 														CablePointType.OUTPUT,
@@ -205,7 +205,7 @@ public class Grouping extends Plugin {
 
 									} else if (otherEnd.getType() == CablePointType.OUTPUT) {
 										// external input
-										// TODO: Error Management, if null
+							
 
 										CablePoint newExternalEndpoint = groupModule
 												.getCablePoint(
@@ -255,7 +255,7 @@ public class Grouping extends Plugin {
 
 				}
 
-				// TODO: ClassCastExceptions!!
+				
 				oldController.remove((InteractiveModule) c);
 				if (!newPane.isAncestorOf(c)) {
 					newController.add((InteractiveModule) c);

@@ -16,6 +16,8 @@ public class Clipboard {
 	private LinkedList<InteractiveComponent> clipboard;
 	private LinkedList<InteractiveCable> cableClipboard;
 	private Vector copyGridLocation;
+	@SuppressWarnings("unused")
+	//may get used in later versions
 	private Project project;
 
 	public Clipboard() {

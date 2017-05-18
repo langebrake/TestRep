@@ -3,21 +3,21 @@ package controller.history.actions;
 import gui.interactivepane.InteractiveComponent;
 import gui.interactivepane.InteractiveModule;
 import gui.interactivepane.Vector;
-
-import java.lang.reflect.Method;
 import java.util.LinkedList;
 
 import javax.sound.midi.MidiUnavailableException;
 
-import pluginhost.PluginHost;
 import pluginhost.exceptions.PluginMaxOutputsExceededException;
 import stdlib.grouping.Grouping;
 import model.graph.Module;
 import controller.history.UserAction;
-import controller.history.UserActionManager;
 import controller.interactivepane.InteractiveController;
 
 public class UserAddGroupAction extends UserAction {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	LinkedList<InteractiveComponent> groupThis;
 	InteractiveModule groupModule;
 	Grouping grouping;
