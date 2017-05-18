@@ -21,9 +21,9 @@ import plugin.Plugin;
 import plugin.events.NewInputRequestEvent;
 import plugin.events.NewOutputRequestEvent;
 import pluginhost.events.*;
-import pluginhost.PluginHost;
+import pluginhost.PluginHostCommunicator;
 import defaults.DefaultView;
-import defaults.MidiIO;
+import defaults.MidiIOCommunicator;
 import defaults.MidiIOThrough;
 import defaults.MidiListener;
 
@@ -35,15 +35,15 @@ public class DefaultPlugin extends Plugin implements MidiListener {
 	private static final String NAME = "DummyPlugin";
 	private String msg = "DummyPlugin";
 	private DefaultView view;
-	private transient HashMap<MidiIO, MidiIO> ioMap;
+	private transient HashMap<MidiIOCommunicator, MidiIOCommunicator> ioMap;
 
-	public static Plugin getInstance(PluginHost host) {
+	public static Plugin getInstance(PluginHostCommunicator host) {
 		return new DefaultPlugin(host);
 	}
 
-	public DefaultPlugin(PluginHost host) {
+	public DefaultPlugin(PluginHostCommunicator host) {
 		super(host, NAME, MININPUTS, MAXINPUTS, MINOUTPUTS, MAXOUTPUTS);
-		this.ioMap = new HashMap<MidiIO, MidiIO>();
+		this.ioMap = new HashMap<MidiIOCommunicator, MidiIOCommunicator>();
 
 	}
 
@@ -93,17 +93,16 @@ public class DefaultPlugin extends Plugin implements MidiListener {
 
 	@Override
 	public boolean close() {
-		PluginHost host = this.getPluginHost();
-		MidiIOThrough input = host.getInput(0);
-		MidiIOThrough output = host.getOuput(0);
-		input.disconnectOutput();
-		output.disconnectInput();
+		PluginHostCommunicator host = this.getPluginHost();
+		MidiIOCommunicator input = host.getInput(0);
+		MidiIOCommunicator output = host.getOutput(0);
+
 		return true;
 
 	}
 
 	@Override
-	public void listen(MidiIO source, MidiMessage msg, long timestamp) {
+	public void listen(MidiIOCommunicator source, MidiMessage msg, long timestamp) {
 
 		ioMap.get(source).send(msg, timestamp);
 
@@ -122,16 +121,16 @@ public class DefaultPlugin extends Plugin implements MidiListener {
 
 	private void initPluging() {
 		this.view = new DefaultView(msg);
-		this.ioMap = new HashMap<MidiIO, MidiIO>();
+		this.ioMap = new HashMap<MidiIOCommunicator, MidiIOCommunicator>();
 		int i = 0;
-		for (MidiIO m : this.getPluginHost().getInputs()) {
+		for (MidiIOCommunicator m : this.getPluginHost().getInputs()) {
 			m.addMidiListener(this);
-			ioMap.put(m, this.getPluginHost().getOuput(i++));
+			ioMap.put(m, this.getPluginHost().getOutput(i++));
 		}
 	}
 
 	@Override
-	public Plugin clone(PluginHost host) {
+	public Plugin clone(PluginHostCommunicator host) {
 		DefaultPlugin dfp = new DefaultPlugin(host);
 		dfp.initPluging();
 

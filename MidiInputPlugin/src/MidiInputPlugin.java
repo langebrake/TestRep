@@ -20,10 +20,10 @@ import javax.swing.JFrame;
 
 import midiengine.MidiEngine;
 import defaults.DefaultView;
-import defaults.MidiIO;
+import defaults.MidiIOCommunicator;
 import defaults.MidiIOThrough;
 import plugin.Plugin;
-import pluginhost.PluginHost;
+import pluginhost.PluginHostCommunicator;
 import pluginhost.events.HostEvent;
 
 public class MidiInputPlugin extends Plugin implements Serializable, ActionListener {
@@ -35,18 +35,18 @@ public class MidiInputPlugin extends Plugin implements Serializable, ActionListe
 	private static final String NAME = "MidiInputPlugin";
 	private String midiDeviceName;
 	private transient LinkedList<MidiDevice> devices;
-	private transient MidiIO output;
+	private transient MidiIOCommunicator output;
 	private transient static ConcurrentHashMap<String, InputReceiver> inputMap;
 
 	static {
 		inputMap = new ConcurrentHashMap<String, InputReceiver>();
 	}
 
-	public static MidiInputPlugin getInstance(PluginHost host) {
+	public static MidiInputPlugin getInstance(PluginHostCommunicator host) {
 		return new MidiInputPlugin(host);
 	}
 
-	public MidiInputPlugin(PluginHost host) {
+	public MidiInputPlugin(PluginHostCommunicator host) {
 		super(host, NAME, MININPUTS, MAXINPUTS, MINOUTPUTS, MAXOUTPUTS);
 	}
 
@@ -67,7 +67,7 @@ public class MidiInputPlugin extends Plugin implements Serializable, ActionListe
 
 	@Override
 	public void load() {
-		this.output = this.getPluginHost().getOuput(0);
+		this.output = this.getPluginHost().getOutput(0);
 		this.devices = this.getPluginHost().getEngine().getInputDevices();
 
 	}
@@ -105,7 +105,7 @@ public class MidiInputPlugin extends Plugin implements Serializable, ActionListe
 
 	private void initPlugin() {
 		this.devices = this.getPluginHost().getEngine().getInputDevices();
-		this.output = this.getPluginHost().getOuput(0);
+		this.output = this.getPluginHost().getOutput(0);
 		if (this.midiDeviceName != null && inputMap.containsKey(this.midiDeviceName)) {
 			try {
 				inputMap.get(midiDeviceName).register(output);
@@ -132,12 +132,12 @@ public class MidiInputPlugin extends Plugin implements Serializable, ActionListe
 	}
 
 	private static class InputReceiver implements Receiver, Serializable {
-		private LinkedList<MidiIO> outputs;
+		private LinkedList<MidiIOCommunicator> outputs;
 		private MidiDevice inputDevice;
 		private Transmitter inputTransmitter;
 
 		public InputReceiver(MidiDevice m) throws MidiUnavailableException {
-			this.outputs = new LinkedList<MidiIO>();
+			this.outputs = new LinkedList<MidiIOCommunicator>();
 			this.inputDevice = m;
 		}
 
@@ -157,12 +157,12 @@ public class MidiInputPlugin extends Plugin implements Serializable, ActionListe
 
 		@Override
 		public void send(MidiMessage arg0, long arg1) {
-			for (MidiIO m : outputs) {
+			for (MidiIOCommunicator m : outputs) {
 				m.send(arg0, arg1);
 			}
 		}
 
-		public void register(MidiIO m) throws MidiUnavailableException {
+		public void register(MidiIOCommunicator m) throws MidiUnavailableException {
 			if (this.outputCount() == 0) {
 				this.open();
 			}
@@ -171,7 +171,7 @@ public class MidiInputPlugin extends Plugin implements Serializable, ActionListe
 			}
 		}
 
-		public void unregister(MidiIO m) {
+		public void unregister(MidiIOCommunicator m) {
 			this.outputs.remove(m);
 			if (this.outputCount() <= 0) {
 				this.close();
@@ -199,7 +199,7 @@ public class MidiInputPlugin extends Plugin implements Serializable, ActionListe
 	}
 
 	@Override
-	public Plugin clone(PluginHost host) {
+	public Plugin clone(PluginHostCommunicator host) {
 		MidiInputPlugin mip = new MidiInputPlugin(host);
 		mip.midiDeviceName = this.midiDeviceName;
 		mip.initPlugin();

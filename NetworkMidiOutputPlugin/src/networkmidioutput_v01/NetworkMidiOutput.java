@@ -11,10 +11,12 @@ import java.net.Socket;
 import javax.sound.midi.MidiMessage;
 import javax.swing.JComponent;
 
-import defaults.MidiIO;
+import defaults.MidiIOCommunicator;
+import defaults.MidiIOCommunicator;
 import defaults.MidiListener;
 import plugin.Plugin;
-import pluginhost.PluginHost;
+import pluginhost.PluginHostCommunicator;
+import pluginhost.PluginHostCommunicator;
 import pluginhost.events.HostEvent;
 
 public class NetworkMidiOutput extends Plugin implements MidiListener, ActionListener {
@@ -31,11 +33,11 @@ public class NetworkMidiOutput extends Plugin implements MidiListener, ActionLis
 	private transient Socket client;
 	private transient DataOutputStream dout;
 
-	public NetworkMidiOutput(PluginHost host) {
+	public NetworkMidiOutput(PluginHostCommunicator host) {
 		super(host, NAME, MININPUTS, MAXINPUTS, MINOUTPUTS, MAXOUTPUTS);
 	}
 
-	public static NetworkMidiOutput getInstance(PluginHost host) {
+	public static NetworkMidiOutput getInstance(PluginHostCommunicator host) {
 		return new NetworkMidiOutput(host);
 	}
 
@@ -72,7 +74,7 @@ public class NetworkMidiOutput extends Plugin implements MidiListener, ActionLis
 	}
 
 	@Override
-	public Plugin clone(PluginHost host) {
+	public Plugin clone(PluginHostCommunicator host) {
 		return null;
 	}
 
@@ -102,7 +104,7 @@ public class NetworkMidiOutput extends Plugin implements MidiListener, ActionLis
 	}
 
 	@Override
-	public void listen(MidiIO source, MidiMessage msg, long timestamp) {
+	public void listen(MidiIOCommunicator source, MidiMessage msg, long timestamp) {
 		if (client != null && dout != null && !client.isClosed()) {
 			try {
 				dout.writeInt(msg.getLength());

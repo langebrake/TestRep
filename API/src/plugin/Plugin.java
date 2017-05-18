@@ -7,16 +7,17 @@ import java.io.Serializable;
 import javax.swing.JComponent;
 
 import pluginhost.events.*;
-import pluginhost.PluginHost;
+import pluginhost.PluginHostCommunicator;
+import pluginhost.PluginHostCommunicator;
 
 public abstract class Plugin implements Serializable, Cloneable {
 
-	private transient PluginHost host;
+	private transient PluginHostCommunicator host;
 	public static transient Object lock = new Object();
 	private final int minInputs, maxInputs, minOutputs, maxOutputs;
 	private final String name;
 
-	public Plugin(PluginHost host, String name, int minInputs, int maxInputs, int minOutputs, int maxOutputs) {
+	public Plugin(PluginHostCommunicator host, String name, int minInputs, int maxInputs, int minOutputs, int maxOutputs) {
 		this.minInputs = minInputs;
 		this.minOutputs = minOutputs;
 		this.maxInputs = maxInputs;
@@ -25,25 +26,25 @@ public abstract class Plugin implements Serializable, Cloneable {
 		this.host = host;
 	}
 
-	public static Plugin getInstance(PluginHost host) {
+	public static Plugin getInstance(PluginHostCommunicator host) {
 		return null;
 	}
 
-	public final void setPluginHost(PluginHost host) {
+	public final void setPluginHost(PluginHostCommunicator host) {
 		this.host = host;
 	}
 
 
 
-	public static PluginHost waiter = null;
+	public static PluginHostCommunicator waiter = null;
 
-	public final static PluginHost waitForHost() {
-		PluginHost tmp = waiter;
+	public final static PluginHostCommunicator waitForHost() {
+		PluginHostCommunicator tmp = waiter;
 		waiter = null;
 		return tmp;
 	}
 
-	public final PluginHost getPluginHost() {
+	public final PluginHostCommunicator getPluginHost() {
 		return this.host;
 	}
 
@@ -83,7 +84,7 @@ public abstract class Plugin implements Serializable, Cloneable {
 		return this.clone(Plugin.waitForHost());
 	}
 
-	public abstract Plugin clone(PluginHost newHost);
+	public abstract Plugin clone(PluginHostCommunicator newHost);
 
 	private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException {
 		this.host = Plugin.waitForHost();

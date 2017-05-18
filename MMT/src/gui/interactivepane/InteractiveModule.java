@@ -17,6 +17,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ConcurrentSkipListMap;
 
+import defaults.MidiIOCommunicator;
 import defaults.MidiIOThrough;
 
 import javax.swing.BorderFactory;
@@ -186,15 +187,15 @@ public class InteractiveModule extends InteractiveComponent implements
 	}
 
 	private void updateInputs() {
-		LinkedList<MidiIOThrough> inputs = module.getInputs();
+		LinkedList<MidiIOCommunicator> inputs = module.getInputs();
 		boolean newPoint = false;
-		for (MidiIOThrough m : inputs) {
+		for (MidiIOCommunicator m : inputs) {
 			if (!inputMap.containsValue(m)) {
 				CablePointSimple cps = new CablePointSimple(
 						CablePointType.INPUT);
 				cps.setHost(this);
 				cps.setIndex(inputs.indexOf(m));
-				inputMap.put(cps, m);
+				inputMap.put(cps, (MidiIOThrough) m);
 				newPoint = true;
 			}
 		}
@@ -204,15 +205,15 @@ public class InteractiveModule extends InteractiveComponent implements
 	}
 
 	private void updateOutputs() {
-		LinkedList<MidiIOThrough> outputs = module.getOutputs();
+		LinkedList<MidiIOCommunicator> outputs = module.getOutputs();
 		boolean newPoint = false;
-		for (MidiIOThrough m : outputs) {
+		for (MidiIOCommunicator m : outputs) {
 			if (!outputMap.containsValue(m)) {
 				CablePointSimple cps = new CablePointSimple(
 						CablePointType.OUTPUT);
 				cps.setHost(this);
 				cps.setIndex(outputs.indexOf(m));
-				outputMap.put(cps, m);
+				outputMap.put(cps, (MidiIOThrough) m);
 				newPoint = true;
 			}
 		}

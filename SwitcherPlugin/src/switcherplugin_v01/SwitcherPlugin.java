@@ -13,7 +13,7 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 
 import plugin.Plugin;
-import pluginhost.PluginHost;
+import pluginhost.PluginHostCommunicator;
 import pluginhost.events.HostEvent;
 
 public class SwitcherPlugin extends Plugin implements ActionListener {
@@ -25,11 +25,11 @@ public class SwitcherPlugin extends Plugin implements ActionListener {
 	LinkedList<Routing> routings;
 	transient SwitchView fullView;
 
-	public SwitcherPlugin(PluginHost host) {
+	public SwitcherPlugin(PluginHostCommunicator host) {
 		super(host, NAME, MININPUTS, MAXINPUTS, MINOUTPUTS, MAXOUTPUTS);
 	}
 
-	public static SwitcherPlugin getInstance(PluginHost host) {
+	public static SwitcherPlugin getInstance(PluginHostCommunicator host) {
 		return new SwitcherPlugin(host);
 	}
 
@@ -72,7 +72,7 @@ public class SwitcherPlugin extends Plugin implements ActionListener {
 	}
 
 	@Override
-	public Plugin clone(PluginHost host) {
+	public Plugin clone(PluginHostCommunicator host) {
 		SwitcherPlugin tmp = new SwitcherPlugin(host);
 		LinkedList<Routing> rClone = new LinkedList<Routing>();
 		for (Routing r : this.routings) {

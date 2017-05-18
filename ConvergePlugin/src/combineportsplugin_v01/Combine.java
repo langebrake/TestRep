@@ -6,25 +6,25 @@ import java.io.ObjectInputStream;
 import javax.sound.midi.MidiMessage;
 import javax.swing.JComponent;
 
-import defaults.MidiIO;
+import defaults.MidiIOCommunicator;
 import defaults.MidiListener;
 import plugin.Plugin;
-import pluginhost.PluginHost;
+import pluginhost.PluginHostCommunicator;
 import pluginhost.events.HostEvent;
 
 public class Combine extends Plugin implements MidiListener {
 
-	public Combine(PluginHost host) {
+	public Combine(PluginHostCommunicator host) {
 		super(host, "Converge Ports", 1, -1, 1, 1);
 	}
 
-	public static Plugin getInstance(PluginHost host) {
+	public static Plugin getInstance(PluginHostCommunicator host) {
 		return new Combine(host);
 	}
 
 	@Override
-	public void listen(MidiIO source, MidiMessage msg, long timestamp) {
-		this.getPluginHost().getOuput(0).send(msg, timestamp);
+	public void listen(MidiIOCommunicator source, MidiMessage msg, long timestamp) {
+		this.getPluginHost().getOutput(0).send(msg, timestamp);
 
 	}
 
@@ -61,7 +61,7 @@ public class Combine extends Plugin implements MidiListener {
 	}
 
 	@Override
-	public Plugin clone(PluginHost newHost) {
+	public Plugin clone(PluginHostCommunicator newHost) {
 		Combine tmp = new Combine(newHost);
 		tmp.reload();
 		return tmp;
@@ -73,7 +73,7 @@ public class Combine extends Plugin implements MidiListener {
 	}
 
 	private void reload() {
-		for (MidiIO m : this.getPluginHost().getInputs()) {
+		for (MidiIOCommunicator m : this.getPluginHost().getInputs()) {
 			m.removeMidiListener(this);
 			m.addMidiListener(this);
 		}

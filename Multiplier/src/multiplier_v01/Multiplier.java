@@ -7,24 +7,26 @@ import javax.sound.midi.MidiMessage;
 import javax.swing.JComponent;
 
 import defaults.MidiIO;
+import defaults.MidiIOCommunicator;
 import defaults.MidiListener;
 import plugin.Plugin;
 import pluginhost.PluginHost;
+import pluginhost.PluginHostCommunicator;
 import pluginhost.events.HostEvent;
 
 public class Multiplier extends Plugin implements MidiListener {
 
-	public static Plugin getInstance(PluginHost host) {
+	public static Plugin getInstance(PluginHostCommunicator host) {
 		return new Multiplier(host);
 	}
 
-	public Multiplier(PluginHost host) {
+	public Multiplier(PluginHostCommunicator host) {
 		super(host, "Multiplier", 1, 1, 1, -1);
 	}
 
 	@Override
-	public void listen(MidiIO source, MidiMessage msg, long timestamp) {
-		for (MidiIO m : this.getPluginHost().getOutputs()) {
+	public void listen(MidiIOCommunicator source, MidiMessage msg, long timestamp) {
+		for (MidiIOCommunicator m : this.getPluginHost().getOutputs()) {
 			m.send(msg, timestamp);
 		}
 	}
@@ -59,7 +61,7 @@ public class Multiplier extends Plugin implements MidiListener {
 	}
 
 	@Override
-	public Plugin clone(PluginHost newHost) {
+	public Plugin clone(PluginHostCommunicator newHost) {
 		Multiplier tmp = new Multiplier(newHost);
 		tmp.load();
 		return tmp;

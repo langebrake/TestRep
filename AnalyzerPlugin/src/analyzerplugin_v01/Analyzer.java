@@ -8,10 +8,10 @@ import java.io.ObjectOutputStream;
 import javax.sound.midi.MidiMessage;
 import javax.swing.JComponent;
 
-import defaults.MidiIO;
+import defaults.MidiIOCommunicator;
 import defaults.MidiListener;
 import plugin.Plugin;
-import pluginhost.PluginHost;
+import pluginhost.PluginHostCommunicator;
 import pluginhost.events.HostEvent;
 
 public class Analyzer extends Plugin implements MidiListener {
@@ -23,11 +23,11 @@ public class Analyzer extends Plugin implements MidiListener {
 	private transient MinView fullView;
 	private transient MinView minView;
 
-	public static Analyzer getInstance(PluginHost host) {
+	public static Analyzer getInstance(PluginHostCommunicator host) {
 		return new Analyzer(host);
 	}
 
-	public Analyzer(PluginHost host) {
+	public Analyzer(PluginHostCommunicator host) {
 		super(host, NAME, MININPUTS, MAXINPUTS, MINOUTPUTS, MAXOUTPUTS);
 	}
 
@@ -65,15 +65,15 @@ public class Analyzer extends Plugin implements MidiListener {
 	}
 
 	@Override
-	public Plugin clone(PluginHost newHost) {
+	public Plugin clone(PluginHostCommunicator newHost) {
 		Analyzer a = new Analyzer(newHost);
 		a.initPlugin();
 		return a;
 	}
 
 	@Override
-	public void listen(MidiIO source, MidiMessage msg, long timestamp) {
-		this.getPluginHost().getOuput(0).send(msg, timestamp);
+	public void listen(MidiIOCommunicator source, MidiMessage msg, long timestamp) {
+		this.getPluginHost().getOutput(0).send(msg, timestamp);
 		this.minView.updateView(msg);
 		this.fullView.updateView(msg);
 	}

@@ -12,7 +12,7 @@ import javax.sound.midi.ShortMessage;
 import javax.swing.JComponent;
 
 import plugin.Plugin;
-import pluginhost.PluginHost;
+import pluginhost.PluginHostCommunicator;
 import pluginhost.events.HostEvent;
 
 public class TestSenderPlugin extends Plugin implements ActionListener {
@@ -26,11 +26,11 @@ public class TestSenderPlugin extends Plugin implements ActionListener {
 	private transient MinView minView;
 	int status, channel, data1, data2;
 
-	public static TestSenderPlugin getInstance(PluginHost host) {
+	public static TestSenderPlugin getInstance(PluginHostCommunicator host) {
 		return new TestSenderPlugin(host);
 	}
 
-	public TestSenderPlugin(PluginHost host) {
+	public TestSenderPlugin(PluginHostCommunicator host) {
 		super(host, NAME, MININPUTS, MAXINPUTS, MINOUTPUTS, MAXOUTPUTS);
 	}
 
@@ -69,7 +69,7 @@ public class TestSenderPlugin extends Plugin implements ActionListener {
 	}
 
 	@Override
-	public Plugin clone(PluginHost host) {
+	public Plugin clone(PluginHostCommunicator host) {
 		TestSenderPlugin t = new TestSenderPlugin(host);
 		t.initPlugin();
 		return t;
@@ -97,7 +97,7 @@ public class TestSenderPlugin extends Plugin implements ActionListener {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		this.getPluginHost().getOuput(0).send(msg, -1);
+		this.getPluginHost().getOutput(0).send(msg, -1);
 
 	}
 
@@ -116,7 +116,7 @@ public class TestSenderPlugin extends Plugin implements ActionListener {
 			e.printStackTrace();
 		}
 
-		this.getPluginHost().getOuput(0).send(msg, -1);
+		this.getPluginHost().getOutput(0).send(msg, -1);
 
 	}
 }

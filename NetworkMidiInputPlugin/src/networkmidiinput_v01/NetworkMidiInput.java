@@ -17,6 +17,7 @@ import javax.swing.JComponent;
 
 import plugin.Plugin;
 import pluginhost.PluginHost;
+import pluginhost.PluginHostCommunicator;
 import pluginhost.events.HostEvent;
 
 public class NetworkMidiInput extends Plugin implements ActionListener {
@@ -31,11 +32,11 @@ public class NetworkMidiInput extends Plugin implements ActionListener {
 	private transient ServerSocket server;
 	private transient Socket client;
 
-	public NetworkMidiInput(PluginHost host) {
+	public NetworkMidiInput(PluginHostCommunicator host) {
 		super(host, NAME, MININPUTS, MAXINPUTS, MINOUTPUTS, MAXOUTPUTS);
 	}
 
-	public static NetworkMidiInput getInstance(PluginHost host) {
+	public static NetworkMidiInput getInstance(PluginHostCommunicator host) {
 		return new NetworkMidiInput(host);
 	}
 
@@ -80,7 +81,7 @@ public class NetworkMidiInput extends Plugin implements ActionListener {
 	}
 
 	@Override
-	public Plugin clone(PluginHost host) {
+	public Plugin clone(PluginHostCommunicator host) {
 		NetworkMidiInput tmp = new NetworkMidiInput(host);
 		tmp.load();
 		return tmp;
@@ -128,7 +129,7 @@ public class NetworkMidiInput extends Plugin implements ActionListener {
 						ShortMessage sendThis = new ShortMessage();
 						sendThis.setMessage(msg[0], msg[1], msg[2]);
 						long timestamp = din.readLong();
-						NetworkMidiInput.this.getPluginHost().getOuput(0).send(sendThis, timestamp);
+						NetworkMidiInput.this.getPluginHost().getOutput(0).send(sendThis, timestamp);
 					}
 				} catch (IOException e) {
 					// TODO Auto-generated catch block

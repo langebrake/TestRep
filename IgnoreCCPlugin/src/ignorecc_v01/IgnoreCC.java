@@ -8,31 +8,31 @@ import java.io.ObjectInputStream;
 import javax.sound.midi.MidiMessage;
 import javax.swing.JComponent;
 
-import defaults.MidiIO;
+import defaults.MidiIOCommunicator;
 import defaults.MidiListener;
 import engine.MidiUtilities;
 import plugin.Plugin;
-import pluginhost.PluginHost;
+import pluginhost.PluginHostCommunicator;
 import pluginhost.events.HostEvent;
 
 public class IgnoreCC extends Plugin implements MidiListener, ActionListener {
 	private transient MinView view;
 	byte ignore;
 
-	public IgnoreCC(PluginHost host) {
+	public IgnoreCC(PluginHostCommunicator host) {
 		super(host, "IgnoreCC", 1, 1, 1, 1);
 	}
 
-	public static Plugin getInstance(PluginHost host) {
+	public static Plugin getInstance(PluginHostCommunicator host) {
 		return new IgnoreCC(host);
 	}
 
 	@Override
-	public void listen(MidiIO source, MidiMessage msg, long timestamp) {
+	public void listen(MidiIOCommunicator source, MidiMessage msg, long timestamp) {
 		if (MidiUtilities.getStatus(msg) == MidiUtilities.CONTROL_CHANGE && MidiUtilities.getData1(msg) == ignore) {
 
 		} else {
-			getPluginHost().getOuput(0).send(msg, timestamp);
+			getPluginHost().getOutput(0).send(msg, timestamp);
 		}
 	}
 
@@ -68,7 +68,7 @@ public class IgnoreCC extends Plugin implements MidiListener, ActionListener {
 	}
 
 	@Override
-	public Plugin clone(PluginHost newHost) {
+	public Plugin clone(PluginHostCommunicator newHost) {
 		IgnoreCC c = new IgnoreCC(newHost);
 		c.ignore = ignore;
 		c.initPlugin();

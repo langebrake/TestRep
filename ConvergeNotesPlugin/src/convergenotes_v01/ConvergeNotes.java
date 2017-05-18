@@ -10,22 +10,22 @@ import javax.sound.midi.MidiMessage;
 import javax.sound.midi.ShortMessage;
 import javax.swing.JComponent;
 
-import defaults.MidiIO;
+import defaults.MidiIOCommunicator;
 import defaults.MidiListener;
 import engine.MidiUtilities;
 import plugin.Plugin;
-import pluginhost.PluginHost;
+import pluginhost.PluginHostCommunicator;
 import pluginhost.events.HostEvent;
 
 public class ConvergeNotes extends Plugin implements MidiListener, ActionListener {
 	private transient MinView view;
 	public byte note;
 
-	public ConvergeNotes(PluginHost host) {
+	public ConvergeNotes(PluginHostCommunicator host) {
 		super(host, "Converge Notes", 1, 1, 1, 1);
 	}
 
-	public static Plugin getInstance(PluginHost host) {
+	public static Plugin getInstance(PluginHostCommunicator host) {
 		return new ConvergeNotes(host);
 	}
 
@@ -62,7 +62,7 @@ public class ConvergeNotes extends Plugin implements MidiListener, ActionListene
 	}
 
 	@Override
-	public Plugin clone(PluginHost newHost) {
+	public Plugin clone(PluginHostCommunicator newHost) {
 		ConvergeNotes tmp = new ConvergeNotes(newHost);
 		tmp.initPlugin();
 		return tmp;
@@ -85,18 +85,18 @@ public class ConvergeNotes extends Plugin implements MidiListener, ActionListene
 	}
 
 	@Override
-	public void listen(MidiIO source, MidiMessage msg, long timestamp) {
+	public void listen(MidiIOCommunicator source, MidiMessage msg, long timestamp) {
 		if (MidiUtilities.getStatus(msg) == MidiUtilities.NOTE_OFF
 				|| MidiUtilities.getStatus(msg) == MidiUtilities.NOTE_ON) {
 			try {
-				getPluginHost().getOuput(0).send(new ShortMessage(msg.getMessage()[0], note, msg.getMessage()[2]),
+				getPluginHost().getOutput(0).send(new ShortMessage(msg.getMessage()[0], note, msg.getMessage()[2]),
 						timestamp);
 			} catch (InvalidMidiDataException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		} else {
-			getPluginHost().getOuput(0).send(msg, timestamp);
+			getPluginHost().getOutput(0).send(msg, timestamp);
 		}
 
 	}

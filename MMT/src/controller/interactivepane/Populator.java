@@ -43,7 +43,7 @@ public class Populator {
 			pane.add(iMod);
 			for (CablePoint p : iMod.getCablePoints(CablePointType.OUTPUT)) {
 				if (!p.isConnected()) {
-					MidiIO output = mod.getOuput(p.getIndex());
+					MidiIO output = mod.getOutput(p.getIndex());
 					if (output.hasOutput()) {
 						MidiIO otherEnd = output.getOutput();
 						// TODO: ClassCast Exception handling(should not happen

@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Name: Note Velocity Filter
+Description: Filter Velocity of Note
+Version: 1.0
+Vendor: Hendrik Langebrake
+Web: hl-soundtracks.de
+Type: MidiThruPlugin
+PluginInterfaceVersion: 0.1a

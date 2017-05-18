@@ -3,17 +3,20 @@ package notevelocityfilter_v01;
 import javax.swing.JComponent;
 
 import plugin.Plugin;
-import pluginhost.PluginHost;
+import pluginhost.PluginHostCommunicator;
+import pluginhost.PluginHostCommunicator;
 import pluginhost.events.HostEvent;
 
 public class NoteVelocityFilter extends Plugin {
 
-	public NoteVelocityFilter(PluginHost host, String name, int minInputs, int maxInputs, int minOutputs,
+	public NoteVelocityFilter(PluginHostCommunicator host, String name, int minInputs, int maxInputs, int minOutputs,
 			int maxOutputs) {
 		super(host, name, minInputs, maxInputs, minOutputs, maxOutputs);
 		// TODO Auto-generated constructor stub
 	}
-
+	public static Plugin getInstance(PluginHostCommunicator host){
+		return new NoteVelocityFilter(host, "NOT USABLE YET",0,0,0,0);
+	}
 	@Override
 	public JComponent getMinimizedView() {
 		// TODO Auto-generated method stub
@@ -51,7 +54,7 @@ public class NoteVelocityFilter extends Plugin {
 	}
 
 	@Override
-	public Plugin clone(PluginHost newHost) {
+	public Plugin clone(PluginHostCommunicator newHost) {
 		// TODO Auto-generated method stub
 		return null;
 	}

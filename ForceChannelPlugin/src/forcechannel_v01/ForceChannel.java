@@ -12,22 +12,22 @@ import javax.sound.midi.ShortMessage;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 
-import defaults.MidiIO;
+import defaults.MidiIOCommunicator;
 import defaults.MidiListener;
 import engine.MidiUtilities;
 import plugin.Plugin;
-import pluginhost.PluginHost;
+import pluginhost.PluginHostCommunicator;
 import pluginhost.events.HostEvent;
 
 public class ForceChannel extends Plugin implements ActionListener, MidiListener {
 	private transient MinView view;
 	int selectedChannel;
 
-	public ForceChannel(PluginHost host) {
+	public ForceChannel(PluginHostCommunicator host) {
 		super(host, "Force Channel", 1, 1, 1, 1);
 	}
 
-	public static Plugin getInstance(PluginHost host) {
+	public static Plugin getInstance(PluginHostCommunicator host) {
 		return new ForceChannel(host);
 	}
 
@@ -68,7 +68,7 @@ public class ForceChannel extends Plugin implements ActionListener, MidiListener
 	}
 
 	@Override
-	public Plugin clone(PluginHost newHost) {
+	public Plugin clone(PluginHostCommunicator newHost) {
 		ForceChannel f = new ForceChannel(newHost);
 		f.selectedChannel = selectedChannel;
 		f.initPlugin();
@@ -81,7 +81,7 @@ public class ForceChannel extends Plugin implements ActionListener, MidiListener
 	}
 
 	@Override
-	public void listen(MidiIO source, MidiMessage msg, long timestamp) {
+	public void listen(MidiIOCommunicator source, MidiMessage msg, long timestamp) {
 		if (MidiUtilities.getStatus(msg) != 0b1111 && selectedChannel != -1) {
 			int data1 = msg.getMessage()[1];
 			int status = msg.getMessage()[0] & 0xF0;
@@ -98,7 +98,7 @@ public class ForceChannel extends Plugin implements ActionListener, MidiListener
 				e.printStackTrace();
 			}
 		}
-		getPluginHost().getOuput(0).send(msg, timestamp);
+		getPluginHost().getOutput(0).send(msg, timestamp);
 
 	}
 

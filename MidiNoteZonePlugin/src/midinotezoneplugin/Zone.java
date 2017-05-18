@@ -6,7 +6,7 @@ import java.io.Serializable;
 
 import javax.sound.midi.MidiMessage;
 
-import defaults.MidiIO;
+import defaults.MidiIOCommunicator;
 import defaults.MidiListener;
 import engine.MidiUtilities;
 
@@ -28,11 +28,11 @@ public class Zone implements MidiListener, ActionListener, Cloneable, Serializab
 	}
 
 	@Override
-	public void listen(MidiIO source, MidiMessage msg, long timestamp) {
+	public void listen(MidiIOCommunicator source, MidiMessage msg, long timestamp) {
 		byte status = MidiUtilities.getStatus(msg);
 		if ((status == MidiUtilities.NOTE_ON || status == MidiUtilities.NOTE_OFF)) {
 			if (MidiUtilities.getData1(msg) >= low && MidiUtilities.getData1(msg) <= high) {
-				this.mnz.getPluginHost().getOuput(index).send(msg, timestamp);
+				this.mnz.getPluginHost().getOutput(index).send(msg, timestamp);
 			}
 		}
 

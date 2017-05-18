@@ -13,7 +13,7 @@ import javax.sound.midi.ShortMessage;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
 
-import defaults.MidiIO;
+import defaults.MidiIOCommunicator;
 import defaults.MidiListener;
 
 public class Routing implements Serializable, MidiListener, Cloneable, ActionListener, ItemListener {
@@ -55,11 +55,11 @@ public class Routing implements Serializable, MidiListener, Cloneable, ActionLis
 	}
 
 	@Override
-	public void listen(MidiIO source, MidiMessage msg, long timestamp) {
+	public void listen(MidiIOCommunicator source, MidiMessage msg, long timestamp) {
 
 		if (this.outputNr != 0 && active) {
 
-			this.switcher.getPluginHost().getOuput(outputNr - 1).send(msg, timestamp);
+			this.switcher.getPluginHost().getOutput(outputNr - 1).send(msg, timestamp);
 		}
 
 	}
@@ -123,7 +123,7 @@ public class Routing implements Serializable, MidiListener, Cloneable, ActionLis
 				this.setListen(activeListenNr - 1);
 		}
 
-		public void listen(MidiIO source, MidiMessage msg, long timestamp) {
+		public void listen(MidiIOCommunicator source, MidiMessage msg, long timestamp) {
 			int statusMSG = (msg.getMessage()[0] & 0xf0) >> 4;
 			if (statusMSG == statusFilter && msg.getMessage()[1] <= highValue && msg.getMessage()[1] >= lowValue) {
 				System.out.println("ACTIVATE");
@@ -135,8 +135,8 @@ public class Routing implements Serializable, MidiListener, Cloneable, ActionLis
 						try {
 							ShortMessage noteOff = new ShortMessage(0b10110000, i, 123, 0);
 							ShortMessage pedalOff = new ShortMessage(0b10110000, i, 64, 0);
-							switcher.getPluginHost().getOuput(outputNr - 1).send(noteOff, -1);
-							switcher.getPluginHost().getOuput(outputNr - 1).send(pedalOff, -1);
+							switcher.getPluginHost().getOutput(outputNr - 1).send(noteOff, -1);
+							switcher.getPluginHost().getOutput(outputNr - 1).send(pedalOff, -1);
 						} catch (InvalidMidiDataException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();

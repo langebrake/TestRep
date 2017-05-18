@@ -10,22 +10,22 @@ import javax.sound.midi.MidiMessage;
 import javax.sound.midi.ShortMessage;
 import javax.swing.JComponent;
 
-import defaults.MidiIO;
+import defaults.MidiIOCommunicator;
 import defaults.MidiListener;
 import engine.MidiUtilities;
 import plugin.Plugin;
-import pluginhost.PluginHost;
+import pluginhost.PluginHostCommunicator;
 import pluginhost.events.HostEvent;
 
 public class TransposeNote extends Plugin implements MidiListener, ActionListener {
 	private transient MinView minView;
 	byte transpose;
 
-	public TransposeNote(PluginHost host) {
+	public TransposeNote(PluginHostCommunicator host) {
 		super(host, "Transpose", 1, 1, 1, 1);
 	}
 
-	public static Plugin getInstance(PluginHost host) {
+	public static Plugin getInstance(PluginHostCommunicator host) {
 		return new TransposeNote(host);
 	}
 
@@ -67,7 +67,7 @@ public class TransposeNote extends Plugin implements MidiListener, ActionListene
 	}
 
 	@Override
-	public Plugin clone(PluginHost newHost) {
+	public Plugin clone(PluginHostCommunicator newHost) {
 		TransposeNote tmp = new TransposeNote(newHost);
 		tmp.transpose = transpose;
 		tmp.initPlugin();
@@ -86,13 +86,13 @@ public class TransposeNote extends Plugin implements MidiListener, ActionListene
 	}
 
 	@Override
-	public void listen(MidiIO source, MidiMessage msg, long timestamp) {
+	public void listen(MidiIOCommunicator source, MidiMessage msg, long timestamp) {
 		if (MidiUtilities.getStatus(msg) == MidiUtilities.NOTE_ON
 				|| MidiUtilities.getStatus(msg) == MidiUtilities.NOTE_OFF) {
 			if (MidiUtilities.getData1(msg) + transpose >= 0 && MidiUtilities.getData1(msg) + transpose <= 127) {
 				try {
 					getPluginHost()
-							.getOuput(0).send(
+							.getOutput(0).send(
 									new ShortMessage(MidiUtilities.getStatus(msg) << 4, MidiUtilities.getChannel(msg),
 											MidiUtilities.getData1(msg) + transpose, MidiUtilities.getData2(msg)),
 									timestamp);
@@ -100,10 +100,10 @@ public class TransposeNote extends Plugin implements MidiListener, ActionListene
 					e.printStackTrace();
 				}
 			} else {
-				getPluginHost().getOuput(0).send(msg, timestamp);
+				getPluginHost().getOutput(0).send(msg, timestamp);
 			}
 		} else {
-			getPluginHost().getOuput(0).send(msg, timestamp);
+			getPluginHost().getOutput(0).send(msg, timestamp);
 		}
 	}
 }

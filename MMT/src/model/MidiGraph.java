@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 
 import defaults.MidiIO;
+import defaults.MidiIOCommunicator;
 import engine.Stringer;
 import model.graph.Module;
 
@@ -85,9 +86,9 @@ public class MidiGraph implements Serializable, Iterable<Module>, Cloneable {
 			cMod = cloneThis.clone();
 			modMap.put(cloneThis, cMod);
 			cloneIntoThis.add(cMod);
-			for (MidiIO mIO : cMod.getOutputs()) {
+			for (MidiIOCommunicator mIO : cMod.getOutputs()) {
 				if (!mIO.hasOutput()) {
-					MidiIO output = cloneThis.getOuput(mIO.getId());
+					MidiIO output = cloneThis.getOutput(mIO.getId());
 					if (output.hasOutput()) {
 						MidiIO otherEnd = output.getOutput();
 						// TODO: ClassCast Exception handling(should not happen
@@ -101,8 +102,8 @@ public class MidiGraph implements Serializable, Iterable<Module>, Cloneable {
 						}
 
 						otherEnd = otherModule.getInput(otherEnd.getId());
-						mIO.setOutput(otherEnd);
-						otherEnd.setInput(mIO);
+						((MidiIO) mIO).setOutput(otherEnd);
+						otherEnd.setInput((MidiIO) mIO);
 					}
 				}
 			}

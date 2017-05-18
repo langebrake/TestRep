@@ -5,7 +5,8 @@ import java.lang.reflect.Method;
 import java.util.jar.Attributes;
 
 import plugin.Plugin;
-import pluginhost.PluginHost;
+import pluginhost.PluginHostCommunicator;
+import pluginhost.PluginHostCommunicator;
 
 public class Loadable implements PluginHierarchyElement {
 	private Method getInstance;
@@ -17,7 +18,7 @@ public class Loadable implements PluginHierarchyElement {
 		Method getInstance = null;
 		try {
 			getInstance = pClass.getDeclaredMethod("getInstance",
-					PluginHost.class);
+					PluginHostCommunicator.class);
 		} catch (NoSuchMethodException | SecurityException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -45,7 +46,7 @@ public class Loadable implements PluginHierarchyElement {
 		return this.attributes.getValue("Description");
 	}
 
-	public Plugin getInstance(PluginHost h) throws IllegalAccessException,
+	public Plugin getInstance(PluginHostCommunicator h) throws IllegalAccessException,
 			IllegalArgumentException, InvocationTargetException {
 		return (Plugin) this.getInstance.invoke(null, h);
 	}

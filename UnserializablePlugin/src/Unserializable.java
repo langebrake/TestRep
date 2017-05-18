@@ -24,9 +24,9 @@ import plugin.Plugin;
 import plugin.events.NewInputRequestEvent;
 import plugin.events.NewOutputRequestEvent;
 import pluginhost.events.*;
-import pluginhost.PluginHost;
+import pluginhost.PluginHostCommunicator;
 import defaults.DefaultView;
-import defaults.MidiIO;
+import defaults.MidiIOCommunicator;
 import defaults.MidiIOThrough;
 import defaults.MidiListener;
 
@@ -42,11 +42,11 @@ public class Unserializable extends Plugin implements MidiListener {
 	private int s = rn.nextInt(1000) + rn.nextInt(3545) + rn.nextInt(4546);
 	private Color c = new Color(rn.nextInt(255), rn.nextInt(255), rn.nextInt(255));
 
-	public static Plugin getInstance(PluginHost host) {
+	public static Plugin getInstance(PluginHostCommunicator host) {
 		return new Unserializable(host);
 	}
 
-	public Unserializable(PluginHost host) {
+	public Unserializable(PluginHostCommunicator host) {
 		super(host, NAME, MININPUTS, MAXINPUTS, MINOUTPUTS, MAXOUTPUTS);
 
 	}
@@ -72,10 +72,10 @@ public class Unserializable extends Plugin implements MidiListener {
 
 	@Override
 	public void load() {
-		PluginHost host = this.getPluginHost();
+		PluginHostCommunicator host = this.getPluginHost();
 		host.getInput(0).addMidiListener(this);
 		try {
-			this.m = Plugin.class.getMethod("getInstance", PluginHost.class);
+			this.m = Plugin.class.getMethod("getInstance", PluginHostCommunicator.class);
 		} catch (NoSuchMethodException | SecurityException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -90,7 +90,7 @@ public class Unserializable extends Plugin implements MidiListener {
 	}
 
 	@Override
-	public void listen(MidiIO source, MidiMessage msg, long timestamp) {
+	public void listen(MidiIOCommunicator source, MidiMessage msg, long timestamp) {
 
 	}
 
@@ -103,7 +103,7 @@ public class Unserializable extends Plugin implements MidiListener {
 	private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException {
 		in.defaultReadObject();
 		try {
-			this.m = Plugin.class.getMethod("getInstance", PluginHost.class);
+			this.m = Plugin.class.getMethod("getInstance", PluginHostCommunicator.class);
 		} catch (NoSuchMethodException | SecurityException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -111,7 +111,7 @@ public class Unserializable extends Plugin implements MidiListener {
 	}
 
 	@Override
-	public Plugin clone(PluginHost host) {
+	public Plugin clone(PluginHostCommunicator host) {
 		return new Unserializable(host);
 	}
 

@@ -9,12 +9,12 @@ import java.util.LinkedList;
 import javax.sound.midi.MidiMessage;
 import javax.swing.JComponent;
 
-import defaults.MidiIO;
+import defaults.MidiIOCommunicator;
 import defaults.MidiListener;
 import engine.MidiUtilities;
 import plugin.Plugin;
 import plugin.events.NewOutputRequestEvent;
-import pluginhost.PluginHost;
+import pluginhost.PluginHostCommunicator;
 import pluginhost.events.HostEvent;
 import pluginhost.events.NewOutputEvent;
 
@@ -22,7 +22,7 @@ public class MidiNoteZone extends Plugin implements MidiListener, ActionListener
 	protected LinkedList<Zone> zones;
 	private transient MidiNoteZoneView view;
 
-	public MidiNoteZone(PluginHost host) {
+	public MidiNoteZone(PluginHostCommunicator host) {
 		super(host, "MIDI Zone", 1, 1, 0, -1);
 	}
 
@@ -47,7 +47,7 @@ public class MidiNoteZone extends Plugin implements MidiListener, ActionListener
 		return zones.indexOf(zone);
 	}
 
-	public static Plugin getInstance(PluginHost host) {
+	public static Plugin getInstance(PluginHostCommunicator host) {
 		return new MidiNoteZone(host);
 	}
 
@@ -88,7 +88,7 @@ public class MidiNoteZone extends Plugin implements MidiListener, ActionListener
 	}
 
 	@Override
-	public Plugin clone(PluginHost newHost) {
+	public Plugin clone(PluginHostCommunicator newHost) {
 		MidiNoteZone tmp = new MidiNoteZone(newHost);
 		LinkedList<Zone> newList = new LinkedList<Zone>();
 		for (Zone z : zones) {
@@ -99,10 +99,10 @@ public class MidiNoteZone extends Plugin implements MidiListener, ActionListener
 	}
 
 	@Override
-	public void listen(MidiIO source, MidiMessage msg, long timestamp) {
+	public void listen(MidiIOCommunicator source, MidiMessage msg, long timestamp) {
 		if (MidiUtilities.getStatus(msg) != MidiUtilities.NOTE_ON
 				&& MidiUtilities.getStatus(msg) != MidiUtilities.NOTE_OFF) {
-			for (MidiIO m : getPluginHost().getOutputs()) {
+			for (MidiIOCommunicator m : getPluginHost().getOutputs()) {
 				m.send(msg, timestamp);
 			}
 		}

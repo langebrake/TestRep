@@ -25,6 +25,7 @@ import defaults.MidiIO;
 import model.graph.Module;
 import plugin.Plugin;
 import pluginhost.PluginHost;
+import pluginhost.PluginHostCommunicator;
 import pluginhost.events.HostEvent;
 import pluginhost.events.NewInputEvent;
 import pluginhost.events.NewOutputEvent;
@@ -52,7 +53,7 @@ public class Grouping extends Plugin {
 		return new Grouping(host);
 	}
 
-	public Grouping(PluginHost host) {
+	public Grouping(PluginHostCommunicator host) {
 		super(host, NAME, MININPUTS, MAXINPUTS, MINOUTPUTS, MAXOUTPUTS);
 	}
 
@@ -73,8 +74,8 @@ public class Grouping extends Plugin {
 			if (e instanceof NewInputEvent) {
 				((GroupInput) groupInput.getModule().getPlugin()).block = true;
 				MidiIO externalInput = ((NewInputEvent) e).getNewInput();
-				MidiIO internalOutput = this.groupInput.getModule().getPlugin()
-						.getPluginHost().newOutput();
+				MidiIO internalOutput = ((PluginHost)this.groupInput.getModule().getPlugin()
+						.getPluginHost()).newOutput();
 				// TODO: use listener to make persistence efficient and safe
 				externalInput.setOutput(internalOutput);
 				internalOutput.setInput(externalInput);
@@ -82,8 +83,8 @@ public class Grouping extends Plugin {
 			} else if (e instanceof NewOutputEvent) {
 				((GroupOutput) groupOutput.getModule().getPlugin()).block = true;
 				MidiIO externalOutput = ((NewOutputEvent) e).getNewOutput();
-				MidiIO internalInput = this.groupOutput.getModule().getPlugin()
-						.getPluginHost().newInput();
+				MidiIO internalInput = ((PluginHost)this.groupOutput.getModule().getPlugin()
+						.getPluginHost()).newInput();
 				internalInput.setOutput(externalOutput);
 				externalOutput.setInput(internalInput);
 				((GroupOutput) groupOutput.getModule().getPlugin()).block = false;
@@ -173,7 +174,7 @@ public class Grouping extends Plugin {
 														CablePointType.OUTPUT,
 														outputCounter++);
 										if (newExternalEndpoint == null) {
-											this.getPluginHost().newOutput();
+											((PluginHost)this.getPluginHost()).newOutput();
 											// generating new Cable on original
 											// Pane, connect with groupmodule
 											// output
@@ -212,7 +213,7 @@ public class Grouping extends Plugin {
 														CablePointType.INPUT,
 														inputCounter++);
 										if (newExternalEndpoint == null) {
-											this.getPluginHost().newInput();
+											((PluginHost)this.getPluginHost()).newInput();
 											// generating new Cable on original
 											// Pane, connect with groupmodule
 											// output
@@ -482,7 +483,7 @@ public class Grouping extends Plugin {
 		private transient Grouping grouping;
 		private transient LinkedList<InteractiveCable> pointlessConnections = new LinkedList<InteractiveCable>();
 
-		public GroupInput(PluginHost host, Grouping grouping) {
+		public GroupInput(PluginHostCommunicator host, Grouping grouping) {
 			super(host, NAME, MININPUTS, MAXINPUTS, MINOUTPUTS, MAXOUTPUTS);
 			this.grouping = grouping;
 		}
@@ -506,7 +507,7 @@ public class Grouping extends Plugin {
 				} else if (e instanceof NewOutputEvent) {
 					grouping.block = true;
 					MidiIO internalOutput = ((NewOutputEvent) e).getNewOutput();
-					MidiIO externalInput = grouping.getPluginHost().newInput();
+					MidiIO externalInput = ((PluginHost)grouping.getPluginHost()).newInput();
 					internalOutput.setInput(externalInput);
 					externalInput.setOutput(internalOutput);
 					grouping.block = false;
@@ -542,7 +543,7 @@ public class Grouping extends Plugin {
 		}
 
 		@Override
-		public Plugin clone(PluginHost host) {
+		public Plugin clone(PluginHostCommunicator host) {
 			GroupInput gip = new GroupInput(host, grouping);
 			this.pointlessConnections = new LinkedList<InteractiveCable>();
 			return gip;
@@ -565,7 +566,7 @@ public class Grouping extends Plugin {
 		private transient Grouping grouping;
 		private transient LinkedList<InteractiveCable> pointlessConnections = new LinkedList<InteractiveCable>();
 
-		public GroupOutput(PluginHost host, Grouping grouping) {
+		public GroupOutput(PluginHostCommunicator host, Grouping grouping) {
 			super(host, NAME, MININPUTS, MAXINPUTS, MINOUTPUTS, MAXOUTPUTS);
 			this.grouping = grouping;
 		}
@@ -587,8 +588,8 @@ public class Grouping extends Plugin {
 				if (e instanceof NewInputEvent) {
 					grouping.block = true;
 					MidiIO internalInput = ((NewInputEvent) e).getNewInput();
-					MidiIO externalOutput = grouping.getPluginHost()
-							.newOutput();
+					MidiIO externalOutput = ((PluginHost)grouping.getPluginHost()
+							).newOutput();
 					internalInput.setOutput(externalOutput);
 					externalOutput.setInput(internalInput);
 					grouping.block = false;
@@ -624,7 +625,7 @@ public class Grouping extends Plugin {
 		}
 
 		@Override
-		public Plugin clone(PluginHost host) {
+		public Plugin clone(PluginHostCommunicator host) {
 			GroupOutput gop = new GroupOutput(host, grouping);
 			this.pointlessConnections = new LinkedList<InteractiveCable>();
 			return gop;
@@ -650,20 +651,20 @@ public class Grouping extends Plugin {
 				this.groupInput = (InteractiveModule) c;
 				((GroupInput) this.groupInput.getModule().getPlugin()).grouping = this;
 				for (int i = 0; i < this.getPluginHost().getInputCount(); i++) {
-					this.getPluginHost().getInput(i)
-							.setOutput(groupInput.getModule().getOuput(i));
-					groupInput.getModule().getOuput(i)
-							.setInput(this.getPluginHost().getInput(i));
+					((MidiIO) this.getPluginHost().getInput(i))
+							.setOutput(groupInput.getModule().getOutput(i));
+					groupInput.getModule().getOutput(i)
+							.setInput((MidiIO) this.getPluginHost().getInput(i));
 				}
 			}
 			if (((InteractiveModule) c).getModule().getPlugin() instanceof GroupOutput) {
 				this.groupOutput = (InteractiveModule) c;
 				((GroupOutput) this.groupOutput.getModule().getPlugin()).grouping = this;
 				for (int i = 0; i < this.getPluginHost().getOutputCount(); i++) {
-					this.getPluginHost().getOuput(i)
+					((MidiIO) this.getPluginHost().getOutput(i))
 							.setInput(groupOutput.getModule().getInput(i));
 					groupOutput.getModule().getInput(i)
-							.setOutput(this.getPluginHost().getOuput(i));
+							.setOutput((MidiIO) this.getPluginHost().getOutput(i));
 				}
 			}
 		}
@@ -675,7 +676,7 @@ public class Grouping extends Plugin {
 	}
 
 	@Override
-	public Plugin clone(PluginHost host) {
+	public Plugin clone(PluginHostCommunicator host) {
 		Grouping g = new Grouping(host);
 		g.load();
 		g.controller = this.controller.clone();

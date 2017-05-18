@@ -21,6 +21,7 @@ import engine.Stringer;
 import midiengine.MidiEngine;
 import defaults.DefaultView;
 import defaults.MidiIO;
+import defaults.MidiIOCommunicator;
 import defaults.MidiIOThrough;
 import engine.Engine;
 import plugin.Plugin;
@@ -40,7 +41,7 @@ public abstract class PluginHost implements Serializable, Cloneable, PluginHostC
 	 * 
 	 */
 	private static final long serialVersionUID = -2021581852556325825L;
-	private LinkedList<MidiIOThrough> inputs, outputs;
+	private LinkedList<MidiIOCommunicator> inputs, outputs;
 	private transient Plugin plugin;
 	private transient MidiEngine engine;
 	private transient PluginStateChangedListener stateChangedListeners;
@@ -52,8 +53,8 @@ public abstract class PluginHost implements Serializable, Cloneable, PluginHostC
 
 	public PluginHost() throws MidiUnavailableException {
 		this.notifyPlugin = true;
-		this.inputs = new LinkedList<MidiIOThrough>();
-		this.outputs = new LinkedList<MidiIOThrough>();
+		this.inputs = new LinkedList<MidiIOCommunicator>();
+		this.outputs = new LinkedList<MidiIOCommunicator>();
 		this.engine = Engine.load();
 		this.stateChangedListeners = new DefaultStateChangedListener();
 	}
@@ -704,20 +705,20 @@ public abstract class PluginHost implements Serializable, Cloneable, PluginHostC
 		}
 	}
 
-	public LinkedList<MidiIOThrough> getOutputs() {
+	public LinkedList<MidiIOCommunicator> getOutputs() {
 		return this.outputs;
 	}
 
-	public LinkedList<MidiIOThrough> getInputs() {
+	public LinkedList<MidiIOCommunicator> getInputs() {
 		return this.inputs;
 	}
 
-	public MidiIOThrough getOuput(int indexID) {
-		return this.outputs.get(indexID);
+	public MidiIO getOutput(int indexID) {
+		return (MidiIO) this.outputs.get(indexID);
 	}
 
-	public MidiIOThrough getInput(int indexID) {
-		return this.inputs.get(indexID);
+	public MidiIO getInput(int indexID) {
+		return (MidiIO) this.inputs.get(indexID);
 	}
 
 	// /**
@@ -830,13 +831,13 @@ public abstract class PluginHost implements Serializable, Cloneable, PluginHostC
 		String stringer = Stringer.getString();
 		// Remove all References to inner Plugin on the MidiIO endpoints
 		LinkedList<MidiIO> oldInputForward = new LinkedList<MidiIO>(), oldOutputForward = new LinkedList<MidiIO>();
-		for (MidiIO m : this.inputs) {
-			oldInputForward.add(m.getOutput());
-			m.disconnectOutput();
+		for (MidiIOCommunicator m : this.inputs) {
+			oldInputForward.add(((MidiIO) m).getOutput());
+			((MidiIO) m).disconnectOutput();
 		}
-		for (MidiIO m : this.outputs) {
-			oldOutputForward.add(m.getInput());
-			m.disconnectInput();
+		for (MidiIOCommunicator m : this.outputs) {
+			oldOutputForward.add(((MidiIO) m).getInput());
+			((MidiIO) m).disconnectInput();
 		}
 
 		out.defaultWriteObject();
@@ -855,13 +856,13 @@ public abstract class PluginHost implements Serializable, Cloneable, PluginHostC
 		out.writeObject(plugin);
 
 		// restore inner References
-		Iterator<MidiIOThrough> inputIterator = this.inputs.iterator();
-		Iterator<MidiIOThrough> outputIterator = this.outputs.iterator();
+		Iterator<MidiIOCommunicator> inputIterator = this.inputs.iterator();
+		Iterator<MidiIOCommunicator> outputIterator = this.outputs.iterator();
 		for (MidiIO m : oldInputForward) {
-			inputIterator.next().setOutput(m);
+			((MidiIO) inputIterator.next()).setOutput(m);
 		}
 		for (MidiIO m : oldOutputForward) {
-			outputIterator.next().setInput(m);
+			((MidiIO) outputIterator.next()).setInput(m);
 		}
 		Stringer.minimize();
 
@@ -883,11 +884,11 @@ public abstract class PluginHost implements Serializable, Cloneable, PluginHostC
 		}
 		this.stateChangedListeners = getInitStateListener();
 		in.defaultReadObject();
-		for (MidiIO m : this.inputs) {
-			m.setPluginHost(this);
+		for (MidiIOCommunicator m : this.inputs) {
+			((MidiIO) m).setPluginHost(this);
 		}
-		for (MidiIO m : this.outputs) {
-			m.setPluginHost(this);
+		for (MidiIOCommunicator m : this.outputs) {
+			((MidiIO) m).setPluginHost(this);
 		}
 		Plugin.waiter = this;
 		try {
@@ -924,8 +925,8 @@ public abstract class PluginHost implements Serializable, Cloneable, PluginHostC
 		PluginHost newHost = null;
 		try {
 			newHost = (PluginHost) super.clone();
-			newHost.inputs = new LinkedList<MidiIOThrough>();
-			newHost.outputs = new LinkedList<MidiIOThrough>();
+			newHost.inputs = new LinkedList<MidiIOCommunicator>();
+			newHost.outputs = new LinkedList<MidiIOCommunicator>();
 		} catch (CloneNotSupportedException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();

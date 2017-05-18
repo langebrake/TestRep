@@ -6,22 +6,22 @@ import javax.sound.midi.MidiMessage;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
-import defaults.MidiIO;
+import defaults.MidiIOCommunicator;
 import defaults.MidiListener;
 import engine.MidiUtilities;
 import plugin.Plugin;
-import pluginhost.PluginHost;
+import pluginhost.PluginHostCommunicator;
 import pluginhost.events.HostEvent;
 
 public class SynthPlugin extends Plugin implements MidiListener {
 	transient JPanel contentPane;
 	transient SynthPanel synthPanel;
 
-	public static SynthPlugin getInstance(PluginHost host) {
+	public static SynthPlugin getInstance(PluginHostCommunicator host) {
 		return new SynthPlugin(host);
 	}
 
-	public SynthPlugin(PluginHost host) {
+	public SynthPlugin(PluginHostCommunicator host) {
 		super(host, "Additive Synthesizer", 1, 1, 0, 0);
 		// TODO Auto-generated constructor stub
 	}
@@ -63,7 +63,7 @@ public class SynthPlugin extends Plugin implements MidiListener {
 	}
 
 	@Override
-	public Plugin clone(PluginHost newHost) {
+	public Plugin clone(PluginHostCommunicator newHost) {
 		SynthPlugin p2 = new SynthPlugin(newHost);
 		p2.initPlugin();
 		return p2;
@@ -75,7 +75,7 @@ public class SynthPlugin extends Plugin implements MidiListener {
 	}
 
 	@Override
-	public void listen(MidiIO source, MidiMessage msg, long timestamp) {
+	public void listen(MidiIOCommunicator source, MidiMessage msg, long timestamp) {
 		if (MidiUtilities.getStatus(msg) == MidiUtilities.NOTE_ON) {
 			if (MidiUtilities.getData2(msg) == 0) {
 				synthPanel.synth.stopFrequency((float) ((float) ((MidiUtilities.getData1(msg) - 21) % 12 + 1) / 12
