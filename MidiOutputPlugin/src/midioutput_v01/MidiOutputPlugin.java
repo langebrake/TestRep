@@ -22,12 +22,12 @@ import javax.swing.JFrame;
 
 import midiengine.MidiEngine;
 import defaults.DefaultView;
-import defaults.MidiIO;
-import defaults.MidiIOThrough;
+import defaults.MidiIOCommunicator;
+import defaults.MidiIOCommunicator;
 import defaults.MidiListener;
 import engine.MidiUtilities;
 import plugin.Plugin;
-import pluginhost.PluginHost;
+import pluginhost.PluginHostCommunicator;
 import pluginhost.events.HostEvent;
 
 public class MidiOutputPlugin extends Plugin implements ActionListener, Serializable {
@@ -39,7 +39,7 @@ public class MidiOutputPlugin extends Plugin implements ActionListener, Serializ
 	private static final String NAME = "MidiOutputPlugin";
 	private transient static ConcurrentHashMap<String, OutputTransmitter> outputMap;
 	private String midiDeviceName;
-	private transient MidiIO input;
+	private transient MidiIOCommunicator input;
 	protected transient LinkedList<MidiDevice> devices;
 	private int selectedChannel;
 
@@ -47,11 +47,11 @@ public class MidiOutputPlugin extends Plugin implements ActionListener, Serializ
 		outputMap = new ConcurrentHashMap<String, OutputTransmitter>();
 	}
 
-	public static MidiOutputPlugin getInstance(PluginHost host) {
+	public static MidiOutputPlugin getInstance(PluginHostCommunicator host) {
 		return new MidiOutputPlugin(host);
 	}
 
-	public MidiOutputPlugin(PluginHost host) {
+	public MidiOutputPlugin(PluginHostCommunicator host) {
 		super(host, NAME, MININPUTS, MAXINPUTS, MINOUTPUTS, MAXOUTPUTS);
 	}
 
@@ -136,12 +136,12 @@ public class MidiOutputPlugin extends Plugin implements ActionListener, Serializ
 	}
 
 	private class OutputTransmitter implements MidiListener {
-		private LinkedList<MidiIO> inputs;
+		private LinkedList<MidiIOCommunicator> inputs;
 		private MidiDevice outputDevice;
 		private Receiver outputReceiver;
 
 		public OutputTransmitter(MidiDevice m) {
-			this.inputs = new LinkedList<MidiIO>();
+			this.inputs = new LinkedList<MidiIOCommunicator>();
 			this.outputDevice = m;
 		}
 
@@ -164,7 +164,7 @@ public class MidiOutputPlugin extends Plugin implements ActionListener, Serializ
 			return this.inputs.size();
 		}
 
-		public void register(MidiIO m) throws MidiUnavailableException {
+		public void register(MidiIOCommunicator m) throws MidiUnavailableException {
 			if (this.inputCount() <= 0) {
 				this.open();
 			}
@@ -174,7 +174,7 @@ public class MidiOutputPlugin extends Plugin implements ActionListener, Serializ
 			}
 		}
 
-		public void unregister(MidiIO m) {
+		public void unregister(MidiIOCommunicator m) {
 			this.inputs.remove(m);
 			m.removeMidiListener(this);
 			if (this.inputCount() <= 0) {
@@ -183,7 +183,7 @@ public class MidiOutputPlugin extends Plugin implements ActionListener, Serializ
 		}
 
 		@Override
-		public void listen(MidiIO source, MidiMessage msg, long timestamp) {
+		public void listen(MidiIOCommunicator source, MidiMessage msg, long timestamp) {
 			if (outputReceiver != null) {
 				if (MidiUtilities.getStatus(msg) != 0b1111 && selectedChannel != -1) {
 					int data1 = msg.getMessage()[1];
@@ -227,7 +227,7 @@ public class MidiOutputPlugin extends Plugin implements ActionListener, Serializ
 	}
 
 	@Override
-	public Plugin clone(PluginHost host) {
+	public Plugin clone(PluginHostCommunicator host) {
 		MidiOutputPlugin mop = new MidiOutputPlugin(host);
 		mop.midiDeviceName = this.midiDeviceName;
 		mop.initPlugin();
