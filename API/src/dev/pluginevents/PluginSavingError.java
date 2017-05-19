@@ -1,4 +1,4 @@
-package plugin.events;
+package dev.pluginevents;
 
 import pluginhost.PluginHost;
 

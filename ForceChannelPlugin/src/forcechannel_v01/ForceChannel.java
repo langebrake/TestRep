@@ -12,12 +12,12 @@ import javax.sound.midi.ShortMessage;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 
-import defaults.MidiIOCommunicator;
 import defaults.MidiListener;
+import dev.MidiIOCommunicator;
+import dev.Plugin;
+import dev.PluginHostCommunicator;
+import dev.hostevents.HostEvent;
 import engine.MidiUtilities;
-import plugin.Plugin;
-import pluginhost.PluginHostCommunicator;
-import pluginhost.events.HostEvent;
 
 public class ForceChannel extends Plugin implements ActionListener, MidiListener {
 	private transient MinView view;

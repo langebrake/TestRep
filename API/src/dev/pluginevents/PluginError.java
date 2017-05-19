@@ -1,17 +1,17 @@
-package plugin.events;
+package dev.pluginevents;
 
-import pluginhost.PluginHost;
+import dev.PluginHostCommunicator;
 
 public class PluginError extends PluginEvent {
-	private PluginHost sourceHost;
+	private PluginHostCommunicator sourceHost;
 	private Exception exception;
 
-	public PluginError(Exception exception, PluginHost sourceHost) {
+	public PluginError(Exception exception, PluginHostCommunicator sourceHost) {
 		this.sourceHost = sourceHost;
 		this.exception = exception;
 	}
 
-	public PluginHost getSourceHost() {
+	public PluginHostCommunicator getSourceHost() {
 		return this.sourceHost;
 	}
 

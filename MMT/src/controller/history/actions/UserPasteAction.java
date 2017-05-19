@@ -55,14 +55,14 @@ public class UserPasteAction extends UserAction {
 	public void execute() {
 		this.controller.clearSelection();
 		for (InteractiveComponent c : components) {
-			if (firstTime) {
-				firstTime = false;
-			} else {
+			if (!firstTime) {
 				c.reopen();
 			}
 			controller.add(c);
 			controller.selectComponent(c, true);
 		}
+		if (firstTime)
+			firstTime = false;
 		for (InteractiveCable c : cables) {
 			controller.getPane().add(c);
 		}

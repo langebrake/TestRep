@@ -5,4 +5,4 @@ Version: 1.0
 Vendor: Hendrik Langebrake
 Web: hl-soundtracks.de
 Type: MidiThruPlugin
-PluginInterfaceVersion: 0.1a
+MMTPluginInterfaceVersion: 1.0a

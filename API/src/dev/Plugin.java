@@ -1,4 +1,4 @@
-package plugin;
+package dev;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -6,12 +6,10 @@ import java.io.Serializable;
 
 import javax.swing.JComponent;
 
-import pluginhost.events.*;
-import pluginhost.PluginHostCommunicator;
-import pluginhost.PluginHostCommunicator;
+import dev.hostevents.*;
 
 public abstract class Plugin implements Serializable, Cloneable {
-
+	public static final String INTERFACE_VERSION = "1.0a";
 	private transient PluginHostCommunicator host;
 	public static transient Object lock = new Object();
 	private final int minInputs, maxInputs, minOutputs, maxOutputs;
@@ -80,12 +78,12 @@ public abstract class Plugin implements Serializable, Cloneable {
 
 	public abstract boolean reOpen();
 
+	public abstract Plugin clone(PluginHostCommunicator newHost);
+
 	public final Plugin clone() {
 		return this.clone(Plugin.waitForHost());
 	}
-
-	public abstract Plugin clone(PluginHostCommunicator newHost);
-
+	
 	private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException {
 		this.host = Plugin.waitForHost();
 		in.defaultReadObject();

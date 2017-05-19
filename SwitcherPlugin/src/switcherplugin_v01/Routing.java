@@ -13,8 +13,8 @@ import javax.sound.midi.ShortMessage;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
 
-import defaults.MidiIOCommunicator;
 import defaults.MidiListener;
+import dev.MidiIOCommunicator;
 
 public class Routing implements Serializable, MidiListener, Cloneable, ActionListener, ItemListener {
 	protected SwitcherPlugin switcher;

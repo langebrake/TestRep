@@ -10,7 +10,7 @@ import java.util.LinkedList;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-import plugin.Plugin;
+import dev.Plugin;
 
 public class PluginManager {
 
@@ -38,6 +38,8 @@ public class PluginManager {
 				PluginManager.addPath(file.getPath());
 				String path = file.getPath();
 				JarFile jar = new JarFile(path);
+				String interfaceVersion = jar.getManifest().getMainAttributes().getValue("MMTPluginInterfaceVersion");
+				if(interfaceVersion != null && interfaceVersion.equals(Plugin.INTERFACE_VERSION)){
 				Enumeration<JarEntry> en = jar.entries();
 
 				URL[] urls = { new URL("jar:file:" + path + "!/") };
@@ -61,6 +63,7 @@ public class PluginManager {
 					} else {
 
 					}
+				}
 				}
 				jar.close();
 

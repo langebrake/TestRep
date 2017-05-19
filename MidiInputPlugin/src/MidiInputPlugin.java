@@ -20,11 +20,11 @@ import javax.swing.JFrame;
 
 import midiengine.MidiEngine;
 import defaults.DefaultView;
-import defaults.MidiIOCommunicator;
 import defaults.MidiIOThrough;
-import plugin.Plugin;
-import pluginhost.PluginHostCommunicator;
-import pluginhost.events.HostEvent;
+import dev.MidiIOCommunicator;
+import dev.Plugin;
+import dev.PluginHostCommunicator;
+import dev.hostevents.HostEvent;
 
 public class MidiInputPlugin extends Plugin implements Serializable, ActionListener {
 
@@ -118,6 +118,7 @@ public class MidiInputPlugin extends Plugin implements Serializable, ActionListe
 
 	@Override
 	public boolean reOpen() {
+		System.out.println("REOPENED");
 		try {
 			if (this.midiDeviceName != null && inputMap.get(this.midiDeviceName) != null) {
 				inputMap.get(this.midiDeviceName).register(output);

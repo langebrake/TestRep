@@ -17,8 +17,18 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ConcurrentSkipListMap;
 
-import defaults.MidiIOCommunicator;
 import defaults.MidiIOThrough;
+import dev.MidiIOCommunicator;
+import dev.hostevents.HostEvent;
+import dev.hostevents.NewInputEvent;
+import dev.hostevents.NewOutputEvent;
+import dev.pluginevents.NewInputRequestEvent;
+import dev.pluginevents.NewOutputRequestEvent;
+import dev.pluginevents.PluginError;
+import dev.pluginevents.PluginEvent;
+import dev.pluginevents.PluginLoadingError;
+import dev.pluginevents.PluginMidiProcessingError;
+import dev.pluginevents.PluginSavingError;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -29,17 +39,8 @@ import javax.swing.border.LineBorder;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 
-import plugin.events.NewInputRequestEvent;
-import plugin.events.NewOutputRequestEvent;
-import plugin.events.PluginError;
-import plugin.events.PluginEvent;
-import plugin.events.PluginLoadingError;
-import plugin.events.PluginMidiProcessingError;
-import plugin.events.PluginSavingError;
+import pluginhost.PluginHost;
 import pluginhost.PluginStateChangedListener;
-import pluginhost.events.HostEvent;
-import pluginhost.events.NewInputEvent;
-import pluginhost.events.NewOutputEvent;
 import stdlib.grouping.Groupable;
 import stdlib.grouping.Grouping;
 import controller.interactivepane.FullViewClosingListener;
@@ -847,7 +848,7 @@ public class InteractiveModule extends InteractiveComponent implements
 			}
 			// this.controller.addPluginError(this, e)
 			System.out.println("Error: "
-					+ ((PluginError) e).getSourceHost().getName());
+					+ (((PluginHost)((PluginError) e).getSourceHost()).getName()));
 			((PluginError) e).getException().printStackTrace();
 
 		}

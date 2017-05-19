@@ -11,9 +11,9 @@ import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.ShortMessage;
 import javax.swing.JComponent;
 
-import plugin.Plugin;
-import pluginhost.PluginHostCommunicator;
-import pluginhost.events.HostEvent;
+import dev.Plugin;
+import dev.PluginHostCommunicator;
+import dev.hostevents.HostEvent;
 
 public class TestSenderPlugin extends Plugin implements ActionListener {
 

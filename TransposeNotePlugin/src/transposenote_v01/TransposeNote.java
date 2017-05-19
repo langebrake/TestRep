@@ -10,12 +10,12 @@ import javax.sound.midi.MidiMessage;
 import javax.sound.midi.ShortMessage;
 import javax.swing.JComponent;
 
-import defaults.MidiIOCommunicator;
 import defaults.MidiListener;
+import dev.MidiIOCommunicator;
+import dev.Plugin;
+import dev.PluginHostCommunicator;
+import dev.hostevents.HostEvent;
 import engine.MidiUtilities;
-import plugin.Plugin;
-import pluginhost.PluginHostCommunicator;
-import pluginhost.events.HostEvent;
 
 public class TransposeNote extends Plugin implements MidiListener, ActionListener {
 	private transient MinView minView;

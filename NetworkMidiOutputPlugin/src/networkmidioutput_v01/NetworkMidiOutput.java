@@ -11,13 +11,11 @@ import java.net.Socket;
 import javax.sound.midi.MidiMessage;
 import javax.swing.JComponent;
 
-import defaults.MidiIOCommunicator;
-import defaults.MidiIOCommunicator;
 import defaults.MidiListener;
-import plugin.Plugin;
-import pluginhost.PluginHostCommunicator;
-import pluginhost.PluginHostCommunicator;
-import pluginhost.events.HostEvent;
+import dev.MidiIOCommunicator;
+import dev.Plugin;
+import dev.PluginHostCommunicator;
+import dev.hostevents.HostEvent;
 
 public class NetworkMidiOutput extends Plugin implements MidiListener, ActionListener {
 

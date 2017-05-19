@@ -9,14 +9,14 @@ import java.util.LinkedList;
 import javax.sound.midi.MidiMessage;
 import javax.swing.JComponent;
 
-import defaults.MidiIOCommunicator;
 import defaults.MidiListener;
+import dev.MidiIOCommunicator;
+import dev.Plugin;
+import dev.PluginHostCommunicator;
+import dev.hostevents.HostEvent;
+import dev.hostevents.NewOutputEvent;
+import dev.pluginevents.NewOutputRequestEvent;
 import engine.MidiUtilities;
-import plugin.Plugin;
-import plugin.events.NewOutputRequestEvent;
-import pluginhost.PluginHostCommunicator;
-import pluginhost.events.HostEvent;
-import pluginhost.events.NewOutputEvent;
 
 public class MidiNoteZone extends Plugin implements MidiListener, ActionListener {
 	protected LinkedList<Zone> zones;

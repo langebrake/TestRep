@@ -8,12 +8,12 @@ import java.io.ObjectInputStream;
 import javax.sound.midi.MidiMessage;
 import javax.swing.JComponent;
 
-import defaults.MidiIOCommunicator;
 import defaults.MidiListener;
+import dev.MidiIOCommunicator;
+import dev.Plugin;
+import dev.PluginHostCommunicator;
+import dev.hostevents.HostEvent;
 import engine.MidiUtilities;
-import plugin.Plugin;
-import pluginhost.PluginHostCommunicator;
-import pluginhost.events.HostEvent;
 
 public class IgnoreCC extends Plugin implements MidiListener, ActionListener {
 	private transient MinView view;

@@ -22,13 +22,13 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import controller.interactivepane.InteractiveController;
 import defaults.DefaultView;
 import defaults.MidiIO;
+import dev.Plugin;
+import dev.PluginHostCommunicator;
+import dev.hostevents.HostEvent;
+import dev.hostevents.NewInputEvent;
+import dev.hostevents.NewOutputEvent;
 import model.graph.Module;
-import plugin.Plugin;
 import pluginhost.PluginHost;
-import pluginhost.PluginHostCommunicator;
-import pluginhost.events.HostEvent;
-import pluginhost.events.NewInputEvent;
-import pluginhost.events.NewOutputEvent;
 import pluginhost.exceptions.PluginMaxOutputsExceededException;
 
 public class Grouping extends Plugin {
@@ -73,7 +73,7 @@ public class Grouping extends Plugin {
 		if (!block) {
 			if (e instanceof NewInputEvent) {
 				((GroupInput) groupInput.getModule().getPlugin()).block = true;
-				MidiIO externalInput = ((NewInputEvent) e).getNewInput();
+				MidiIO externalInput = (MidiIO) ((NewInputEvent) e).getNewInput();
 				MidiIO internalOutput = ((PluginHost)this.groupInput.getModule().getPlugin()
 						.getPluginHost()).newOutput();
 				// TODO: use listener to make persistence efficient and safe
@@ -82,7 +82,7 @@ public class Grouping extends Plugin {
 				((GroupInput) groupInput.getModule().getPlugin()).block = false;
 			} else if (e instanceof NewOutputEvent) {
 				((GroupOutput) groupOutput.getModule().getPlugin()).block = true;
-				MidiIO externalOutput = ((NewOutputEvent) e).getNewOutput();
+				MidiIO externalOutput = (MidiIO) ((NewOutputEvent) e).getNewOutput();
 				MidiIO internalInput = ((PluginHost)this.groupOutput.getModule().getPlugin()
 						.getPluginHost()).newInput();
 				internalInput.setOutput(externalOutput);
@@ -506,7 +506,7 @@ public class Grouping extends Plugin {
 					// TODO: unexpected Error
 				} else if (e instanceof NewOutputEvent) {
 					grouping.block = true;
-					MidiIO internalOutput = ((NewOutputEvent) e).getNewOutput();
+					MidiIO internalOutput = (MidiIO) ((NewOutputEvent) e).getNewOutput();
 					MidiIO externalInput = ((PluginHost)grouping.getPluginHost()).newInput();
 					internalOutput.setInput(externalInput);
 					externalInput.setOutput(internalOutput);
@@ -587,7 +587,7 @@ public class Grouping extends Plugin {
 			if (!block) {
 				if (e instanceof NewInputEvent) {
 					grouping.block = true;
-					MidiIO internalInput = ((NewInputEvent) e).getNewInput();
+					MidiIO internalInput = (MidiIO) ((NewInputEvent) e).getNewInput();
 					MidiIO externalOutput = ((PluginHost)grouping.getPluginHost()
 							).newOutput();
 					internalInput.setOutput(externalOutput);

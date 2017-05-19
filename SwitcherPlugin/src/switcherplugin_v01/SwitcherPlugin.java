@@ -12,9 +12,9 @@ import java.util.LinkedList;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
-import plugin.Plugin;
-import pluginhost.PluginHostCommunicator;
-import pluginhost.events.HostEvent;
+import dev.Plugin;
+import dev.PluginHostCommunicator;
+import dev.hostevents.HostEvent;
 
 public class SwitcherPlugin extends Plugin implements ActionListener {
 	private static final int MAXINPUTS = -1;

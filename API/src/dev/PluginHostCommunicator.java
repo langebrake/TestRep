@@ -1,12 +1,9 @@
-package pluginhost;
+package dev;
 
 import java.util.LinkedList;
 
+import dev.pluginevents.PluginEvent;
 import midiengine.MidiEngine;
-import plugin.events.NewOutputRequestEvent;
-import plugin.events.PluginEvent;
-import defaults.MidiIO;
-import defaults.MidiIOCommunicator;
 
 public interface PluginHostCommunicator {
 	

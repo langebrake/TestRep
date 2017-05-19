@@ -7,11 +7,10 @@ import javax.sound.midi.MidiUnavailableException;
 import model.graph.Module;
 import model.pluginmanager.Loadable;
 import gui.interactivepane.InteractiveModule;
-import plugin.Plugin;
-
 import pluginhost.exceptions.PluginMaxOutputsExceededException;
 import controller.history.UserAction;
 import controller.interactivepane.InteractiveController;
+import dev.Plugin;
 
 public class UserAddModuleAction extends UserAction {
 	/**

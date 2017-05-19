@@ -2,6 +2,7 @@ package defaults;
 
 import javax.sound.midi.MidiMessage;
 
+import dev.MidiIOCommunicator;
 import pluginhost.PluginHost;
 
 public interface MidiIO extends MidiIOCommunicator{

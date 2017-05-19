@@ -10,8 +10,8 @@ import javax.sound.midi.MidiMessage;
 import javax.sound.midi.Receiver;
 import javax.sound.midi.Transmitter;
 
+import dev.pluginevents.PluginMidiProcessingError;
 import engine.Stringer;
-import plugin.events.PluginMidiProcessingError;
 import pluginhost.PluginHost;
 
 public class MidiIOThrough implements MidiIO, Serializable {

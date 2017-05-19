@@ -7,12 +7,12 @@ import javax.sound.midi.MidiMessage;
 import javax.swing.JComponent;
 
 import defaults.MidiIO;
-import defaults.MidiIOCommunicator;
 import defaults.MidiListener;
-import plugin.Plugin;
+import dev.MidiIOCommunicator;
+import dev.Plugin;
+import dev.PluginHostCommunicator;
+import dev.hostevents.HostEvent;
 import pluginhost.PluginHost;
-import pluginhost.PluginHostCommunicator;
-import pluginhost.events.HostEvent;
 
 public class Multiplier extends Plugin implements MidiListener {
 

@@ -2,10 +2,9 @@ package notevelocityfilter_v01;
 
 import javax.swing.JComponent;
 
-import plugin.Plugin;
-import pluginhost.PluginHostCommunicator;
-import pluginhost.PluginHostCommunicator;
-import pluginhost.events.HostEvent;
+import dev.Plugin;
+import dev.PluginHostCommunicator;
+import dev.hostevents.HostEvent;
 
 public class NoteVelocityFilter extends Plugin {
 

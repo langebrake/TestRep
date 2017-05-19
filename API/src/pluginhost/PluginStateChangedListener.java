@@ -1,7 +1,7 @@
 package pluginhost;
 
-import plugin.events.PluginEvent;
-import pluginhost.events.HostEvent;
+import dev.hostevents.HostEvent;
+import dev.pluginevents.PluginEvent;
 
 public interface PluginStateChangedListener {
 	public void listen(HostEvent e);

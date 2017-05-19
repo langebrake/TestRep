@@ -11,7 +11,7 @@ import java.util.LinkedList;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.MutableTreeNode;
 
-import plugin.Plugin;
+import dev.Plugin;
 import stdlib.grouping.Grouping;
 
 public class TreeSorter {

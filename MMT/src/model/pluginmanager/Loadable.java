@@ -4,9 +4,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.jar.Attributes;
 
-import plugin.Plugin;
-import pluginhost.PluginHostCommunicator;
-import pluginhost.PluginHostCommunicator;
+import dev.Plugin;
+import dev.PluginHostCommunicator;
 
 public class Loadable implements PluginHierarchyElement {
 	private Method getInstance;

@@ -15,10 +15,10 @@ import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.ShortMessage;
 import javax.swing.JComponent;
 
-import plugin.Plugin;
+import dev.Plugin;
+import dev.PluginHostCommunicator;
+import dev.hostevents.HostEvent;
 import pluginhost.PluginHost;
-import pluginhost.PluginHostCommunicator;
-import pluginhost.events.HostEvent;
 
 public class NetworkMidiInput extends Plugin implements ActionListener {
 	private static final int MAXINPUTS = 0;

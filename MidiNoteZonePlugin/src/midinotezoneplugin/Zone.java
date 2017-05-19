@@ -6,8 +6,8 @@ import java.io.Serializable;
 
 import javax.sound.midi.MidiMessage;
 
-import defaults.MidiIOCommunicator;
 import defaults.MidiListener;
+import dev.MidiIOCommunicator;
 import engine.MidiUtilities;
 
 public class Zone implements MidiListener, ActionListener, Cloneable, Serializable {

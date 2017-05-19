@@ -9,7 +9,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 
 import defaults.MidiIO;
-import defaults.MidiIOCommunicator;
+import dev.MidiIOCommunicator;
 import engine.Stringer;
 import model.graph.Module;
 

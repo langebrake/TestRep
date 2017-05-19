@@ -1,4 +1,4 @@
-package pluginhost.events;
+package dev.hostevents;
 
 public class HostEvent {
 

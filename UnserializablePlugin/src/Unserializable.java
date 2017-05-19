@@ -20,15 +20,15 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import plugin.Plugin;
-import plugin.events.NewInputRequestEvent;
-import plugin.events.NewOutputRequestEvent;
-import pluginhost.events.*;
-import pluginhost.PluginHostCommunicator;
 import defaults.DefaultView;
-import defaults.MidiIOCommunicator;
 import defaults.MidiIOThrough;
 import defaults.MidiListener;
+import dev.MidiIOCommunicator;
+import dev.Plugin;
+import dev.PluginHostCommunicator;
+import dev.hostevents.*;
+import dev.pluginevents.NewInputRequestEvent;
+import dev.pluginevents.NewOutputRequestEvent;
 
 public class Unserializable extends Plugin implements MidiListener {
 	private static final int MAXINPUTS = -1;

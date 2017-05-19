@@ -21,19 +21,20 @@ import engine.Stringer;
 import midiengine.MidiEngine;
 import defaults.DefaultView;
 import defaults.MidiIO;
-import defaults.MidiIOCommunicator;
 import defaults.MidiIOThrough;
+import dev.MidiIOCommunicator;
+import dev.Plugin;
+import dev.PluginHostCommunicator;
+import dev.hostevents.*;
+import dev.pluginevents.NewInputRequestEvent;
+import dev.pluginevents.NewOutputRequestEvent;
+import dev.pluginevents.PluginCopyError;
+import dev.pluginevents.PluginError;
+import dev.pluginevents.PluginEvent;
+import dev.pluginevents.PluginLoadingError;
+import dev.pluginevents.PluginSavingError;
 import engine.Engine;
-import plugin.Plugin;
-import plugin.events.NewInputRequestEvent;
-import plugin.events.NewOutputRequestEvent;
-import plugin.events.PluginCopyError;
-import plugin.events.PluginError;
-import plugin.events.PluginEvent;
-import plugin.events.PluginLoadingError;
-import plugin.events.PluginSavingError;
 import pluginhost.exceptions.*;
-import pluginhost.events.*;
 
 public abstract class PluginHost implements Serializable, Cloneable, PluginHostCommunicator {
 
