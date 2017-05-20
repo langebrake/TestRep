@@ -1,7 +1,6 @@
 package controller.interactivepane;
 
 import defaults.MidiIOThrough;
-import engine.Stringer;
 import gui.interactivepane.CablePoint;
 import gui.interactivepane.CablePointHost;
 import gui.interactivepane.CablePointSimple;
@@ -393,10 +392,7 @@ public class InteractiveController implements MouseInputListener,
 	}
 
 	private void writeObject(ObjectOutputStream out) throws IOException {
-		String stringer = Stringer.getString();
-
 		out.defaultWriteObject();
-		Stringer.minimize();
 	}
 
 	public void setCableAddProcessSource(CablePointHost source) {

@@ -1,5 +1,7 @@
 	package controller;
 
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.File;
@@ -26,9 +28,8 @@ import controller.maincontrol.Project;
 import controller.maincontrol.RescanPlugins;
 import controller.maincontrol.SaveProject;
 import engine.Engine;
-import engine.Stringer;
 
-public class Controller implements WindowListener {
+public class Controller implements WindowListener, ComponentListener {
 
 	private transient JFrame mainFrame;
 	private Project project;
@@ -51,12 +52,13 @@ public class Controller implements WindowListener {
 	}
 
 	private void createGui() {
-		mainFrame = new JFrame("Midi Manipulator v0.1a");
+		mainFrame = new JFrame("Midi Manipulatino Tool (Prototype) v1.0a");
 
 		JMenuBar mainBar = this.createMenuBar();
 		mainFrame.setJMenuBar(mainBar);
 		mainFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		mainFrame.addWindowListener(this);
+		mainFrame.addComponentListener(this);
 		mainFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		mainFrame.setSize(500, 500);
 	}
@@ -108,6 +110,7 @@ public class Controller implements WindowListener {
 				: this.currentProject.getName();
 		this.mainFrame.setTitle(this.programName + " - " + title);
 		this.mainFrame.revalidate();
+		project.reUpdate();
 		System.gc();
 	}
 
@@ -150,7 +153,6 @@ public class Controller implements WindowListener {
 
 	public void saveProject(File file) {
 		FileOutputStream fos;
-		Stringer.stringer = "";
 		try {
 			fos = new FileOutputStream(file);
 			ObjectOutputStream oos = new ObjectOutputStream(fos);
@@ -228,6 +230,30 @@ public class Controller implements WindowListener {
 	public void windowOpened(WindowEvent arg0) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public void componentHidden(ComponentEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void componentMoved(ComponentEvent arg0) {
+		this.project.reUpdate();
+		
+	}
+
+	@Override
+	public void componentResized(ComponentEvent arg0) {
+		this.project.reUpdate();
+		
+	}
+
+	@Override
+	public void componentShown(ComponentEvent arg0) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

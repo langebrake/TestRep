@@ -11,7 +11,6 @@ import javax.sound.midi.Receiver;
 import javax.sound.midi.Transmitter;
 
 import dev.pluginevents.PluginMidiProcessingError;
-import engine.Stringer;
 import pluginhost.PluginHost;
 
 public class MidiIOThrough implements MidiIO, Serializable {
@@ -133,9 +132,7 @@ public class MidiIOThrough implements MidiIO, Serializable {
 	}
 
 	private void writeObject(ObjectOutputStream out) throws IOException {
-		String stringer = Stringer.getString();
 		out.defaultWriteObject();
-		Stringer.minimize();
 	}
 
 	@Override

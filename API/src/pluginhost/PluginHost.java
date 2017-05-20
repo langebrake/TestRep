@@ -1,10 +1,8 @@
 package pluginhost;
 
 import java.awt.Component;
-import java.awt.Container;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.EOFException;
 import java.io.IOException;
 import java.io.NotSerializableException;
 import java.io.ObjectInputStream;
@@ -17,7 +15,6 @@ import java.util.LinkedList;
 
 import javax.sound.midi.MidiUnavailableException;
 
-import engine.Stringer;
 import midiengine.MidiEngine;
 import defaults.DefaultView;
 import defaults.MidiIO;
@@ -28,7 +25,6 @@ import dev.PluginHostCommunicator;
 import dev.hostevents.*;
 import dev.pluginevents.NewInputRequestEvent;
 import dev.pluginevents.NewOutputRequestEvent;
-import dev.pluginevents.PluginCopyError;
 import dev.pluginevents.PluginError;
 import dev.pluginevents.PluginEvent;
 import dev.pluginevents.PluginLoadingError;
@@ -49,8 +45,12 @@ public abstract class PluginHost implements Serializable, Cloneable, PluginHostC
 	private String name;
 	// TODO: this must be managed over retrieving the class from the plugins
 	// name over a static manager!!!!!
-	private Class<? extends Plugin> pluginClass;
+//	private Class<? extends Plugin> pluginClass;
 	private boolean notifyPlugin;
+	//errormanagement on loading
+	private transient byte[] errorByte;
+	private transient String errorString;
+	private transient int ins,outs;
 
 	public PluginHost() throws MidiUnavailableException {
 		this.notifyPlugin = true;
@@ -65,7 +65,7 @@ public abstract class PluginHost implements Serializable, Cloneable, PluginHostC
 	}
 
 	public void setPlugin(Plugin p, Class<? extends Plugin> m) throws PluginMaxOutputsExceededException {
-		this.pluginClass = m;
+//		this.pluginClass = m;
 		if (this.plugin != null) {
 			try {
 				this.plugin.close();
@@ -829,7 +829,6 @@ public abstract class PluginHost implements Serializable, Cloneable, PluginHostC
 	 * @throws IOException
 	 */
 	private void writeObject(ObjectOutputStream out) throws IOException {
-		String stringer = Stringer.getString();
 		// Remove all References to inner Plugin on the MidiIO endpoints
 		LinkedList<MidiIO> oldInputForward = new LinkedList<MidiIO>(), oldOutputForward = new LinkedList<MidiIO>();
 		for (MidiIOCommunicator m : this.inputs) {
@@ -840,8 +839,14 @@ public abstract class PluginHost implements Serializable, Cloneable, PluginHostC
 			oldOutputForward.add(((MidiIO) m).getInput());
 			((MidiIO) m).disconnectInput();
 		}
-
+		if(errorString != null){
+			this.setName(errorString);
+		}
 		out.defaultWriteObject();
+		if(errorString != null){
+			this.setName("LOADING ERROR");
+		}
+		if(errorByte == null){
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		ObjectOutputStream oos = new ObjectOutputStream(bos);
 		byte[] plugin = null;
@@ -855,6 +860,10 @@ public abstract class PluginHost implements Serializable, Cloneable, PluginHostC
 		}
 
 		out.writeObject(plugin);
+		}
+		else{
+			out.writeObject(errorByte);
+		}
 
 		// restore inner References
 		Iterator<MidiIOCommunicator> inputIterator = this.inputs.iterator();
@@ -865,7 +874,6 @@ public abstract class PluginHost implements Serializable, Cloneable, PluginHostC
 		for (MidiIO m : oldOutputForward) {
 			((MidiIO) outputIterator.next()).setInput(m);
 		}
-		Stringer.minimize();
 
 	}
 
@@ -887,31 +895,41 @@ public abstract class PluginHost implements Serializable, Cloneable, PluginHostC
 		in.defaultReadObject();
 		for (MidiIOCommunicator m : this.inputs) {
 			((MidiIO) m).setPluginHost(this);
+			ins++;
 		}
 		for (MidiIOCommunicator m : this.outputs) {
 			((MidiIO) m).setPluginHost(this);
+			outs++;
 		}
 		Plugin.waiter = this;
+		byte[] b = (byte[]) in.readObject();
 		try {
-			byte[] b = (byte[]) in.readObject();
+			
 			ByteArrayInputStream bos = new ByteArrayInputStream(b);
 			ObjectInputStream oos = new ObjectInputStream(bos);
 			this.plugin = (Plugin) oos.readObject();
 		} catch (Exception e) {
 			e.printStackTrace();
-
-			try {
-				Method getInstance = pluginClass.getDeclaredMethod("getInstance", PluginHost.class);
-				this.setPlugin((Plugin) getInstance.invoke(null, this), this.pluginClass);
-				this.stateChangedListeners.listen(new PluginLoadingError(e, this));
-			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException
-					| NoSuchMethodException | SecurityException e1) {
-				this.stateChangedListeners.listen(new PluginLoadingError(e, this));
-
-			} catch (PluginMaxOutputsExceededException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
+			String errorMSG = "Loading this plugin failed!";
+			if(e instanceof ClassNotFoundException){
+				errorMSG = "Plugin not found: "+e.getLocalizedMessage();
 			}
+			this.plugin = new ErrorPlugin(this,errorMSG,ins,outs);
+			this.errorByte = b;
+			this.errorString = this.name;
+			this.setName("LOADING ERROR");
+//			try {
+//				Method getInstance = pluginClass.getDeclaredMethod("getInstance", PluginHost.class);
+//				this.setPlugin((Plugin) getInstance.invoke(null, this), this.pluginClass);
+//				this.stateChangedListeners.listen(new PluginLoadingError(e, this));
+//			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException
+//					| NoSuchMethodException | SecurityException e1) {
+//				this.stateChangedListeners.listen(new PluginLoadingError(e, this));
+//
+//			} catch (PluginMaxOutputsExceededException e1) {
+//				// TODO Auto-generated catch block
+//				e1.printStackTrace();
+//			}
 		}
 
 	}
@@ -947,7 +965,7 @@ public abstract class PluginHost implements Serializable, Cloneable, PluginHostC
 		newHost.setName(this.getName());
 		Plugin.waiter = newHost;
 		newHost.plugin = this.plugin.clone();
-		newHost.pluginClass = this.pluginClass;
+//		newHost.pluginClass = this.pluginClass;
 
 		return newHost;
 

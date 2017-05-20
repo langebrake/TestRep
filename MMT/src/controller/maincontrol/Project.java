@@ -2,7 +2,8 @@ package controller.maincontrol;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
-import java.awt.Dimension;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -17,18 +18,19 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
-import javax.swing.tree.TreeSelectionModel;
 
 import stdlib.grouping.Grouping;
 import controller.clipboard.Clipboard;
 import controller.history.UserActionManager;
 import controller.interactivepane.InteractiveController;
 import controller.projectree.ProjectTreeListener;
-import engine.Stringer;
 import gui.interactivepane.InteractiveModule;
-import gui.interactivepane.InteractivePane;
 
-public class Project implements Serializable {
+public class Project implements Serializable, PropertyChangeListener{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 495749326805314763L;
 	private transient Container contentPane;
 	private LinkedList<InteractiveController> interactivePanes;
 	private transient Clipboard clipboard;
@@ -70,6 +72,8 @@ public class Project implements Serializable {
 		}
 		tabbedPane.addTab("Main", interactivePanes.get(0).getPane());
 		leftCenterSplit.setBottomComponent(tabbedPane);
+		leftCenterSplit.addPropertyChangeListener(JSplitPane.DIVIDER_LOCATION_PROPERTY, this
+				);
 
 		updateTree();
 
@@ -102,9 +106,7 @@ public class Project implements Serializable {
 	}
 
 	private void writeObject(ObjectOutputStream out) throws IOException {
-		String stringer = Stringer.getString();
 		out.defaultWriteObject();
-		Stringer.minimize();
 	}
 
 	private void readObject(ObjectInputStream in)
@@ -116,6 +118,7 @@ public class Project implements Serializable {
 		in.defaultReadObject();
 
 		this.createContentPane();
+		this.reUpdate();
 	}
 
 	public void updateTree() {
@@ -178,6 +181,19 @@ public class Project implements Serializable {
 
 		}
 
+	}
+
+	public void reUpdate() {
+		for(InteractiveController c: this.interactivePanes){
+			c.getPane().updateView();
+		}
+		
+	}
+
+	@Override
+	public void propertyChange(PropertyChangeEvent arg0) {
+		this.reUpdate();
+		
 	}
 
 }

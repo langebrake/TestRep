@@ -603,6 +603,7 @@ public class InteractiveModule extends InteractiveComponent implements
 	public boolean close() {
 		this.inputPopout(false, inputPopoutPermanent);
 		this.outputPopout(false, outputPopoutPermanent);
+		//TODO: Locality versus MVC
 		this.getModule().close();
 		this.closed = true;
 		boolean tmp = this.fullViewShowing;
