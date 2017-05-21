@@ -11,11 +11,13 @@ import java.io.Serializable;
 import java.util.Enumeration;
 import java.util.LinkedList;
 
+import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTree;
+import javax.swing.KeyStroke;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 
@@ -135,6 +137,7 @@ public class Project implements Serializable, PropertyChangeListener{
 		root = interactivePanes.get(0).treeView();
 		TreeSorter.sortTree(root);
 		tree = new JTree(root);
+
 		ProjectTreeListener ptl = new ProjectTreeListener(this);
 		tree.addTreeSelectionListener(ptl);
 		tree.addMouseListener(ptl);

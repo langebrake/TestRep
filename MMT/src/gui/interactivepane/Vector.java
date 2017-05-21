@@ -35,6 +35,9 @@ public class Vector implements Serializable {
 	 * @return Differentiation vector from this to other
 	 */
 	public Vector diffVector(Vector other) {
+		if(other == null){
+			return new Vector(0,0);
+		}
 		return new Vector(other.point.x - this.point.x, other.point.y
 				- this.point.y);
 	}

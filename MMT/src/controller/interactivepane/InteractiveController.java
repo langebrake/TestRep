@@ -111,7 +111,7 @@ public class InteractiveController implements MouseInputListener,
 		pane.addMouseWheelListener(this);
 		pane.addMouseListener(this.cableCreationListener);
 		pane.addMouseMotionListener(this.cableCreationListener);
-		// TODO: Shortcut handling should be done by other class
+		// TODO: Shortcut handling can be done by other class
 		InputMap inputMap = pane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
 		ActionMap actionMap = pane.getActionMap();
 

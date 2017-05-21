@@ -30,7 +30,10 @@ public class Clipboard {
 	}
 
 	public void setClipboard(LinkedList<InteractiveComponent> clipboard) {
-		this.clipboard = clipboard;
+		this.clipboard = new LinkedList<InteractiveComponent>();
+		for(InteractiveComponent c: clipboard){
+			this.clipboard.add(c);
+		}
 		this.cableClipboard = new LinkedList<InteractiveCable>();
 		for (InteractiveComponent c : this.clipboard) {
 			if (c instanceof InteractiveModule) {
@@ -86,7 +89,6 @@ public class Clipboard {
 	}
 
 	public boolean hasClipboard() {
-		// TODO Auto-generated method stub
 		return this.clipboard.size() != 0;
 	}
 }

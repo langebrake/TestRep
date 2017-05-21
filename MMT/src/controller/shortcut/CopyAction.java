@@ -20,10 +20,12 @@ public class CopyAction extends AbstractAction {
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
+		if(controller.getPane().getComponentSelection().size()!=0){
 		this.controller.getClipboard().setClipboard(
 				controller.getPane().getComponentSelection());
 		controller.getClipboard().setCopyLocation(
 				controller.getPane().getViewportTranslation());
-	}
+		}
+		}
 
 }

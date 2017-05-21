@@ -27,7 +27,7 @@ public class InteractivePane extends JLayeredPane {
 	private float scaleMin;
 	private float scaleMax;
 	// set Coordinate origin (0|0) to this position
-	private Vector viewportTranslation;
+	private Vector viewportTranslation = new Vector(0,0);
 
 	/*
 	 * Cables
