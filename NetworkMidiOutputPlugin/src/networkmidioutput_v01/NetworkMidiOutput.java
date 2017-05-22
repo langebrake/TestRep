@@ -76,7 +76,7 @@ public class NetworkMidiOutput extends Plugin implements MidiListener, ActionLis
 
 	@Override
 	public Plugin clone(PluginHostCommunicator host) {
-		return null;
+		return new NetworkMidiOutput(host);
 	}
 
 	private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException {

@@ -962,7 +962,12 @@ public abstract class PluginHost implements Serializable, Cloneable, PluginHostC
 		newHost.setName(this.getName());
 		Plugin.waiter = newHost;
 		newHost.plugin = this.plugin.clone();
-//		newHost.pluginClass = this.pluginClass;
+		if(newHost.plugin == null){
+			newHost.plugin = new ErrorPlugin(this, "This plugin does not allow duplicates",0,0);
+			newHost.setName("DUPLICATION ERROR");
+		}
+			
+			//		newHost.pluginClass = this.pluginClass;
 
 		return newHost;
 
