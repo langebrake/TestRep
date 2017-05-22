@@ -21,7 +21,6 @@ import javax.swing.JMenuItem;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import model.pluginmanager.PluginManager;
-import controller.interactivepane.InteractiveController;
 import controller.maincontrol.NewProject;
 import controller.maincontrol.OpenProject;
 import controller.maincontrol.Project;
@@ -136,6 +135,7 @@ public class Controller implements WindowListener, ComponentListener {
 			this.project = (Project) oos.readObject();
 			this.currentProject = file;
 			this.loadProject(project);
+			oos.close();
 		} catch (FileNotFoundException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();

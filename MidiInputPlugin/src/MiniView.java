@@ -1,5 +1,4 @@
 import java.awt.BorderLayout;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.LinkedList;
 
@@ -8,6 +7,10 @@ import javax.swing.JComboBox;
 import javax.swing.JPanel;
 
 public class MiniView extends JPanel {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7002548823638093552L;
 	private LinkedList<String> list;
 	private ActionListener listener;
 	private String selectedItem;

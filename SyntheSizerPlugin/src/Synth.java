@@ -13,6 +13,10 @@ import javax.sound.sampled.SourceDataLine;
  */
 
 public class Synth implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1078586632655123967L;
 	// legt fest, wie viele toene maximal gleichzeitig gespielt werden duerfen
 	private final int MAXPOLY;
 	private final int BUFSIZE;

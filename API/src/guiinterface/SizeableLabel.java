@@ -12,6 +12,10 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 
 public class SizeableLabel extends JLabel {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6844340474795542555L;
 	public static final int MIN_FONT_SIZE = 3;
 	public static final int MAX_FONT_SIZE = 240;
 	Graphics g;

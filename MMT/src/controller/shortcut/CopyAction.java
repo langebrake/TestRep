@@ -8,6 +8,10 @@ import javax.swing.AbstractAction;
 import controller.interactivepane.InteractiveController;
 
 public class CopyAction extends AbstractAction {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -196858309965533925L;
 	private InteractiveController controller;
 
 	public CopyAction(InteractiveController c) {

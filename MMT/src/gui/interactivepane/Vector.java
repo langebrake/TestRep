@@ -5,6 +5,10 @@ import java.awt.geom.Point2D;
 import java.io.Serializable;
 
 public class Vector implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1251399387082230695L;
 	private Point2D.Float point;
 
 	public Vector() {

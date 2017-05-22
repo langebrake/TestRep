@@ -1,11 +1,11 @@
 package gui.interactivepane;
 
-import java.awt.Component;
-import java.util.LinkedList;
-
-import javax.swing.JComponent;
 
 public class CablePointSimple implements CablePoint {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4121449382442299889L;
 	private InteractiveCable cable;
 	private final CablePointType type;
 	private CablePointHost host;

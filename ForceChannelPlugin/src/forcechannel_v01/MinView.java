@@ -6,6 +6,11 @@ import javax.swing.JComboBox;
 import javax.swing.JPanel;
 
 public class MinView extends JPanel {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4489703765898842899L;
+
 	public MinView(ForceChannel f) {
 		this.setLayout(new BorderLayout());
 		JComboBox<String> channelSelect = new JComboBox<String>();

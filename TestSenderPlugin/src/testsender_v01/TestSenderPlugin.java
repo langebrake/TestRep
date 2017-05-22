@@ -1,6 +1,5 @@
 package testsender_v01;
 
-import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
@@ -17,6 +16,10 @@ import dev.hostevents.HostEvent;
 
 public class TestSenderPlugin extends Plugin implements ActionListener {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6156427702990318401L;
 	private static final int MAXINPUTS = 0;
 	private static final int MAXOUTPUTS = 1;
 	private static final int MININPUTS = 0;

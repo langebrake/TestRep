@@ -3,28 +3,27 @@ package controller.interactivepane;
 import gui.interactivepane.CablePoint;
 import gui.interactivepane.CablePointComponent;
 import gui.interactivepane.CablePointHost;
-import gui.interactivepane.CablePointPanel;
 import gui.interactivepane.CablePointType;
 import gui.interactivepane.InteractiveCable;
 import gui.interactivepane.Vector;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.io.Serializable;
-import java.lang.reflect.Array;
-import java.util.Arrays;
 import java.util.HashMap;
 
-import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 import controller.history.actions.UserAddConnectionsAction;
 
 public class CableCreationListener extends MouseAdapter implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2919197063414438787L;
 	private CablePointComponent tmpPoint;
 	private CablePoint sourcePoint;
 	private InteractiveCable tmpCable;

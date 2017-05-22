@@ -1,6 +1,5 @@
 package analyzerplugin_v01;
 
-import java.awt.Component;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -15,6 +14,10 @@ import dev.PluginHostCommunicator;
 import dev.hostevents.HostEvent;
 
 public class Analyzer extends Plugin implements MidiListener {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8724784737719871832L;
 	private static final int MAXINPUTS = 1;
 	private static final int MAXOUTPUTS = 1;
 	private static final int MININPUTS = 1;

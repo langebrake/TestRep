@@ -10,6 +10,10 @@ import controller.interactivepane.InteractiveController;
 
 public class GroupingAction extends AbstractAction {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2320619078265054522L;
 	InteractiveController controller;
 
 	public GroupingAction(InteractiveController c) {

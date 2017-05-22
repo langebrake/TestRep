@@ -3,18 +3,17 @@ package controller.maincontrol;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
 
 import javax.swing.AbstractAction;
 import javax.swing.JFileChooser;
-import javax.swing.filechooser.FileNameExtensionFilter;
 
 import controller.Controller;
 
 public class SaveProject extends AbstractAction {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8515672278193284629L;
 	private Controller c;
 	private JFileChooser fc;
 

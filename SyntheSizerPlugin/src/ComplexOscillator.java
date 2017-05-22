@@ -9,6 +9,10 @@ import java.io.Serializable;
  */
 
 public class ComplexOscillator implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5474566263101978965L;
 	// wir oszillieren verschiedene sinus funktionen, die sollen alle
 	// ueber der gleichen phase laufen (sin(phase*....))
 	private double phase;

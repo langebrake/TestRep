@@ -11,12 +11,15 @@ import java.awt.Shape;
 import java.awt.geom.Ellipse2D;
 import java.util.LinkedList;
 
-import javax.swing.BorderFactory;
 
 import controller.interactivepane.InteractiveController;
 
 public class InteractiveShapeComponent extends InteractiveComponent implements
 		CablePointHost {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5351131856501122798L;
 	private Shape s;
 	private LinkedList<CablePointSimple> cablePoints;
 
@@ -38,7 +41,6 @@ public class InteractiveShapeComponent extends InteractiveComponent implements
 	}
 
 	private void updateCablePoints() {
-		int i = 1;
 		if (this.isShowing())
 			for (CablePointSimple c : this.cablePoints) {
 				if (c.getType() == CablePointType.INPUT) {
@@ -54,7 +56,6 @@ public class InteractiveShapeComponent extends InteractiveComponent implements
 							.getHeight() / 2)));
 
 				}
-				i++;
 			}
 	}
 

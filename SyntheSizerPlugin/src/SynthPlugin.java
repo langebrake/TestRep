@@ -14,6 +14,10 @@ import dev.hostevents.HostEvent;
 import engine.MidiUtilities;
 
 public class SynthPlugin extends Plugin implements MidiListener {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1698968153406698177L;
 	transient JPanel contentPane;
 	transient SynthPanel synthPanel;
 

@@ -1,7 +1,5 @@
 package controller.shortcut;
 
-import gui.interactivepane.InteractiveComponent;
-import gui.interactivepane.InteractiveShape;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -13,6 +11,10 @@ import controller.history.actions.UserDeleteAction;
 import controller.interactivepane.InteractiveController;
 
 public class DeleteAction extends AbstractAction {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5611641861680793430L;
 	private InteractiveController controller;
 
 	public DeleteAction(InteractiveController controller) {

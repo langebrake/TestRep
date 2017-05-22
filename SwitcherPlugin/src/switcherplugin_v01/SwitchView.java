@@ -2,10 +2,13 @@ package switcherplugin_v01;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JPanel;
 
 public class SwitchView extends JPanel {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5042364319255125020L;
 	private SwitcherPlugin switcherPlugin;
 
 	public SwitchView() {

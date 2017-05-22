@@ -9,6 +9,10 @@ import model.pluginmanager.PluginManager;
 import controller.Controller;
 
 public class RescanPlugins extends AbstractAction{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -225547741616388329L;
 	Controller controller;
 	public RescanPlugins(Controller c){
 		super("Rescan Plugins");

@@ -2,14 +2,16 @@ package controller.maincontrol;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import java.io.File;
 
 import javax.swing.AbstractAction;
-import javax.swing.JFileChooser;
 
 import controller.Controller;
 
 public class NewProject extends AbstractAction {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3735335265108911453L;
 	private Controller c;
 
 	public NewProject(Controller c) {

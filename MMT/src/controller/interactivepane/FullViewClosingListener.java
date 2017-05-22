@@ -7,6 +7,10 @@ import java.awt.event.WindowListener;
 import java.io.Serializable;
 
 public class FullViewClosingListener implements WindowListener, Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1495110790489397158L;
 	InteractiveModule module;
 
 	public FullViewClosingListener(InteractiveModule m) {

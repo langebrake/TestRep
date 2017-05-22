@@ -8,6 +8,11 @@ import java.io.Serializable;
  */
 public class ARFilter implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8629821990728320954L;
+
 	// benoetigte Variablen
 	private int sample_rate;
 

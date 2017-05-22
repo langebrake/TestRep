@@ -19,6 +19,10 @@ import dev.pluginevents.NewOutputRequestEvent;
 import engine.MidiUtilities;
 
 public class MidiNoteZone extends Plugin implements MidiListener, ActionListener {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5781907193936357908L;
 	protected LinkedList<Zone> zones;
 	private transient MidiNoteZoneView view;
 

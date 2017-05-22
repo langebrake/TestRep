@@ -16,11 +16,14 @@ import java.util.LinkedList;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
-import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
 public class CablePointPanel extends JPanel implements CablePointHost,
 		MouseListener, MouseMotionListener, MouseWheelListener {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4864779320061805124L;
 	private final CablePointType type;
 	private CablePointSimple cps;
 	private int index;

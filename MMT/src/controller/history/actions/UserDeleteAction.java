@@ -8,13 +8,11 @@ import gui.interactivepane.InteractiveModule;
 import gui.interactivepane.InteractiveShape;
 
 import java.awt.Component;
-import java.util.Arrays;
 import java.util.LinkedList;
 
 import javax.swing.JComponent;
 
 import controller.history.UserAction;
-import controller.history.UserActionManager;
 import controller.interactivepane.InteractiveController;
 
 public class UserDeleteAction extends UserAction {
@@ -133,6 +131,8 @@ public class UserDeleteAction extends UserAction {
 
 	}
 
+	//only used in this class
+	@SuppressWarnings("unchecked")
 	private <T> LinkedList<T> getRecursive(JComponent c, Class<?> contained) {
 		LinkedList<T> tmp = new LinkedList<T>();
 		if (contained.isInstance(c)) {

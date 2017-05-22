@@ -5,12 +5,14 @@ import java.util.LinkedList;
 
 import javax.sound.midi.MidiDevice;
 import javax.sound.midi.MidiUnavailableException;
-import javax.sound.midi.Receiver;
-import javax.sound.midi.Transmitter;
 
 import midiengine.MidiEngine;
 
 public class Engine implements MidiEngine, Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8001223978546250675L;
 	private LinkedList<MidiDevice> inputDevices;
 	private LinkedList<MidiDevice> outputDevices;
 	private static Engine engine;

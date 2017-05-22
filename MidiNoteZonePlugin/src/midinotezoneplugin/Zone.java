@@ -11,6 +11,10 @@ import dev.MidiIOCommunicator;
 import engine.MidiUtilities;
 
 public class Zone implements MidiListener, ActionListener, Cloneable, Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3225867591760294801L;
 	private int index;
 	private MidiNoteZone mnz;
 	private byte low, high;

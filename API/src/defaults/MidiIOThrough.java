@@ -7,8 +7,6 @@ import java.io.Serializable;
 import java.util.LinkedList;
 
 import javax.sound.midi.MidiMessage;
-import javax.sound.midi.Receiver;
-import javax.sound.midi.Transmitter;
 
 import dev.pluginevents.PluginMidiProcessingError;
 import pluginhost.PluginHost;

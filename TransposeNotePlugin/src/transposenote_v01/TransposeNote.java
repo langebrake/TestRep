@@ -18,6 +18,10 @@ import dev.hostevents.HostEvent;
 import engine.MidiUtilities;
 
 public class TransposeNote extends Plugin implements MidiListener, ActionListener {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -699402223542942581L;
 	private transient MinView minView;
 	byte transpose;
 

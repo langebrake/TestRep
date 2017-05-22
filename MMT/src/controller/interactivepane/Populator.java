@@ -2,7 +2,6 @@ package controller.interactivepane;
 
 import java.util.HashMap;
 
-import pluginhost.PluginHost;
 import stdlib.grouping.Grouping;
 import defaults.MidiIO;
 import gui.interactivepane.CablePoint;
@@ -10,7 +9,6 @@ import gui.interactivepane.CablePointType;
 import gui.interactivepane.InteractiveCable;
 import gui.interactivepane.InteractiveModule;
 import gui.interactivepane.InteractivePane;
-import gui.interactivepane.Vector;
 import model.MidiGraph;
 import model.graph.Module;
 

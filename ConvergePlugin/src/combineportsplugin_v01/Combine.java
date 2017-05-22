@@ -14,6 +14,11 @@ import dev.hostevents.HostEvent;
 
 public class Combine extends Plugin implements MidiListener {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6649262714856401683L;
+
 	public Combine(PluginHostCommunicator host) {
 		super(host, "Converge Ports", 1, -1, 1, 1);
 	}

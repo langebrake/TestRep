@@ -1,6 +1,5 @@
 package networkmidioutput_v01;
 
-import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.DataOutputStream;
@@ -19,6 +18,10 @@ import dev.hostevents.HostEvent;
 
 public class NetworkMidiOutput extends Plugin implements MidiListener, ActionListener {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5006161724808546899L;
 	private static final int MAXINPUTS = 1;
 	private static final int MAXOUTPUTS = 0;
 	private static final int MININPUTS = 1;

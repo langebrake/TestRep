@@ -9,6 +9,10 @@ import java.io.Serializable;
 import java.util.LinkedList;
 
 public class ShapeListener extends MouseAdapter implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5870265710768531265L;
 	private boolean inPane;
 	private InteractiveController controller;
 

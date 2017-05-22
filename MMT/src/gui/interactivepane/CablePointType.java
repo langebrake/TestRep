@@ -1,6 +1,5 @@
 package gui.interactivepane;
 
-import java.awt.Point;
 import java.io.Serializable;
 
 public enum CablePointType implements Serializable {

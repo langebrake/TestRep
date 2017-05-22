@@ -11,6 +11,10 @@ import controller.interactivepane.InteractiveController;
 
 public class CutAction extends AbstractAction {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4839156488517876206L;
 	private InteractiveController controller;
 
 	public CutAction(InteractiveController controller) {

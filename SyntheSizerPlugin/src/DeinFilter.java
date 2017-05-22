@@ -7,6 +7,10 @@ import java.io.Serializable;
  */
 
 public class DeinFilter implements Serializable  {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7409818717669285969L;
 	// Diese Parameter kommen im Wertebereich 0 bis 100 und koennen von dir
 	// genutzt werden
 	private byte param1;
@@ -14,6 +18,7 @@ public class DeinFilter implements Serializable  {
 
 	private int sample_rate;
 	// eine Phase, falls du sie brauchst
+	@SuppressWarnings("unused")
 	private double phase;
 	// und delta, mit dem die Phase je Sample erhoeht wird
 	private double phase_delta;

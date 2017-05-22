@@ -5,12 +5,11 @@ import gui.interactivepane.InteractiveModule;
 import gui.interactivepane.InteractiveShape;
 
 import java.awt.Point;
-import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.Serializable;
 import java.util.LinkedList;
-import java.util.Vector;
+
 
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -32,6 +31,10 @@ import controller.shortcut.RenameAction;
 import controller.shortcut.UngroupAction;
 
 public class PopupMenuListener extends MouseAdapter implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6145601547304347741L;
 	private InteractiveController controller;
 
 	public PopupMenuListener(InteractiveController c) {

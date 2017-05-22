@@ -2,44 +2,33 @@
 import guiinterface.SizeableComponent;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.Random;
 
 import javax.sound.midi.MidiMessage;
-import javax.sound.midi.Receiver;
-import javax.sound.midi.Transmitter;
 import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import defaults.DefaultView;
-import defaults.MidiIOThrough;
 import defaults.MidiListener;
 import dev.MidiIOCommunicator;
 import dev.Plugin;
 import dev.PluginHostCommunicator;
 import dev.hostevents.*;
-import dev.pluginevents.NewInputRequestEvent;
-import dev.pluginevents.NewOutputRequestEvent;
 
 public class Unserializable extends Plugin implements MidiListener {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 268244059974535432L;
 	private static final int MAXINPUTS = -1;
 	private static final int MAXOUTPUTS = -1;
 	private static final int MININPUTS = 1;
 	private static final int MINOUTPUTS = 1;
 	private static final String NAME = "ThisIsNotSerializable!";
-	private String msg = "DummyPlugin";
-	private Method m = null;
 	private static final Random rn = new Random();
-	private int s = rn.nextInt(1000) + rn.nextInt(3545) + rn.nextInt(4546);
 	private Color c = new Color(rn.nextInt(255), rn.nextInt(255), rn.nextInt(255));
 
 	public static Plugin getInstance(PluginHostCommunicator host) {
@@ -51,7 +40,6 @@ public class Unserializable extends Plugin implements MidiListener {
 
 	}
 
-	private boolean block;
 
 	@Override
 	public void notify(HostEvent e) {

@@ -1,8 +1,6 @@
 package testsender_v01;
 
 import java.awt.BorderLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -10,6 +8,10 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 public class MinView extends JPanel {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2347363809050759796L;
 	private transient JButton sendButton;
 	private transient JTextField status, channel, data1, data2;
 	private transient TestSenderPlugin t;

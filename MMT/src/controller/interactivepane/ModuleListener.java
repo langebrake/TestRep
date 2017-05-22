@@ -5,16 +5,16 @@ import gui.interactivepane.InteractiveModule;
 import gui.interactivepane.Vector;
 
 import java.awt.event.InputEvent;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
-import java.awt.event.MouseWheelEvent;
-import java.awt.event.MouseWheelListener;
 
 import javax.swing.SwingUtilities;
 
 public class ModuleListener extends ControllerListenerAdapter {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3648568195990566289L;
 
 	public ModuleListener(InteractiveController c) {
 		super(c);

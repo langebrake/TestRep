@@ -8,6 +8,10 @@ import javax.swing.JTextField;
 
 public class MinView extends JPanel {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3465264996032647718L;
 	private TransposeNote t;
 
 	public MinView(TransposeNote t) {

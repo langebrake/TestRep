@@ -16,6 +16,10 @@ import dev.hostevents.HostEvent;
 import engine.MidiUtilities;
 
 public class IgnoreCC extends Plugin implements MidiListener, ActionListener {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 622606541012481960L;
 	private transient MinView view;
 	byte ignore;
 

@@ -7,7 +7,6 @@ import java.io.ObjectInputStream;
 
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiMessage;
-import javax.sound.midi.MidiUnavailableException;
 import javax.sound.midi.ShortMessage;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -20,6 +19,10 @@ import dev.hostevents.HostEvent;
 import engine.MidiUtilities;
 
 public class ForceChannel extends Plugin implements ActionListener, MidiListener {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4534585068778282587L;
 	private transient MinView view;
 	int selectedChannel;
 
@@ -102,6 +105,7 @@ public class ForceChannel extends Plugin implements ActionListener, MidiListener
 
 	}
 
+	@SuppressWarnings("rawtypes")
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		Object o = e.getSource();

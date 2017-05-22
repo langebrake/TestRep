@@ -6,6 +6,10 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 public class ZoneView extends JPanel {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8888235307890876321L;
 	private Zone zone;
 
 	public ZoneView(Zone zone) {

@@ -6,15 +6,18 @@ import java.io.ObjectInputStream;
 import javax.sound.midi.MidiMessage;
 import javax.swing.JComponent;
 
-import defaults.MidiIO;
 import defaults.MidiListener;
 import dev.MidiIOCommunicator;
 import dev.Plugin;
 import dev.PluginHostCommunicator;
 import dev.hostevents.HostEvent;
-import pluginhost.PluginHost;
 
 public class Multiplier extends Plugin implements MidiListener {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6913180239963039230L;
 
 	public static Plugin getInstance(PluginHostCommunicator host) {
 		return new Multiplier(host);

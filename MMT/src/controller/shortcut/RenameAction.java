@@ -2,18 +2,19 @@ package controller.shortcut;
 
 import gui.interactivepane.InteractiveModule;
 
-import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
 import javax.swing.AbstractAction;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-import stdlib.grouping.Grouping;
 
 public class RenameAction extends AbstractAction {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7893989673276250715L;
 	InteractiveModule module;
 
 	public RenameAction(Object m) {

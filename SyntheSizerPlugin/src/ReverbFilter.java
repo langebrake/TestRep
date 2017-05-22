@@ -8,6 +8,11 @@ import java.io.Serializable;
  */
 public class ReverbFilter implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -9209271382752045315L;
+
 	public ReverbFilter(int sample_rate, int bufferSize) {
 		rev = new int[bufferSize];
 	}

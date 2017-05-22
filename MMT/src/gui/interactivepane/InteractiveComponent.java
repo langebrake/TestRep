@@ -1,14 +1,9 @@
 package gui.interactivepane;
 
 import guiinterface.InteractiveUpdateable;
-import guiinterface.SizeableComponent;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Point;
 import java.awt.Shape;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelListener;
@@ -16,20 +11,18 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.EventListener;
-import java.util.Random;
 
-import javax.swing.BorderFactory;
-import javax.swing.JComponent;
 import javax.swing.JPanel;
 
-import controller.interactivepane.CableCreationListener;
 import controller.interactivepane.InteractiveController;
-import controller.interactivepane.ModuleListener;
-import controller.interactivepane.PopupMenuListener;
 
 public abstract class InteractiveComponent extends JPanel implements
 		InteractiveUpdateable, Cloneable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2996518575048064910L;
 	private Vector originLocation;
 	private Dimension originDimension;
 	private boolean selected;

@@ -8,6 +8,11 @@ import dev.hostevents.HostEvent;
 
 public class NoteVelocityFilter extends Plugin {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7138757443908389256L;
+
 	public NoteVelocityFilter(PluginHostCommunicator host, String name, int minInputs, int maxInputs, int minOutputs,
 			int maxOutputs) {
 		super(host, name, minInputs, maxInputs, minOutputs, maxOutputs);

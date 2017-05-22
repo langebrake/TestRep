@@ -1,7 +1,6 @@
 package switcherplugin_v01;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
@@ -17,6 +16,10 @@ import dev.PluginHostCommunicator;
 import dev.hostevents.HostEvent;
 
 public class SwitcherPlugin extends Plugin implements ActionListener {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6161831658057078576L;
 	private static final int MAXINPUTS = -1;
 	private static final int MAXOUTPUTS = -1;
 	private static final int MININPUTS = 0;

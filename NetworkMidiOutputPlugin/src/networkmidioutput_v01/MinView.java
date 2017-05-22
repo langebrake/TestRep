@@ -7,6 +7,10 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 public class MinView extends JPanel {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3810561752544051311L;
 	private NetworkMidiOutput out;
 
 	public MinView(NetworkMidiOutput out) {

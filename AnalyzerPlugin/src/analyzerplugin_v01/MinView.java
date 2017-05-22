@@ -3,11 +3,14 @@ package analyzerplugin_v01;
 import java.awt.BorderLayout;
 
 import javax.sound.midi.MidiMessage;
-import javax.sound.midi.ShortMessage;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 public class MinView extends JPanel {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3402777032520757317L;
 	private transient JLabel label;
 
 	public MinView() {

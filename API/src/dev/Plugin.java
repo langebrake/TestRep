@@ -9,6 +9,10 @@ import javax.swing.JComponent;
 import dev.hostevents.*;
 
 public abstract class Plugin implements Serializable, Cloneable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1136216083517477005L;
 	public static final String INTERFACE_VERSION = "1.0a";
 	private transient PluginHostCommunicator host;
 	public static transient Object lock = new Object();

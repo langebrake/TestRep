@@ -1,11 +1,9 @@
 package defaults;
 
 import guiinterface.InteractiveUpdateable;
-import guiinterface.SizeableLabel;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.io.IOException;
@@ -16,6 +14,10 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 public class DefaultView extends JPanel implements InteractiveUpdateable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5008856056650030151L;
 	private JLabel lbl;
 
 	public DefaultView() {

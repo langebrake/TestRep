@@ -1,6 +1,5 @@
 package networkmidiinput_v01;
 
-import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.DataInputStream;
@@ -9,7 +8,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.LinkedList;
 
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.ShortMessage;
@@ -18,9 +16,12 @@ import javax.swing.JComponent;
 import dev.Plugin;
 import dev.PluginHostCommunicator;
 import dev.hostevents.HostEvent;
-import pluginhost.PluginHost;
 
 public class NetworkMidiInput extends Plugin implements ActionListener {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 9155171598552524568L;
 	private static final int MAXINPUTS = 0;
 	private static final int MAXOUTPUTS = 1;
 	private static final int MININPUTS = 0;

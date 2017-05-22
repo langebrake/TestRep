@@ -5,6 +5,10 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 
 public class MidiNoteZoneView extends JPanel {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6190655712848995851L;
 	private MidiNoteZone mnz;
 
 	public MidiNoteZoneView(MidiNoteZone z) {

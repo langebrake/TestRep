@@ -3,7 +3,6 @@ package controller.projectree;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-import gui.interactivepane.InteractiveComponent;
 import gui.interactivepane.InteractiveModule;
 
 import javax.swing.event.TreeSelectionEvent;
@@ -11,7 +10,6 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 
-import stdlib.grouping.Grouping;
 import controller.maincontrol.Project;
 
 public class ProjectTreeListener extends MouseAdapter implements

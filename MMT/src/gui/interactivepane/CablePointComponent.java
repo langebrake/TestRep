@@ -9,9 +9,15 @@ import javax.swing.JComponent;
 
 public class CablePointComponent extends JComponent implements CablePoint,
 		CablePointHost {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2726096580310776129L;
 	private InteractiveCable cable;
 	private final CablePointType type;
 	private CablePointHost host;
+	@SuppressWarnings("unused")
+	//TODO: may get useful in the new cable add procedure
 	private Component parent;
 	private int index;
 	private boolean tmpDisconnect;

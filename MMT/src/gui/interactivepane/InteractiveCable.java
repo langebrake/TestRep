@@ -5,23 +5,22 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Paint;
 import java.awt.Rectangle;
-import java.awt.Shape;
-import java.awt.Stroke;
 import java.awt.geom.AffineTransform;
-import java.awt.geom.CubicCurve2D;
 import java.awt.geom.GeneralPath;
-import java.awt.geom.Line2D;
 import java.awt.geom.PathIterator;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.LinkedList;
 
-import javax.swing.JComponent;
 
 import controller.interactivepane.InteractiveController;
 
 public class InteractiveCable implements InteractiveShape {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1061259903602363053L;
 	private GeneralPath cable;
 	private CablePoint source, dest;
 	private LinkedList<CablePoint> cablePoints;
@@ -213,7 +212,6 @@ public class InteractiveCable implements InteractiveShape {
 			return false;
 		}
 		InteractiveCable other = (InteractiveCable) o;
-		boolean result = true;
 		return this.source == other.source && this.dest == other.dest;
 	}
 

@@ -8,8 +8,6 @@ import java.io.NotSerializableException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.LinkedList;
 
@@ -27,7 +25,6 @@ import dev.pluginevents.NewInputRequestEvent;
 import dev.pluginevents.NewOutputRequestEvent;
 import dev.pluginevents.PluginError;
 import dev.pluginevents.PluginEvent;
-import dev.pluginevents.PluginLoadingError;
 import dev.pluginevents.PluginSavingError;
 import engine.Engine;
 import pluginhost.exceptions.*;

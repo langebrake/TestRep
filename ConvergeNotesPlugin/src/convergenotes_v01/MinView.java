@@ -7,6 +7,10 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 public class MinView extends JPanel {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 596453015526801734L;
 	private JTextField note;
 
 	public MinView(ConvergeNotes n) {

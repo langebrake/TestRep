@@ -18,6 +18,10 @@ import stdlib.grouping.Grouping;
 
 public class InteractivePane extends JLayeredPane {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5448521686654360166L;
 	/*
 	 * Objects needed for viewport rendering
 	 */

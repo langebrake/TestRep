@@ -1,24 +1,20 @@
 package gui.interactivepane;
 
-import guiinterface.InteractiveUpdateable;
-import guiinterface.SizeableComponent;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Point;
-import java.awt.event.MouseAdapter;
-import java.util.Random;
 
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
-import javax.swing.JPanel;
 
 import controller.interactivepane.InteractiveController;
 
 public class InteractiveDisplay extends InteractiveComponent {
 
-	private JComponent contentPane;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1399307263223584352L;
 
 	/**
 	 * creates a new interactive gui component and places it to the origin
@@ -31,7 +27,6 @@ public class InteractiveDisplay extends InteractiveComponent {
 			JComponent contentPane) {
 		super(parent, origin);
 		super.setLayout(new BorderLayout());
-		this.contentPane = contentPane;
 		this.setOriginDimension(contentPane.getSize());
 		this.add(contentPane, BorderLayout.CENTER);
 		this.setBorder(BorderFactory.createEmptyBorder(1, 1, 1, 1));

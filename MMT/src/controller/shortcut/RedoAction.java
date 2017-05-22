@@ -5,12 +5,14 @@ import java.awt.event.KeyEvent;
 
 import javax.swing.AbstractAction;
 
-import controller.history.UserAction;
-import controller.history.actions.UserDeleteAction;
 import controller.interactivepane.InteractiveController;
 
 public class RedoAction extends AbstractAction {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7010572065431886123L;
 	private InteractiveController controller;
 
 	public RedoAction(InteractiveController controller) {

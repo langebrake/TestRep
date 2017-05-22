@@ -1,19 +1,18 @@
 package controller.pluginmanager;
 
 import java.awt.event.ActionEvent;
-import java.lang.reflect.InvocationTargetException;
 
-import javax.sound.midi.MidiUnavailableException;
 import javax.swing.AbstractAction;
 
 import controller.history.actions.UserAddModuleAction;
 import controller.interactivepane.InteractiveController;
-import engine.Engine;
-import gui.interactivepane.InteractiveModule;
-import model.graph.Module;
 import model.pluginmanager.Loadable;
 
 public class PluginAddAction extends AbstractAction {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3454619069505386494L;
 	private InteractiveController controller;
 	private Loadable plugin;
 

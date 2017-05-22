@@ -10,13 +10,16 @@ import java.io.Serializable;
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiMessage;
 import javax.sound.midi.ShortMessage;
-import javax.swing.JComboBox;
 import javax.swing.JPanel;
 
 import defaults.MidiListener;
 import dev.MidiIOCommunicator;
 
 public class Routing implements Serializable, MidiListener, Cloneable, ActionListener, ItemListener {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6602594571171203121L;
 	protected SwitcherPlugin switcher;
 	protected int inputNr, outputNr, activeListenNr;
 	private boolean active;
@@ -81,7 +84,6 @@ public class Routing implements Serializable, MidiListener, Cloneable, ActionLis
 
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (this.routingView != null && this.routingView.isAncestorOf((Component) e.getSource())) {

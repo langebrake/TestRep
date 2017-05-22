@@ -3,20 +3,17 @@ package controller.maincontrol;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 
 import javax.swing.AbstractAction;
 import javax.swing.JFileChooser;
-import javax.swing.filechooser.FileNameExtensionFilter;
 
 import controller.Controller;
 
 public class OpenProject extends AbstractAction {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4368071067699767854L;
 	private Controller c;
 	private JFileChooser fc;
 

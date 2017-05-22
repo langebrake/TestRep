@@ -18,6 +18,10 @@ import dev.hostevents.HostEvent;
 import engine.MidiUtilities;
 
 public class ConvergeNotes extends Plugin implements MidiListener, ActionListener {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6097006235958795808L;
 	private transient MinView view;
 	public byte note;
 

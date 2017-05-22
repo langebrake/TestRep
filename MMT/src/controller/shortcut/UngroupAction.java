@@ -7,11 +7,14 @@ import java.awt.event.KeyEvent;
 
 import javax.swing.AbstractAction;
 
-import controller.history.actions.UserAddGroupAction;
 import controller.history.actions.UserUngroupAction;
 import controller.interactivepane.InteractiveController;
 
 public class UngroupAction extends AbstractAction {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5550365504663199104L;
 	private InteractiveModule group;
 	InteractiveController controller;
 

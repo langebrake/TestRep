@@ -1,14 +1,16 @@
 package networkmidiinput_v01;
 
 import java.awt.BorderLayout;
-import java.awt.event.ActionListener;
-import java.net.SocketImpl;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 public class MinView extends JPanel {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4309131068695026412L;
 	private NetworkMidiInput nmi;
 
 	public MinView(NetworkMidiInput networkMidiInput) {

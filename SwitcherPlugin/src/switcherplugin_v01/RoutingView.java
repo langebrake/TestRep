@@ -2,18 +2,19 @@ package switcherplugin_v01;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 public class RoutingView extends JPanel {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4901417568083575417L;
 	private Routing routing;
 	protected JComboBox<Integer> inBox, outBox, activeListenBox;
 

@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.LinkedList;
-import java.util.Scanner;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.sound.midi.InvalidMidiDataException;
@@ -15,12 +14,9 @@ import javax.sound.midi.MidiMessage;
 import javax.sound.midi.MidiUnavailableException;
 import javax.sound.midi.Receiver;
 import javax.sound.midi.ShortMessage;
-import javax.sound.midi.Transmitter;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
-import javax.swing.JFrame;
 
-import midiengine.MidiEngine;
 import defaults.DefaultView;
 import defaults.MidiListener;
 import dev.MidiIOCommunicator;
@@ -31,6 +27,10 @@ import engine.MidiUtilities;
 
 public class MidiOutputPlugin extends Plugin implements ActionListener, Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8429357505259810533L;
 	private static final int MAXINPUTS = 1;
 	private static final int MAXOUTPUTS = 0;
 	private static final int MININPUTS = 1;
@@ -206,6 +206,7 @@ public class MidiOutputPlugin extends Plugin implements ActionListener, Serializ
 
 	}
 
+	@SuppressWarnings("rawtypes")
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		Object o = arg0.getSource();

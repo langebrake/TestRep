@@ -1,15 +1,16 @@
 package controller.interactivepane;
 
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
-import java.awt.event.MouseWheelListener;
 import java.io.Serializable;
 
 public class ControllerListenerAdapter implements MouseInputListener,
 		Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1668687677721467298L;
 	protected InteractiveController controller;
 
 	public ControllerListenerAdapter(InteractiveController controller) {
